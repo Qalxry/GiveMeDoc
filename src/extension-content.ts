@@ -24,7 +24,7 @@ import {
   loadConfig, createCallbacks,
   createSingleExportHandler, createShareExportHandler,
 } from './core/storage-helpers';
-import { extStorage, clearExtWasmCache } from './core/ext-storage';
+import { extStorage, clearExtWasmCache } from './core/storage/webext';
 
 // Vite will extract CSS as an asset — import for side-effect bundling
 import './ui/index.css';

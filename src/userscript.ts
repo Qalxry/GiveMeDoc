@@ -9,7 +9,6 @@
  *   4. Wire PanelCallbacks → storage + converter
  *   5. Inject single-export buttons + share-panel button + menu command
  */
-import type { IStorage } from './core/types';
 import { initPandoc, isPandocReady, getPandocVersion } from './core/converter';
 import {
   injectSingleExportButtons, injectSharePanelButton,
@@ -22,16 +21,13 @@ import {
   loadConfig, createCallbacks,
   createSingleExportHandler, createShareExportHandler,
 } from './core/storage-helpers';
-import { b64ToArrayBuffer, arrayBufferToB64 } from './core/b64';
+import { gmStorage } from './core/storage/gm';
 import PandocWorker from './core/pandoc.worker.ts?worker&inline';
 
 // CSS will be inlined by Vite and injected via GM_addStyle
 import css from './ui/index.css?inline';
 
 declare const __PLATFORM__: 'userscript' | 'extension';
-declare function GM_getValue<T>(key: string, defaultValue?: T): T;
-declare function GM_setValue(key: string, value: unknown): void;
-declare function GM_deleteValue(key: string): void;
 declare function GM_addStyle(css: string): void;
 declare function GM_registerMenuCommand(caption: string, onClick: () => void): void;
 declare function GM_xmlhttpRequest(details: {
@@ -41,31 +37,6 @@ declare function GM_xmlhttpRequest(details: {
   onload: (resp: { response: ArrayBuffer; status: number }) => void;
   onerror: (err: unknown) => void;
 }): void;
-
-// ═══════════════════════════════════════════════════════════════════════════
-// GM Storage Adapter
-// ═══════════════════════════════════════════════════════════════════════════
-
-const gmStorage: IStorage = {
-  async get<T>(key: string): Promise<T | null> {
-    const v = GM_getValue<T | null>(key, null);
-    return v;
-  },
-  async set<T>(key: string, value: T): Promise<void> {
-    GM_setValue(key, value);
-  },
-  async remove(key: string): Promise<void> {
-    GM_deleteValue(key);
-  },
-  async getBlob(key: string): Promise<ArrayBuffer | null> {
-    const b64 = GM_getValue<string | null>(key, null);
-    if (!b64) return null;
-    return b64ToArrayBuffer(b64);
-  },
-  async setBlob(key: string, value: ArrayBuffer): Promise<void> {
-    GM_setValue(key, arrayBufferToB64(value));
-  },
-};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // IndexedDB WASM Cache

@@ -5,9 +5,9 @@
  * Wraps browser.storage.local with the IStorage interface and
  * provides a reusable WASM cache-clearing helper.
  */
-import type { IStorage } from './types';
+import type { IStorage } from '../types';
 import browser from 'webextension-polyfill';
-import { b64ToArrayBuffer, arrayBufferToB64 } from './b64';
+import { b64ToArrayBuffer, arrayBufferToB64 } from '../b64';
 
 export const extStorage: IStorage = {
   async get<T>(key: string): Promise<T | null> {
