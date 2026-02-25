@@ -37,7 +37,8 @@
     }
   ],
   "web_accessible_resources": [
-    "pandoc.worker.js"
+    "pandoc.worker.js",
+    "pandoc.wasm"
   ],
   "browser_specific_settings": {
     "gecko": {

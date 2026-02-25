@@ -12,15 +12,13 @@ import browser from 'webextension-polyfill';
 // WASM cache & fetch
 // ═══════════════════════════════════════════════════════════════════════════
 
-const PANDOC_WASM_URL =
-  'https://pandoc.org/app/pandoc.wasm?sha1=2ab8055eb0803168da93d4b784fe40aa06551dfa';
-
 let wasmCache: ArrayBuffer | null = null;
 
 async function fetchPandocWasm(): Promise<ArrayBuffer> {
   if (wasmCache) return wasmCache;
 
-  const response = await fetch(PANDOC_WASM_URL);
+  const wasmUrl = browser.runtime.getURL('pandoc.wasm');
+  const response = await fetch(wasmUrl);
   if (!response.ok) {
     throw new Error(`Failed to fetch Pandoc WASM: ${response.status} ${response.statusText}`);
   }
@@ -32,14 +30,15 @@ async function fetchPandocWasm(): Promise<ArrayBuffer> {
 // Message handling
 // ═══════════════════════════════════════════════════════════════════════════
 
-browser.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  if (message?.type === 'FETCH_PANDOC_WASM') {
+browser.runtime.onMessage.addListener((message: unknown, _sender, sendResponse) => {
+  if ((message as { type?: string })?.type === 'FETCH_PANDOC_WASM') {
     fetchPandocWasm()
       .then((wasm) => sendResponse({ wasm }))
       .catch((err) => sendResponse({ error: (err as Error).message }));
     // Return true to indicate async sendResponse
     return true;
   }
+  return true;
 });
 
 // ═══════════════════════════════════════════════════════════════════════════

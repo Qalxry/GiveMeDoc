@@ -57,3 +57,4 @@ repositories/
 *.prompt.md
 docs/deepseek.md
 docs/pandoc.md
+proposals.*.md

@@ -1,5 +1,6 @@
 import { defineConfig, type Plugin } from 'vite';
 import { resolve } from 'path';
+import * as fs from 'fs';
 
 const USERSCRIPT_META = `// ==UserScript==
 // @name         Give Me Doc
@@ -74,7 +75,24 @@ export default defineConfig(({ mode }) => {
   }
 
   // mode === 'extension' (default)
+  function copyWasmPlugin(): Plugin {
+    return {
+      name: 'copy-pandoc-wasm',
+      closeBundle() {
+        const src = resolve(__dirname, 'bin/pandoc.wasm');
+        const dest = resolve(__dirname, 'dist/extension/pandoc.wasm');
+        if (fs.existsSync(src)) {
+          fs.copyFileSync(src, dest);
+          console.log('[copy-pandoc-wasm] bin/pandoc.wasm → dist/extension/pandoc.wasm');
+        } else {
+          console.warn('[copy-pandoc-wasm] bin/pandoc.wasm not found, skipping.');
+        }
+      },
+    };
+  }
+
   return {
+    plugins: [copyWasmPlugin()],
     build: {
       target: 'ES2022',
       outDir: 'dist/extension',

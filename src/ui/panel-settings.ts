@@ -21,6 +21,18 @@ import {
 declare const __PLATFORM__: 'userscript' | 'extension';
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Utility
+// ═══════════════════════════════════════════════════════════════════════════
+
+function debounce<T extends unknown[]>(fn: (...args: T) => void, ms: number) {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return (...args: T) => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => { fn(...args); timer = null; }, ms);
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // State
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -80,30 +92,30 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   prefixTextarea = createTextarea({
     label: '文档前缀（document prefix）',
     rows: 5,
-    onChange: (v) => {
+    onChange: debounce((v) => {
       config.documentPrefix = v;
       cb.onConfigChange({ documentPrefix: v });
-    },
+    }, 400),
   });
   editorSection.appendChild(prefixTextarea);
 
   userTplTextarea = createTextarea({
     label: '用户消息模板（user message）',
     rows: 4,
-    onChange: (v) => {
+    onChange: debounce((v) => {
       config.userMessageTemplate = v;
       cb.onConfigChange({ userMessageTemplate: v });
-    },
+    }, 400),
   });
   editorSection.appendChild(userTplTextarea);
 
   assistantTplTextarea = createTextarea({
     label: '助手消息模板（assistant message）',
     rows: 5,
-    onChange: (v) => {
+    onChange: debounce((v) => {
       config.assistantMessageTemplate = v;
       cb.onConfigChange({ assistantMessageTemplate: v });
-    },
+    }, 400),
   });
   editorSection.appendChild(assistantTplTextarea);
 
@@ -121,11 +133,11 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
     cdnTextarea = createTextarea({
       label: 'CDN URL 列表（每行一个，按顺序尝试）',
       rows: 3,
-      onChange: (v) => {
+      onChange: debounce((v) => {
         const urls = v.split('\n').map((l) => l.trim()).filter(Boolean);
         config.cdnUrls = urls;
         cb.onConfigChange({ cdnUrls: urls });
-      },
+      }, 400),
     });
     cdnSection.appendChild(cdnTextarea);
 

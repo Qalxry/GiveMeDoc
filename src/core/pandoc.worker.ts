@@ -63,7 +63,7 @@ const api: PandocWorkerAPI = {
     });
     instance = inst;
 
-    wasi.initialize(instance);
+    wasi.initialize(instance as unknown as { exports: { memory: WebAssembly.Memory; _initialize?: () => void } });
     exp().__wasm_call_ctors();
 
     // Haskell RTS init — construct C-style argc/argv

@@ -9,10 +9,7 @@
  *   4. Wire PanelCallbacks → storage + converter
  *   5. Inject single-export buttons + share-panel button + menu command
  */
-import type {
-  IStorage, UserConfig, TemplateMeta, PanelCallbacks, IChatSession,
-} from './core/types';
-import { DEFAULT_CONFIG } from './core/types';
+import type { IStorage } from './core/types';
 import { initPandoc, isPandocReady, getPandocVersion, exportToDocx, downloadBlob } from './core/converter';
 import {
   getCurrentSessionId, getSession, getActiveChain,
@@ -20,6 +17,10 @@ import {
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
 import { showToast } from './ui/m3e/toast';
+import {
+  loadConfig, getTemplateBlob, createCallbacks,
+} from './core/storage-helpers';
+import PandocWorker from './core/pandoc.worker.ts?worker&inline';
 
 // CSS will be inlined by Vite and injected via GM_addStyle
 import css from './ui/index.css?inline';
@@ -70,76 +71,18 @@ const gmStorage: IStorage = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Config helpers
-// ═══════════════════════════════════════════════════════════════════════════
-
-async function loadConfig(): Promise<UserConfig> {
-  const saved = await gmStorage.get<Partial<UserConfig>>('config');
-  return { ...DEFAULT_CONFIG, ...saved };
-}
-
-async function saveConfigPartial(partial: Partial<UserConfig>): Promise<void> {
-  const current = await loadConfig();
-  await gmStorage.set('config', { ...current, ...partial });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Template management
-// ═══════════════════════════════════════════════════════════════════════════
-
-/** Built-in templates loaded from generated file (if available). */
-let builtinTemplates: TemplateMeta[] = [
-  { id: 'builtin-gb', name: 'GB/T 标准格式', isBuiltin: true, description: '符合国标的 Word 格式' },
-];
-
-async function getTemplateList(): Promise<TemplateMeta[]> {
-  const custom = await gmStorage.get<TemplateMeta[]>('custom-templates') ?? [];
-  return [...builtinTemplates, ...custom];
-}
-
-async function uploadTemplate(name: string, data: ArrayBuffer): Promise<void> {
-  const id = `custom-${Date.now()}`;
-  const meta: TemplateMeta = { id, name, isBuiltin: false };
-  const list = await gmStorage.get<TemplateMeta[]>('custom-templates') ?? [];
-  list.push(meta);
-  await gmStorage.set('custom-templates', list);
-  await gmStorage.setBlob(`tpl-blob-${id}`, data);
-}
-
-async function deleteTemplate(id: string): Promise<void> {
-  const list = await gmStorage.get<TemplateMeta[]>('custom-templates') ?? [];
-  await gmStorage.set('custom-templates', list.filter((t) => t.id !== id));
-  await gmStorage.remove(`tpl-blob-${id}`);
-}
-
-async function getTemplateBlob(id: string): Promise<ArrayBuffer | undefined> {
-  if (id.startsWith('builtin-')) {
-    // TODO: load from builtin-templates.generated.ts
-    return undefined;
-  }
-  return (await gmStorage.getBlob(`tpl-blob-${id}`)) ?? undefined;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // Pandoc WASM loading
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function loadPandocWasm(): Promise<void> {
-  const config = await loadConfig();
+  const config = await loadConfig(gmStorage);
   const urls = config.cdnUrls;
 
   for (const url of urls) {
     try {
       showToast({ message: '正在下载 Pandoc WASM…', level: 'info', duration: 2000 });
       const wasmBytes = await fetchWasm(url);
-      const workerBlob = new Blob(
-        [`import './core/pandoc.worker.ts';`],
-        { type: 'application/javascript' },
-      );
-      // In userscript IIFE mode, the worker code is inlined.
-      // We create a blob URL pointing to the bundled worker.
-      const workerUrl = new URL('./core/pandoc.worker.ts', import.meta.url);
-      await initPandoc(wasmBytes, workerUrl);
+      await initPandoc(wasmBytes, new PandocWorker());
       showToast({ message: `Pandoc 就绪 (${await getPandocVersion()})`, level: 'success' });
       return;
     } catch (err) {
@@ -168,64 +111,6 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Panel Callbacks
-// ═══════════════════════════════════════════════════════════════════════════
-
-function createCallbacks(): PanelCallbacks {
-  return {
-    async onExport(selectedIds, templateId) {
-      const sessionId = getCurrentSessionId();
-      if (!sessionId) throw new Error('未检测到会话 ID');
-
-      const session = await getSession(sessionId);
-      const chain = getActiveChain(session);
-      const selectedSet = new Set(selectedIds);
-      const messages = chain.filter((m) => selectedSet.has(m.id));
-      if (messages.length === 0) throw new Error('没有选中任何消息');
-
-      const config = await loadConfig();
-      const refDocx = await getTemplateBlob(templateId);
-      const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
-      downloadBlob(blob, filename);
-    },
-
-    async onTemplateUpload(name, data) {
-      await uploadTemplate(name, data);
-    },
-
-    async onTemplateDelete(id) {
-      await deleteTemplate(id);
-    },
-
-    async onConfigChange(partial) {
-      await saveConfigPartial(partial);
-    },
-
-    async getConfig() {
-      return loadConfig();
-    },
-
-    async getTemplateList() {
-      return getTemplateList();
-    },
-
-    async getSession() {
-      const id = getCurrentSessionId();
-      if (!id) return null;
-      return getSession(id);
-    },
-
-    async getPandocVersion() {
-      return getPandocVersion();
-    },
-
-    isPandocReady() {
-      return isPandocReady();
-    },
-  };
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // Bootstrap
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -233,7 +118,7 @@ function createCallbacks(): PanelCallbacks {
   // 1. Inject styles
   GM_addStyle(css);
 
-  const callbacks = createCallbacks();
+  const callbacks = createCallbacks(gmStorage);
 
   // 2. Register GM menu command to toggle panel
   GM_registerMenuCommand('📄 Give Me Doc 面板', () => togglePanel(callbacks));
@@ -245,8 +130,8 @@ function createCallbacks(): PanelCallbacks {
       return;
     }
     try {
-      const config = await loadConfig();
-      const refDocx = await getTemplateBlob(config.selectedTemplateId);
+      const config = await loadConfig(gmStorage);
+      const refDocx = await getTemplateBlob(gmStorage, config.selectedTemplateId);
       // Single message export: wrap in a minimal session
       const { blob, filename } = await exportToDocx(
         [{ id: '0', parentId: null, role: 'assistant', content: md, thinkingContent: '', timestamp: Date.now(), status: 'finished', childrenIds: [] }],
@@ -275,8 +160,8 @@ function createCallbacks(): PanelCallbacks {
       const messages = selectedIndices.map((i) => chain[i]).filter(Boolean);
       if (messages.length === 0) throw new Error('没有选中任何消息');
 
-      const config = await loadConfig();
-      const refDocx = await getTemplateBlob(config.selectedTemplateId);
+      const config = await loadConfig(gmStorage);
+      const refDocx = await getTemplateBlob(gmStorage, config.selectedTemplateId);
       const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
       downloadBlob(blob, filename);
       showToast({ message: '导出成功', level: 'success' });

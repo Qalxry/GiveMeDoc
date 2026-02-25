@@ -10,10 +10,8 @@
  *   5. Inject single-export buttons + share-panel button
  *   6. Listen for popup toggle messages
  */
-import type {
-  IStorage, UserConfig, TemplateMeta, PanelCallbacks, IChatSession,
-} from './core/types';
-import { DEFAULT_CONFIG } from './core/types';
+import type { IStorage } from './core/types';
+import browser from 'webextension-polyfill';
 import { initPandoc, isPandocReady, getPandocVersion, exportToDocx, downloadBlob } from './core/converter';
 import {
   getCurrentSessionId, getSession, getActiveChain,
@@ -21,7 +19,9 @@ import {
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
 import { showToast } from './ui/m3e/toast';
-import browser from 'webextension-polyfill';
+import {
+  loadConfig, getTemplateBlob, createCallbacks,
+} from './core/storage-helpers';
 
 // Vite will extract CSS as an asset — import for side-effect bundling
 import './ui/index.css';
@@ -61,53 +61,6 @@ const extStorage: IStorage = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Config helpers
-// ═══════════════════════════════════════════════════════════════════════════
-
-async function loadConfig(): Promise<UserConfig> {
-  const saved = await extStorage.get<Partial<UserConfig>>('config');
-  return { ...DEFAULT_CONFIG, ...saved };
-}
-
-async function saveConfigPartial(partial: Partial<UserConfig>): Promise<void> {
-  const current = await loadConfig();
-  await extStorage.set('config', { ...current, ...partial });
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Template management
-// ═══════════════════════════════════════════════════════════════════════════
-
-const builtinTemplates: TemplateMeta[] = [
-  { id: 'builtin-gb', name: 'GB/T 标准格式', isBuiltin: true, description: '符合国标的 Word 格式' },
-];
-
-async function getTemplateList(): Promise<TemplateMeta[]> {
-  const custom = await extStorage.get<TemplateMeta[]>('custom-templates') ?? [];
-  return [...builtinTemplates, ...custom];
-}
-
-async function uploadTemplate(name: string, data: ArrayBuffer): Promise<void> {
-  const id = `custom-${Date.now()}`;
-  const meta: TemplateMeta = { id, name, isBuiltin: false };
-  const list = await extStorage.get<TemplateMeta[]>('custom-templates') ?? [];
-  list.push(meta);
-  await extStorage.set('custom-templates', list);
-  await extStorage.setBlob(`tpl-blob-${id}`, data);
-}
-
-async function deleteTemplate(id: string): Promise<void> {
-  const list = await extStorage.get<TemplateMeta[]>('custom-templates') ?? [];
-  await extStorage.set('custom-templates', list.filter((t) => t.id !== id));
-  await extStorage.remove(`tpl-blob-${id}`);
-}
-
-async function getTemplateBlob(id: string): Promise<ArrayBuffer | undefined> {
-  if (id.startsWith('builtin-')) return undefined;
-  return (await extStorage.getBlob(`tpl-blob-${id}`)) ?? undefined;
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // Pandoc WASM loading
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -134,72 +87,14 @@ async function loadPandocWasm(): Promise<void> {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
-// Panel Callbacks
-// ═══════════════════════════════════════════════════════════════════════════
-
-function createCallbacks(): PanelCallbacks {
-  return {
-    async onExport(selectedIds, templateId) {
-      const sessionId = getCurrentSessionId();
-      if (!sessionId) throw new Error('未检测到会话 ID');
-
-      const session = await getSession(sessionId);
-      const chain = getActiveChain(session);
-      const selectedSet = new Set(selectedIds);
-      const messages = chain.filter((m) => selectedSet.has(m.id));
-      if (messages.length === 0) throw new Error('没有选中任何消息');
-
-      const config = await loadConfig();
-      const refDocx = await getTemplateBlob(templateId);
-      const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
-      downloadBlob(blob, filename);
-    },
-
-    async onTemplateUpload(name, data) {
-      await uploadTemplate(name, data);
-    },
-
-    async onTemplateDelete(id) {
-      await deleteTemplate(id);
-    },
-
-    async onConfigChange(partial) {
-      await saveConfigPartial(partial);
-    },
-
-    async getConfig() {
-      return loadConfig();
-    },
-
-    async getTemplateList() {
-      return getTemplateList();
-    },
-
-    async getSession() {
-      const id = getCurrentSessionId();
-      if (!id) return null;
-      return getSession(id);
-    },
-
-    async getPandocVersion() {
-      return getPandocVersion();
-    },
-
-    isPandocReady() {
-      return isPandocReady();
-    },
-  };
-}
-
-// ═══════════════════════════════════════════════════════════════════════════
 // Bootstrap
 // ═══════════════════════════════════════════════════════════════════════════
 
-const callbacks = createCallbacks();
+const callbacks = createCallbacks(extStorage);
 
 // Listen for toggle from popup / background
-browser.runtime.onMessage.addListener((msg) => {
-  if (msg?.type === 'TOGGLE_PANEL') {
+browser.runtime.onMessage.addListener((msg: unknown) => {
+  if ((msg as { type?: string })?.type === 'TOGGLE_PANEL') {
     togglePanel(callbacks);
   }
 });
@@ -211,8 +106,8 @@ injectSingleExportButtons(async (md) => {
     return;
   }
   try {
-    const config = await loadConfig();
-    const refDocx = await getTemplateBlob(config.selectedTemplateId);
+    const config = await loadConfig(extStorage);
+    const refDocx = await getTemplateBlob(extStorage, config.selectedTemplateId);
     const { blob, filename } = await exportToDocx(
       [{ id: '0', parentId: null, role: 'assistant', content: md, thinkingContent: '', timestamp: Date.now(), status: 'finished', childrenIds: [] }],
       config,
@@ -240,8 +135,8 @@ injectSharePanelButton(async (selectedIndices) => {
     const messages = selectedIndices.map((i) => chain[i]).filter(Boolean);
     if (messages.length === 0) throw new Error('没有选中任何消息');
 
-    const config = await loadConfig();
-    const refDocx = await getTemplateBlob(config.selectedTemplateId);
+    const config = await loadConfig(extStorage);
+    const refDocx = await getTemplateBlob(extStorage, config.selectedTemplateId);
     const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
     downloadBlob(blob, filename);
     showToast({ message: '导出成功', level: 'success' });

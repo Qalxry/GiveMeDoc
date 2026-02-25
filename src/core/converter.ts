@@ -21,12 +21,15 @@ let _version = '';
 
 /**
  * Initialise the Pandoc WASM worker.
- * @param wasmSource  ArrayBuffer of pandoc.wasm content
- * @param workerUrl   URL (or blob URL) to pandoc.worker.js — the entry‐point decides this
+ * @param wasmSource          ArrayBuffer of pandoc.wasm content
+ * @param workerUrlOrInstance URL / blob URL pointing to the worker JS, or a pre-constructed Worker instance.
+ *                            Pass a Worker instance in IIFE (userscript) mode where URL resolution is unreliable.
  */
-export async function initPandoc(wasmSource: ArrayBuffer, workerUrl: string | URL): Promise<void> {
+export async function initPandoc(wasmSource: ArrayBuffer, workerUrlOrInstance: string | URL | Worker): Promise<void> {
   if (_ready) return;
-  worker = new Worker(workerUrl, { type: 'module' });
+  worker = workerUrlOrInstance instanceof Worker
+    ? workerUrlOrInstance
+    : new Worker(workerUrlOrInstance, { type: 'module' });
   pandoc = Comlink.wrap<PandocWorkerAPI>(worker);
   await pandoc.init(wasmSource);
   _version = await pandoc.getVersion();

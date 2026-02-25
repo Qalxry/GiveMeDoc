@@ -40,7 +40,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["pandoc.worker.js"],
+      "resources": ["pandoc.worker.js", "pandoc.wasm"],
       "matches": ["https://chat.deepseek.com/*"]
     }
   ]
