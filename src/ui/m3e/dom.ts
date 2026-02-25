@@ -5,6 +5,7 @@
  * without any framework or UI library.
  * All functions are pure and stateless.
  */
+import { ICON_CHECK, iconStroke } from './icons';
 
 /** Shorthand: create an element with BEM class and optional attributes. */
 export function el<K extends keyof HTMLElementTagNameMap>(
@@ -138,8 +139,8 @@ export function createCheckbox(opts: CheckboxOptions): HTMLElement {
   if (opts.checked) input.checked = true;
 
   const box = el('span', 'gmd-checkbox__box');
-  // Checkmark SVG
-  box.innerHTML = `<svg class="gmd-checkbox__check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  // Checkmark SVG — uses ICON_CHECK with heavier stroke for visibility
+  box.innerHTML = iconStroke(ICON_CHECK, 3).replace('<svg ', '<svg class="gmd-checkbox__check" ');
 
   wrapper.appendChild(input);
   wrapper.appendChild(box);

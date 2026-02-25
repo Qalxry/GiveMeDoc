@@ -11,7 +11,7 @@ import type { PanelCallbacks } from '../core/types';
 import { el, append, createIconButton, html } from './m3e/dom';
 import { createTabs, type Tab } from './m3e/tabs';
 import {
-  ICON_LIST, ICON_SETTINGS, ICON_INFO, ICON_FILE_TEXT,
+  ICON_LIST, ICON_SETTINGS, ICON_INFO, ICON_FILE_TEXT, ICON_X,
 } from './m3e/icons';
 import { renderExportTab } from './panel-export';
 import { renderSettingsTab } from './panel-settings';
@@ -48,7 +48,7 @@ export function createPanel(cb: PanelCallbacks): void {
   append(titleWrap, logoIcon, titleText);
 
   const closeBtn = createIconButton({
-    icon: `<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>`,
+    icon: ICON_X,
     title: '关闭面板',
     variant: 'standard',
     onClick: () => hidePanel(),

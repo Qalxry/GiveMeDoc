@@ -5,6 +5,7 @@
  * BEM: .gmd-switch, .gmd-switch__track, .gmd-switch__thumb
  */
 import { el } from './dom';
+import { ICON_CHECK, iconSize, iconStroke } from './icons';
 
 export interface SwitchOptions {
   checked?: boolean;
@@ -25,9 +26,9 @@ export function createSwitch(opts: SwitchOptions): HTMLElement {
   const thumb = el('span', 'gmd-switch__thumb');
   track.appendChild(thumb);
 
-  // Icon inside thumb (check / x)
+  // Icon inside thumb (check)
   const thumbIcon = el('span', 'gmd-switch__icon');
-  thumbIcon.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+  thumbIcon.innerHTML = iconStroke(iconSize(ICON_CHECK, 14), 3);
   thumb.appendChild(thumbIcon);
 
   wrapper.appendChild(input);

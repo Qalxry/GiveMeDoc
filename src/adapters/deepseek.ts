@@ -8,6 +8,8 @@
  * - Combined session getter (IDB first → API fallback)
  * - Message tree builder (raw API → IMessage Map)
  * - Active chain & branch switching
+ *
+ * Icon imports are from the centralized m3e/icons module.
  * - DOM injection (single-export button, share-panel export button)
  *
  * References: docs/deepseek.md
@@ -21,6 +23,7 @@ import type {
   DSIDBRecord,
   DSFragment,
 } from '../core/types';
+import { ICON_FILE_TYPE, iconSize } from '../ui/m3e/icons';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Auth
@@ -254,7 +257,7 @@ export function getCurrentSessionId(): string | null {
 // DOM Injection — Single message export button
 // ═══════════════════════════════════════════════════════════════════════════
 
-const FILE_TYPE_SVG = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/><path d="M14 2v5a1 1 0 0 0 1 1h5"/><path d="M11 18h2"/><path d="M12 12v6"/><path d="M9 13v-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v.5"/></svg>`;
+const FILE_TYPE_SVG = iconSize(ICON_FILE_TYPE, 16);
 
 /**
  * Inject a "export to docx" icon button after each copy button in the message toolbar.
