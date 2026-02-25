@@ -17,7 +17,7 @@ import { showToast } from './m3e/toast';
 import {
   ICON_UPLOAD, ICON_TRASH, ICON_REFRESH,
 } from './m3e/icons';
-import { createFab, destroyFab, isFabMounted } from './fab';
+// FAB control is delegated to callbacks (onFabToggle) to support popup context
 
 declare const __PLATFORM__: 'userscript' | 'extension';
 
@@ -84,11 +84,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
     onChange: (checked) => {
       config.showFab = checked;
       cb.onConfigChange({ showFab: checked });
-      if (checked) {
-        if (!isFabMounted()) createFab(cb);
-      } else {
-        destroyFab();
-      }
+      cb.onFabToggle?.(checked);
     },
   });
   displaySection.appendChild(fabSwitch);
@@ -210,6 +206,8 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
         if (cdnSection && __PLATFORM__ === 'userscript') {
           setTextareaValue(cdnTextarea, config.cdnUrls.join('\n'));
         }
+        // Sync FAB mount state with the reset config
+        cb.onFabToggle?.(config.showFab);
         showToast({ message: '设置已重置为默认值', level: 'success' });
       } catch (err) {
         showToast({ message: `重置失败: ${(err as Error).message}`, level: 'error' });

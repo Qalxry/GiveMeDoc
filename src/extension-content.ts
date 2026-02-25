@@ -10,57 +10,26 @@
  *   5. Inject single-export buttons + share-panel button
  *   6. Listen for popup toggle messages
  */
-import type { IStorage } from './core/types';
 import browser from 'webextension-polyfill';
-import { initPandoc, isPandocReady, getPandocVersion, exportToDocx, downloadBlob } from './core/converter';
+import { initPandoc, isPandocReady, getPandocVersion } from './core/converter';
 import {
-  getCurrentSessionId, getSession, getActiveChain,
+  getCurrentSessionId, getSession,
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
-import { createFab } from './ui/fab';
+import { createFab, destroyFab, isFabMounted } from './ui/fab';
 import { setupUrlWatcher } from './ui/panel-export';
 import { showToast } from './ui/m3e/toast';
 import {
-  loadConfig, getTemplateBlob, createCallbacks,
+  loadConfig, createCallbacks,
+  createSingleExportHandler, createShareExportHandler,
 } from './core/storage-helpers';
+import { extStorage, clearExtWasmCache } from './core/ext-storage';
 
 // Vite will extract CSS as an asset — import for side-effect bundling
 import './ui/index.css';
 
 declare const __PLATFORM__: 'userscript' | 'extension';
-
-// ═══════════════════════════════════════════════════════════════════════════
-// Chrome Storage Adapter
-// ═══════════════════════════════════════════════════════════════════════════
-
-const extStorage: IStorage = {
-  async get<T>(key: string): Promise<T | null> {
-    const result = await browser.storage.local.get(key);
-    return (result[key] as T) ?? null;
-  },
-  async set<T>(key: string, value: T): Promise<void> {
-    await browser.storage.local.set({ [key]: value });
-  },
-  async remove(key: string): Promise<void> {
-    await browser.storage.local.remove(key);
-  },
-  async getBlob(key: string): Promise<ArrayBuffer | null> {
-    const result = await browser.storage.local.get(key);
-    const b64 = result[key] as string | undefined;
-    if (!b64) return null;
-    const bin = atob(b64);
-    const buf = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
-    return buf.buffer;
-  },
-  async setBlob(key: string, value: ArrayBuffer): Promise<void> {
-    const bytes = new Uint8Array(value);
-    let s = '';
-    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    await browser.storage.local.set({ [key]: btoa(s) });
-  },
-};
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Pandoc WASM loading
@@ -70,17 +39,25 @@ async function loadPandocWasm(): Promise<void> {
   try {
     showToast({ message: '正在加载 Pandoc WASM…', level: 'info', duration: 2000 });
 
-    // Request WASM bytes from background service worker
-    const response: { wasm?: ArrayBuffer; error?: string } = await browser.runtime.sendMessage({
-      type: 'FETCH_PANDOC_WASM',
-    }) as { wasm?: ArrayBuffer; error?: string };
+    // Fetch WASM directly from the extension's web-accessible resources.
+    // This avoids passing a 58 MB ArrayBuffer through runtime.sendMessage
+    // (which would lose the ArrayBuffer type via structured cloning).
+    const wasmUrl = browser.runtime.getURL('pandoc.wasm');
+    const wasmResp = await fetch(wasmUrl);
+    if (!wasmResp.ok) throw new Error(`WASM fetch failed: ${wasmResp.status}`);
+    const wasmBytes = await wasmResp.arrayBuffer();
 
-    if (response.error || !response.wasm) {
-      throw new Error(response.error || '未收到 WASM 数据');
-    }
-
-    const workerUrl = browser.runtime.getURL('pandoc.worker.js');
-    await initPandoc(response.wasm, workerUrl);
+    // Content scripts run in the page's origin, so we cannot directly
+    // `new Worker('chrome-extension://…')`.  Fetch the script text and
+    // create a blob URL that the page origin can load.
+    const workerScriptUrl = browser.runtime.getURL('pandoc.worker.js');
+    const workerResp = await fetch(workerScriptUrl);
+    const workerText = await workerResp.text();
+    const blob = new Blob([workerText], { type: 'application/javascript' });
+    const blobUrl = URL.createObjectURL(blob);
+    // Worker script is IIFE (not module), so don't pass { type: 'module' }
+    const pandocWorker = new Worker(blobUrl);
+    await initPandoc(wasmBytes, pandocWorker);
     showToast({ message: `Pandoc 就绪 (${await getPandocVersion()})`, level: 'success' });
   } catch (err) {
     console.error('[GiveMeDoc] Pandoc WASM load failed:', err);
@@ -92,19 +69,65 @@ async function loadPandocWasm(): Promise<void> {
 // Bootstrap
 // ═══════════════════════════════════════════════════════════════════════════
 
-const callbacks = createCallbacks(extStorage, async () => {
-  // Extension WASM is managed by the service worker; clear local storage cache entries
-  const keys = await browser.storage.local.get(null);
-  const wasmKeys = Object.keys(keys).filter((k) => k.startsWith('pandoc-wasm'));
-  if (wasmKeys.length > 0) await browser.storage.local.remove(wasmKeys);
+const callbacks = createCallbacks(extStorage, clearExtWasmCache, (show) => {
+  if (show) { if (!isFabMounted()) createFab(callbacks); }
+  else { destroyFab(); }
 });
 
-// Listen for toggle from popup / background
-browser.runtime.onMessage.addListener((msg: unknown) => {
-  if ((msg as { type?: string })?.type === 'TOGGLE_PANEL') {
-    togglePanel(callbacks);
+// Listen for messages from popup / background
+browser.runtime.onMessage.addListener(((msg: unknown, _sender: unknown, sendResponse: (response: unknown) => void) => {
+  const m = msg as { type?: string; [key: string]: unknown };
+  switch (m?.type) {
+    case 'TOGGLE_PANEL':
+      togglePanel(callbacks);
+      break;
+
+    case 'GET_SESSION': {
+      (async () => {
+        try {
+          const id = getCurrentSessionId();
+          if (!id) return sendResponse({ session: null });
+          const session = await getSession(id);
+          // Serialize Map to array of entries for messaging
+          sendResponse({
+            session: {
+              ...session,
+              messages: Array.from(session.messages.entries()),
+            },
+          });
+        } catch (err) {
+          sendResponse({ error: (err as Error).message });
+        }
+      })();
+      return true; // async response
+    }
+
+    case 'EXPORT': {
+      const { selectedIds: ids, templateId } = m as { selectedIds: string[]; templateId: string; type: string };
+      (async () => {
+        try {
+          await callbacks.onExport(ids, templateId);
+          sendResponse({ ok: true });
+        } catch (err) {
+          sendResponse({ error: (err as Error).message });
+        }
+      })();
+      return true;
+    }
+
+    case 'GET_PANDOC_STATUS': {
+      (async () => {
+        try {
+          const version = await getPandocVersion();
+          sendResponse({ ready: isPandocReady(), version });
+        } catch {
+          sendResponse({ ready: false, version: '' });
+        }
+      })();
+      return true;
+    }
   }
-});
+}) as Parameters<typeof browser.runtime.onMessage.addListener>[0]);
 
 // Mount FAB if enabled
 loadConfig(extStorage).then((cfg) => {
@@ -112,53 +135,10 @@ loadConfig(extStorage).then((cfg) => {
 });
 
 // Inject per-message export buttons
-injectSingleExportButtons(async (md, title) => {
-  if (!isPandocReady()) {
-    showToast({ message: 'Pandoc 尚未就绪，请稍候…', level: 'warning' });
-    return;
-  }
-  try {
-    const config = await loadConfig(extStorage);
-    const refDocx = await getTemplateBlob(extStorage, config.selectedTemplateId);
-    const effectiveConfig = config.singleExportWithTemplate
-      ? config
-      : { ...config, documentPrefix: '', userMessageTemplate: '{content}\n', assistantMessageTemplate: '{content}\n' };
-    const { blob, filename } = await exportToDocx(
-      [{ id: '0', parentId: null, role: 'assistant', content: md, thinkingContent: '', timestamp: Date.now(), status: 'finished', childrenIds: [] }],
-      effectiveConfig,
-      title,
-      refDocx,
-    );
-    downloadBlob(blob, filename);
-    showToast({ message: '导出成功', level: 'success' });
-  } catch (err) {
-    showToast({ message: `导出失败: ${(err as Error).message}`, level: 'error' });
-  }
-});
+injectSingleExportButtons(createSingleExportHandler(extStorage));
 
 // Inject share-panel export button
-injectSharePanelButton(async (selectedIndices) => {
-  if (!isPandocReady()) {
-    showToast({ message: 'Pandoc 尚未就绪，请稍候…', level: 'warning' });
-    return;
-  }
-  try {
-    const sessionId = getCurrentSessionId();
-    if (!sessionId) throw new Error('未检测到会话 ID');
-    const session = await getSession(sessionId);
-    const chain = getActiveChain(session);
-    const messages = selectedIndices.map((i) => chain[i]).filter(Boolean);
-    if (messages.length === 0) throw new Error('没有选中任何消息');
-
-    const config = await loadConfig(extStorage);
-    const refDocx = await getTemplateBlob(extStorage, config.selectedTemplateId);
-    const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
-    downloadBlob(blob, filename);
-    showToast({ message: '导出成功', level: 'success' });
-  } catch (err) {
-    showToast({ message: `导出失败: ${(err as Error).message}`, level: 'error' });
-  }
-});
+injectSharePanelButton(createShareExportHandler(extStorage));
 
 // Watch for SPA URL changes and auto-refresh export tab
 setupUrlWatcher(callbacks);

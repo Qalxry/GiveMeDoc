@@ -10,18 +10,19 @@
  *   5. Inject single-export buttons + share-panel button + menu command
  */
 import type { IStorage } from './core/types';
-import { initPandoc, isPandocReady, getPandocVersion, exportToDocx, downloadBlob } from './core/converter';
+import { initPandoc, isPandocReady, getPandocVersion } from './core/converter';
 import {
-  getCurrentSessionId, getSession, getActiveChain,
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
-import { createFab } from './ui/fab';
+import { createFab, destroyFab, isFabMounted } from './ui/fab';
 import { setupUrlWatcher } from './ui/panel-export';
 import { showToast } from './ui/m3e/toast';
 import {
-  loadConfig, getTemplateBlob, createCallbacks,
+  loadConfig, createCallbacks,
+  createSingleExportHandler, createShareExportHandler,
 } from './core/storage-helpers';
+import { b64ToArrayBuffer, arrayBufferToB64 } from './core/b64';
 import PandocWorker from './core/pandoc.worker.ts?worker&inline';
 
 // CSS will be inlined by Vite and injected via GM_addStyle
@@ -59,16 +60,10 @@ const gmStorage: IStorage = {
   async getBlob(key: string): Promise<ArrayBuffer | null> {
     const b64 = GM_getValue<string | null>(key, null);
     if (!b64) return null;
-    const bin = atob(b64);
-    const buf = new Uint8Array(bin.length);
-    for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
-    return buf.buffer;
+    return b64ToArrayBuffer(b64);
   },
   async setBlob(key: string, value: ArrayBuffer): Promise<void> {
-    const bytes = new Uint8Array(value);
-    let s = '';
-    for (let i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
-    GM_setValue(key, btoa(s));
+    GM_setValue(key, arrayBufferToB64(value));
   },
 };
 
@@ -190,7 +185,10 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
   // 1. Inject styles
   GM_addStyle(css);
 
-  const callbacks = createCallbacks(gmStorage, clearWasmCache);
+  const callbacks = createCallbacks(gmStorage, clearWasmCache, (show) => {
+    if (show) { if (!isFabMounted()) createFab(callbacks); }
+    else { destroyFab(); }
+  });
 
   // 2. Register GM menu commands
   GM_registerMenuCommand('📄 Give Me Doc 面板', () => togglePanel(callbacks));
@@ -201,54 +199,10 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
   });
 
   // 4. Inject per-message export buttons
-  injectSingleExportButtons(async (md, title) => {
-    if (!isPandocReady()) {
-      showToast({ message: 'Pandoc 尚未就绪，请稍候…', level: 'warning' });
-      return;
-    }
-    try {
-      const config = await loadConfig(gmStorage);
-      const refDocx = await getTemplateBlob(gmStorage, config.selectedTemplateId);
-      // Single message export: wrap in a minimal session
-      const effectiveConfig = config.singleExportWithTemplate
-        ? config
-        : { ...config, documentPrefix: '', userMessageTemplate: '{content}\n', assistantMessageTemplate: '{content}\n' };
-      const { blob, filename } = await exportToDocx(
-        [{ id: '0', parentId: null, role: 'assistant', content: md, thinkingContent: '', timestamp: Date.now(), status: 'finished', childrenIds: [] }],
-        effectiveConfig,
-        title,
-        refDocx,
-      );
-      downloadBlob(blob, filename);
-      showToast({ message: '导出成功', level: 'success' });
-    } catch (err) {
-      showToast({ message: `导出失败: ${(err as Error).message}`, level: 'error' });
-    }
-  });
+  injectSingleExportButtons(createSingleExportHandler(gmStorage));
 
-  // 4. Inject share-panel export button
-  injectSharePanelButton(async (selectedIndices) => {
-    if (!isPandocReady()) {
-      showToast({ message: 'Pandoc 尚未就绪，请稍候…', level: 'warning' });
-      return;
-    }
-    try {
-      const sessionId = getCurrentSessionId();
-      if (!sessionId) throw new Error('未检测到会话 ID');
-      const session = await getSession(sessionId);
-      const chain = getActiveChain(session);
-      const messages = selectedIndices.map((i) => chain[i]).filter(Boolean);
-      if (messages.length === 0) throw new Error('没有选中任何消息');
-
-      const config = await loadConfig(gmStorage);
-      const refDocx = await getTemplateBlob(gmStorage, config.selectedTemplateId);
-      const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
-      downloadBlob(blob, filename);
-      showToast({ message: '导出成功', level: 'success' });
-    } catch (err) {
-      showToast({ message: `导出失败: ${(err as Error).message}`, level: 'error' });
-    }
-  });
+  // 5. Inject share-panel export button
+  injectSharePanelButton(createShareExportHandler(gmStorage));
 
   // 5. Watch for SPA URL changes and auto-refresh export tab
   setupUrlWatcher(callbacks);

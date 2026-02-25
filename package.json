@@ -10,7 +10,7 @@
     "build:templates": "python3 scripts/build_templates.py",
     "build:icons": "python3 scripts/build_icons.py",
     "build:userscript": "vite build --mode userscript",
-    "build:extension": "vite build --mode extension",
+    "build:extension": "vite build --mode extension-content && vite build --mode extension-worker && vite build --mode extension",
     "build:chrome": "pnpm build:extension && node scripts/copy-manifest.mjs chrome",
     "build:firefox": "pnpm build:extension && node scripts/copy-manifest.mjs firefox",
     "build": "pnpm build:icons && pnpm build:templates && pnpm build:userscript && pnpm build:extension",

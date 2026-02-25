@@ -156,6 +156,8 @@ export interface PanelCallbacks {
   getPandocVersion(): Promise<string>;
   /** Check if Pandoc engine is loaded and ready. */
   isPandocReady(): boolean;
+  /** Toggle FAB visibility (create/destroy). Only set in page contexts, not popup. */
+  onFabToggle?: (show: boolean) => void;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════

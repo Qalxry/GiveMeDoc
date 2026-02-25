@@ -5,78 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Give Me Doc</title>
   <style>
+    /* Reset & popup shell — component styles come from index.css via TS import */
     * { margin: 0; padding: 0; box-sizing: border-box; }
+    html, body {
+      width: 420px;
+      min-height: 520px;
+      overflow: hidden;
+    }
     body {
-      width: 280px;
-      padding: 16px;
-      font-family: 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
-      font-size: 14px;
-      color: #1d1b20;
-      background: #fffbff;
-    }
-    .header {
       display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 16px;
+      flex-direction: column;
     }
-    .header svg { color: #6750a4; flex-shrink: 0; }
-    .header h1 { font-size: 16px; font-weight: 600; }
-    .desc {
-      font-size: 12px;
-      color: #49454f;
-      line-height: 1.5;
-      margin-bottom: 16px;
-    }
-    .btn {
+    #gmd-popup-root {
+      flex: 1;
       display: flex;
-      align-items: center;
-      justify-content: center;
-      width: 100%;
-      height: 40px;
-      border: none;
-      border-radius: 9999px;
-      background: #6750a4;
-      color: #fff;
-      font-family: inherit;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: filter 150ms;
+      flex-direction: column;
+      overflow: hidden;
     }
-    .btn:hover { filter: brightness(1.08); }
-    .btn:active { filter: brightness(0.92); }
-    .footer {
-      margin-top: 12px;
-      text-align: center;
-      font-size: 11px;
-      color: #79747e;
-    }
-    .footer a { color: #6750a4; text-decoration: none; }
-    .footer a:hover { text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div class="header">
-    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/>
-      <path d="M14 2v5a1 1 0 0 0 1 1h5"/>
-      <path d="M10 13h4"/>
-      <path d="M10 17h4"/>
-    </svg>
-    <h1>Give Me Doc</h1>
-  </div>
-
-  <p class="desc">
-    将 AI 对话导出为 Word 文档。请先打开一个 DeepSeek 对话页面，然后点击下方按钮打开导出面板。
-  </p>
-
-  <button class="btn" id="toggleBtn">打开导出面板</button>
-
-  <div class="footer">
-    v1.0.0 · <a href="https://github.com/nichuanfang/GiveMeDoc" target="_blank">GitHub</a>
-  </div>
-
+  <div id="gmd-popup-root"></div>
   <script type="module" src="./extension-popup.ts"></script>
 </body>
 </html>

@@ -91,17 +91,75 @@ export default defineConfig(({ mode }) => {
     };
   }
 
+  // Extension build: content script must be self-contained (no ES imports)
+  // because Chrome content_scripts don't support ES modules.
+  // We use two sequential builds:
+  //   1. Content script + worker → IIFE (self-contained, no chunk splitting)
+  //   2. Popup + background → ESM (can use chunks, loaded as module)
+  //
+  // The `mode` value selects which sub-build to run:
+  //   - extension-content  → content.js + pandoc.worker.js (IIFE)
+  //   - extension          → popup + background (ESM)
+
+  if (mode === 'extension-content') {
+    // Build 1: content script (IIFE, self-contained)
+    return {
+      plugins: [copyWasmPlugin()],
+      build: {
+        target: 'ES2022',
+        outDir: 'dist/extension',
+        rollupOptions: {
+          input: resolve(__dirname, 'src/extension-content.ts'),
+          output: {
+            entryFileNames: 'content.js',
+            assetFileNames: 'assets/[name][extname]',
+            format: 'iife',
+            inlineDynamicImports: true,
+          },
+        },
+        minify: false,
+        cssCodeSplit: false,
+      },
+      define: {
+        __PLATFORM__: JSON.stringify('extension'),
+      },
+    };
+  }
+
+  if (mode === 'extension-worker') {
+    // Build 2: pandoc worker (IIFE, self-contained)
+    return {
+      build: {
+        target: 'ES2022',
+        outDir: 'dist/extension',
+        emptyOutDir: false,
+        rollupOptions: {
+          input: resolve(__dirname, 'src/core/pandoc.worker.ts'),
+          output: {
+            entryFileNames: 'pandoc.worker.js',
+            format: 'iife',
+            inlineDynamicImports: true,
+          },
+        },
+        minify: false,
+        cssCodeSplit: false,
+      },
+      define: {
+        __PLATFORM__: JSON.stringify('extension'),
+      },
+    };
+  }
+
+  // mode === 'extension' — Build 3: popup + background (ESM, can use chunks)
   return {
-    plugins: [copyWasmPlugin()],
     build: {
       target: 'ES2022',
       outDir: 'dist/extension',
+      emptyOutDir: false,
       rollupOptions: {
         input: {
-          'content': resolve(__dirname, 'src/extension-content.ts'),
           'background': resolve(__dirname, 'src/extension-background.ts'),
           'popup': resolve(__dirname, 'src/extension-popup.html'),
-          'pandoc.worker': resolve(__dirname, 'src/core/pandoc.worker.ts'),
         },
         output: {
           entryFileNames: '[name].js',

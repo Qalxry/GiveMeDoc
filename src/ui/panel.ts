@@ -30,15 +30,31 @@ let clickOutsideHandler: ((e: MouseEvent) => void) | null = null;
 // Create
 // ═══════════════════════════════════════════════════════════════════════════
 
+export interface CreatePanelOptions {
+  /** Mount target. Defaults to document.body. */
+  container?: HTMLElement;
+  /**
+   * If true, the panel behaves as an embedded component:
+   * - No fixed positioning / drag / click-outside-to-close.
+   * - No close button in the header.
+   * - Fills its container instead of floating.
+   */
+  embedded?: boolean;
+}
+
 /**
  * Create and mount the Give Me Doc side panel.
  * Call this once — subsequent calls are no-ops.
  */
-export function createPanel(cb: PanelCallbacks): void {
+export function createPanel(cb: PanelCallbacks, opts?: CreatePanelOptions): void {
   if (panelEl) return;
+
+  const embedded = opts?.embedded ?? false;
+  const container = opts?.container ?? document.body;
 
   panelEl = el('div', 'gmd-panel');
   panelEl.setAttribute('data-gmd-panel', '');
+  if (embedded) panelEl.classList.add('gmd-panel--embedded');
 
   // ── Header ───────────────────────────────────────────────────────────
   const header = el('div', 'gmd-panel__header');
@@ -49,14 +65,18 @@ export function createPanel(cb: PanelCallbacks): void {
   titleText.textContent = 'Give Me Doc';
   append(titleWrap, logoIcon, titleText);
 
-  const closeBtn = createIconButton({
-    icon: ICON_X,
-    title: '关闭面板',
-    variant: 'standard',
-    onClick: () => hidePanel(),
-  });
+  if (!embedded) {
+    const closeBtn = createIconButton({
+      icon: ICON_X,
+      title: '关闭面板',
+      variant: 'standard',
+      onClick: () => hidePanel(),
+    });
+    append(header, titleWrap, closeBtn);
+  } else {
+    header.appendChild(titleWrap);
+  }
 
-  append(header, titleWrap, closeBtn);
   panelEl.appendChild(header);
 
   // ── Tabs ─────────────────────────────────────────────────────────────
@@ -90,37 +110,35 @@ export function createPanel(cb: PanelCallbacks): void {
   });
   panelEl.appendChild(tabsRoot);
 
-  // ── Drag support ─────────────────────────────────────────────────────
-  enableDrag(header, panelEl);
-
   // ── Mount ────────────────────────────────────────────────────────────
-  document.body.appendChild(panelEl);
+  container.appendChild(panelEl);
   isVisible = true;
-  // ── Click-outside to close ──────────────────────────────────────────
-  // 使用 mousedown 而非 click，必要时可在宏主页 click 处理器之前关闭面板。
-  // 排除：面板内部元素、toast 容器、标记了 [data-gmd-trigger] 的触发元素。
-  clickOutsideHandler = (e: MouseEvent): void => {
-    if (!isVisible || !panelEl) return;
-    const target = e.target as HTMLElement;
-    // 点击在面板内部
-    if (panelEl.contains(target)) return;
-    // 点击在 toast 容器内（toast 全局挂载在 body 上）
-    if (target.closest?.('.gmd-toast-container')) return;
-    // 点击在标记了 data-gmd-trigger 的触发元素上（如分享按鈕）
-    if (target.closest?.('[data-gmd-trigger]')) return;
-    // 点击在 FAB 上
-    if (target.closest?.('.gmd-fab')) return;
-    hidePanel();
-  };
-  document.addEventListener('mousedown', clickOutsideHandler);}
+
+  if (!embedded) {
+    // ── Drag support ─────────────────────────────────────────────────
+    enableDrag(header, panelEl);
+
+    // ── Click-outside to close ────────────────────────────────────────
+    clickOutsideHandler = (e: MouseEvent): void => {
+      if (!isVisible || !panelEl) return;
+      const target = e.target as HTMLElement;
+      if (panelEl.contains(target)) return;
+      if (target.closest?.('.gmd-toast-container')) return;
+      if (target.closest?.('[data-gmd-trigger]')) return;
+      if (target.closest?.('.gmd-fab')) return;
+      hidePanel();
+    };
+    document.addEventListener('mousedown', clickOutsideHandler);
+  }
+}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Show / Hide / Toggle / Destroy
 // ═══════════════════════════════════════════════════════════════════════════
 
-export async function showPanel(cb: PanelCallbacks): Promise<void> {
+export async function showPanel(cb: PanelCallbacks, opts?: CreatePanelOptions): Promise<void> {
   if (!panelEl) {
-    createPanel(cb);
+    createPanel(cb, opts);
   } else {
     panelEl.classList.remove('gmd-panel--hidden');
     isVisible = true;
