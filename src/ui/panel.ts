@@ -13,7 +13,7 @@ import { createTabs, type Tab } from './m3e/tabs';
 import {
   ICON_LIST, ICON_SETTINGS, ICON_INFO, ICON_FILE_TEXT, ICON_X,
 } from './m3e/icons';
-import { renderExportTab } from './panel-export';
+import { renderExportTab, refreshExportTemplates } from './panel-export';
 import { renderSettingsTab } from './panel-settings';
 import { renderAboutTab } from './panel-about';
 
@@ -80,7 +80,13 @@ export function createPanel(cb: PanelCallbacks): void {
     },
   ];
 
-  const { root: tabsRoot } = createTabs({ tabs, activeId: 'export' });
+  const { root: tabsRoot } = createTabs({
+    tabs,
+    activeId: 'export',
+    onTabChange: (tabId) => {
+      if (tabId === 'export') refreshExportTemplates(cb);
+    },
+  });
   panelEl.appendChild(tabsRoot);
 
   // ── Drag support ─────────────────────────────────────────────────────

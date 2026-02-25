@@ -18,6 +18,7 @@ import {
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
+import { setupUrlWatcher } from './ui/panel-export';
 import { showToast } from './ui/m3e/toast';
 import {
   loadConfig, getTemplateBlob, createCallbacks,
@@ -113,9 +114,12 @@ injectSingleExportButtons(async (md) => {
   try {
     const config = await loadConfig(extStorage);
     const refDocx = await getTemplateBlob(extStorage, config.selectedTemplateId);
+    const effectiveConfig = config.singleExportWithTemplate
+      ? config
+      : { ...config, documentPrefix: '', userMessageTemplate: '{content}\n', assistantMessageTemplate: '{content}\n' };
     const { blob, filename } = await exportToDocx(
       [{ id: '0', parentId: null, role: 'assistant', content: md, thinkingContent: '', timestamp: Date.now(), status: 'finished', childrenIds: [] }],
-      config,
+      effectiveConfig,
       '单条消息导出',
       refDocx,
     );
@@ -149,6 +153,9 @@ injectSharePanelButton(async (selectedIndices) => {
     showToast({ message: `导出失败: ${(err as Error).message}`, level: 'error' });
   }
 });
+
+// Watch for SPA URL changes and auto-refresh export tab
+setupUrlWatcher(callbacks);
 
 // Load Pandoc WASM
 loadPandocWasm().catch((err) => console.error('[GiveMeDoc] Init error:', err));

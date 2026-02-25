@@ -18,7 +18,7 @@ import {
   ICON_USER, ICON_BOT, ICON_CHECK, ICON_LIST, ICON_REFRESH,
 } from './m3e/icons';
 import {
-  getActiveChain, switchBranch, hasBranch, getChildIndex,
+  getActiveChain, switchBranch, hasBranch, getChildIndex, getCurrentSessionId,
 } from '../adapters/deepseek';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -291,4 +291,40 @@ async function doExport(cb: PanelCallbacks): Promise<void> {
 /** Allow external refresh (e.g. after branch switch from other context). */
 export function refreshExportTab(cb: PanelCallbacks): void {
   loadSession(cb);
+}
+
+/** Reload template dropdown (e.g. after uploading a custom template in settings). */
+export function refreshExportTemplates(cb: PanelCallbacks): void {
+  if (!root) return; // tab not yet rendered
+  loadTemplates(cb);
+}
+
+/**
+ * Intercept SPA navigation (history.pushState / replaceState + popstate)
+ * and auto-refresh the export tab when the DeepSeek session ID changes.
+ * Call once during script initialisation.
+ */
+export function setupUrlWatcher(cb: PanelCallbacks): void {
+  let lastSessionId = getCurrentSessionId();
+
+  function checkUrlChange(): void {
+    const newId = getCurrentSessionId();
+    if (newId !== lastSessionId) {
+      lastSessionId = newId;
+      refreshExportTab(cb);
+    }
+  }
+
+  const origPushState = history.pushState.bind(history);
+  const origReplaceState = history.replaceState.bind(history);
+
+  history.pushState = function (...args: Parameters<typeof history.pushState>) {
+    origPushState(...args);
+    checkUrlChange();
+  };
+  history.replaceState = function (...args: Parameters<typeof history.replaceState>) {
+    origReplaceState(...args);
+    checkUrlChange();
+  };
+  window.addEventListener('popstate', checkUrlChange);
 }

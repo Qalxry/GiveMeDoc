@@ -57,6 +57,8 @@ export interface IStorage {
 export interface UserConfig {
   locale: 'zh-CN' | 'en-US';
   includeThinking: boolean;
+  /** When false, single-message export skips documentPrefix and message templates. */
+  singleExportWithTemplate: boolean;
   selectedTemplateId: string;
   documentPrefix: string;
   userMessageTemplate: string;
@@ -68,6 +70,7 @@ export interface UserConfig {
 export const DEFAULT_CONFIG: UserConfig = {
   locale: 'zh-CN',
   includeThinking: false,
+  singleExportWithTemplate: false,
   selectedTemplateId: 'builtin-gb',
   documentPrefix: `---
 title: {title}

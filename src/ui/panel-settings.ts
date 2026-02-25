@@ -42,6 +42,7 @@ let templates: TemplateMeta[] = [];
 // DOM refs
 let templateListEl: HTMLElement;
 let thinkingSwitch: HTMLElement;
+let singleExportSwitch: HTMLElement;
 let prefixTextarea: HTMLElement;
 let userTplTextarea: HTMLElement;
 let assistantTplTextarea: HTMLElement;
@@ -71,8 +72,8 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
 
   root.appendChild(tplSection);
 
-  // ── Section: Thinking toggle ─────────────────────────────────────────
-  const thinkSection = createSection('思考过程');
+  // ── Section: Export settings ──────────────────────────────────────────
+  const exportSettingsSection = createSection('导出设置');
 
   thinkingSwitch = createSwitch({
     label: '导出时包含思考内容',
@@ -82,9 +83,19 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
       cb.onConfigChange({ includeThinking: checked });
     },
   });
-  thinkSection.appendChild(thinkingSwitch);
+  exportSettingsSection.appendChild(thinkingSwitch);
 
-  root.appendChild(thinkSection);
+  singleExportSwitch = createSwitch({
+    label: '单条导出时使用模板',
+    checked: false,
+    onChange: (checked) => {
+      config.singleExportWithTemplate = checked;
+      cb.onConfigChange({ singleExportWithTemplate: checked });
+    },
+  });
+  exportSettingsSection.appendChild(singleExportSwitch);
+
+  root.appendChild(exportSettingsSection);
 
   // ── Section: Template editors ────────────────────────────────────────
   const editorSection = createSection('模板文本编辑');
@@ -156,6 +167,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
         config = await cb.onResetConfig();
         // Refresh all UI elements with the fresh config
         setSwitchState(thinkingSwitch, config.includeThinking);
+        setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
         setTextareaValue(prefixTextarea, config.documentPrefix);
         setTextareaValue(userTplTextarea, config.userMessageTemplate);
         setTextareaValue(assistantTplTextarea, config.assistantMessageTemplate);
@@ -285,8 +297,9 @@ async function loadData(cb: PanelCallbacks): Promise<void> {
     config = await cb.getConfig();
     templates = await cb.getTemplateList();
 
-    // Sync thinking switch
+    // Sync switches
     setSwitchState(thinkingSwitch, config.includeThinking);
+    setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
 
     // Sync textareas
     setTextareaValue(prefixTextarea, config.documentPrefix);
