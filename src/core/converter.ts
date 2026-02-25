@@ -66,13 +66,16 @@ export function formatMarkdown(raw: string): string {
   // 2. Display math: \[...\] → $$...$$
   s = s.replace(/\\\[(.+?)\\\]/gs, (_, inner) => `$$${inner}$$`);
 
-  // 3. Collapse excessive blank lines
+  // 3. Remove citation references: [citation:N]
+  s = s.replace(/\[citation:\d+\]/g, '');
+
+  // 4. Collapse excessive blank lines
   s = s.replace(/\n{3,}/g, '\n\n');
 
-  // 4. Unify list bullets at line start: •, *, + → -
+  // 5. Unify list bullets at line start: •, *, + → -
   s = s.replace(/^([^\S\n]*)[•*+]\s/gm, '$1- ');
 
-  // 5. Fix heading levels — ensure no gaps (e.g. # then ### without ##)
+  // 6. Fix heading levels — ensure no gaps (e.g. # then ### without ##)
   // s = fixHeadingLevels(s);
 
   return s;
@@ -120,17 +123,9 @@ export function assembleDocument(
     .replace(/\{title\}/g, sessionTitle)
     .replace(/\{output_date\}/g, dateStr);
   
-  let isFirstMessage = true;
-    
   // Append each message
   for (const msg of messages) {
-    let template = msg.role === 'user' ? config.userMessageTemplate : config.assistantMessageTemplate;
-    // If the document prefix ends with a YAML block (---), insert a blank line to break it before the first message
-    if (isFirstMessage && config.documentPrefix.trim().endsWith('---') && template.trim().startsWith('---')) {
-      // remove the leading '---' from the template to prevent confusion, and ensure there's a blank line
-      template = '\n' + template.replace(/^---/, '');
-      isFirstMessage = false;
-    }
+    const template = msg.role === 'user' ? config.userMessageTemplate : config.assistantMessageTemplate;
     doc += renderTemplate(template, msg, config);
   }
 
@@ -141,8 +136,8 @@ export function assembleDocument(
 function renderTemplate(template: string, msg: IMessage, config: UserConfig): string {
   let result = template;
 
-  // {content}
-  result = result.replace(/\{content\}/g, msg.content);
+  // {content} — use function replacement to avoid $$ / $& / $' etc. being interpreted
+  result = result.replace(/\{content\}/g, () => msg.content);
 
   // {thinking_content}
   if (!config.includeThinking || !msg.thinkingContent) {
@@ -160,7 +155,7 @@ function renderTemplate(template: string, msg: IMessage, config: UserConfig): st
       (_, prefix) => thinkLines.map((l) => `${prefix}${l}`).join('\n'),
     );
     // If placeholder is NOT in a blockquote
-    result = result.replace(/\{thinking_content\}/g, msg.thinkingContent);
+    result = result.replace(/\{thinking_content\}/g, () => msg.thinkingContent);
   }
 
   return result;

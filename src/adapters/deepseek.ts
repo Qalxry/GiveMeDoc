@@ -304,8 +304,8 @@ export function injectSingleExportButtons(onClick: (md: string) => void): void {
       }
     });
 
-    // Insert after copy button
-    copyBtn.after(exportBtn);
+    // Insert after the last button in the toolbar
+    toolbar.appendChild(exportBtn);
   }
 
   function scanAll(): void {

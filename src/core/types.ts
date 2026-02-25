@@ -75,14 +75,14 @@ date: {output_date}
 ---
 
 `,
-  userMessageTemplate: `---
+  userMessageTemplate: `***
 
 **用户：**
 
 {content}
 
 `,
-  assistantMessageTemplate: `---
+  assistantMessageTemplate: `***
 
 **助手：**
 
