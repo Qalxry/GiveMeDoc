@@ -80,7 +80,7 @@
 }
 .gmd-fab--dragging::before {
   background-color: var(--gmd-primary);
-  opacity: 0.5;
+  opacity: 0.3;
 }
 
 /* Slide-out animation when panel opens */
