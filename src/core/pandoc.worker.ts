@@ -90,7 +90,7 @@ const api: PandocWorkerAPI = {
 
     // Build pandoc options JSON
     const options: Record<string, unknown> = {
-      from: 'markdown',
+      from: 'markdown+lists_without_preceding_blankline',
       to: 'docx',
       'output-file': 'output.docx',
       standalone: true,
