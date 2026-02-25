@@ -73,18 +73,23 @@ export const DEFAULT_CONFIG: UserConfig = {
 title: {title}
 date: {output_date}
 ---
+
 `,
   userMessageTemplate: `---
+
 **用户：**
 
 {content}
+
 `,
   assistantMessageTemplate: `---
+
 **助手：**
 
 > {thinking_content}
 
 {content}
+
 `,
   cdnUrls: [
     'https://pandoc.org/app/pandoc.wasm?sha1=2ab8055eb0803168da93d4b784fe40aa06551dfa',

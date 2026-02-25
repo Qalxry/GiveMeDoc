@@ -15,7 +15,7 @@ import {
 import { createSwitch, setSwitchState } from './m3e/switch';
 import { showToast } from './m3e/toast';
 import {
-  ICON_UPLOAD, ICON_TRASH, ICON_STAR,
+  ICON_UPLOAD, ICON_TRASH,
 } from './m3e/icons';
 
 declare const __PLATFORM__: 'userscript' | 'extension';
@@ -158,35 +158,30 @@ function renderTemplateList(cb: PanelCallbacks): void {
   templateListEl.innerHTML = '';
 
   for (const tpl of templates) {
+    const isSelected = tpl.id === config.selectedTemplateId;
     const row = el('div', 'gmd-settings__tpl-row');
+    if (isSelected) row.classList.add('gmd-settings__tpl-row--selected');
+
+    // 整行点击以选中模板
+    row.style.cursor = isSelected ? 'default' : 'pointer';
+    row.addEventListener('click', async (e) => {
+      // 如果点击的是操作按钮，不触发行选择
+      if ((e.target as HTMLElement).closest('.gmd-icon-btn')) return;
+      if (tpl.id === config.selectedTemplateId) return;
+      config.selectedTemplateId = tpl.id;
+      await cb.onConfigChange({ selectedTemplateId: tpl.id });
+      renderTemplateList(cb);
+      showToast({ message: `已将 "${tpl.name}" 设为默认模板`, level: 'success' });
+    });
 
     const nameEl = el('span', 'gmd-settings__tpl-name');
     nameEl.textContent = tpl.name;
-    if (tpl.id === config.selectedTemplateId) {
-      nameEl.classList.add('gmd-settings__tpl-name--active');
-    }
     row.appendChild(nameEl);
 
     if (tpl.description) {
       const descEl = el('span', 'gmd-settings__tpl-desc');
       descEl.textContent = tpl.description;
       row.appendChild(descEl);
-    }
-
-    // Set as default button
-    if (tpl.id !== config.selectedTemplateId) {
-      const starBtn = createIconButton({
-        icon: ICON_STAR,
-        title: '设为默认',
-        variant: 'standard',
-        onClick: async () => {
-          config.selectedTemplateId = tpl.id;
-          await cb.onConfigChange({ selectedTemplateId: tpl.id });
-          renderTemplateList(cb);
-          showToast({ message: `已将 "${tpl.name}" 设为默认模板`, level: 'success' });
-        },
-      });
-      row.appendChild(starBtn);
     }
 
     // Delete button (custom templates only)

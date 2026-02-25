@@ -23,6 +23,7 @@ import { renderAboutTab } from './panel-about';
 
 let panelEl: HTMLElement | null = null;
 let isVisible = false;
+let clickOutsideHandler: ((e: MouseEvent) => void) | null = null;
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Create
@@ -88,7 +89,21 @@ export function createPanel(cb: PanelCallbacks): void {
   // ── Mount ────────────────────────────────────────────────────────────
   document.body.appendChild(panelEl);
   isVisible = true;
-}
+  // ── Click-outside to close ──────────────────────────────────────────
+  // 使用 mousedown 而非 click，必要时可在宏主页 click 处理器之前关闭面板。
+  // 排除：面板内部元素、toast 容器、标记了 [data-gmd-trigger] 的触发元素。
+  clickOutsideHandler = (e: MouseEvent): void => {
+    if (!isVisible || !panelEl) return;
+    const target = e.target as HTMLElement;
+    // 点击在面板内部
+    if (panelEl.contains(target)) return;
+    // 点击在 toast 容器内（toast 全局挂载在 body 上）
+    if (target.closest?.('.gmd-toast-container')) return;
+    // 点击在标记了 data-gmd-trigger 的触发元素上（如分享按鈕）
+    if (target.closest?.('[data-gmd-trigger]')) return;
+    hidePanel();
+  };
+  document.addEventListener('mousedown', clickOutsideHandler);}
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Show / Hide / Toggle / Destroy
@@ -120,6 +135,10 @@ export function destroyPanel(): void {
     panelEl.remove();
     panelEl = null;
     isVisible = false;
+  }
+  if (clickOutsideHandler) {
+    document.removeEventListener('mousedown', clickOutsideHandler);
+    clickOutsideHandler = null;
   }
 }
 

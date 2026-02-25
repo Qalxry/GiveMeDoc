@@ -35,7 +35,7 @@
 /* ── Info row ───────────────────────────────────────────────────────── */
 .gmd-about__row {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   gap: var(--gmd-space-md);
 }
 
@@ -57,21 +57,9 @@
   font-weight: var(--gmd-font-weight-medium);
 }
 
-.gmd-about__value--ok::before {
-  content: '●';
-  margin-right: var(--gmd-space-xs);
-  font-size: 10px;
-}
-
 .gmd-about__value--warn {
   color: var(--gmd-warning);
   font-weight: var(--gmd-font-weight-medium);
-}
-
-.gmd-about__value--warn::before {
-  content: '●';
-  margin-right: var(--gmd-space-xs);
-  font-size: 10px;
 }
 
 /* ── Link row ───────────────────────────────────────────────────────── */

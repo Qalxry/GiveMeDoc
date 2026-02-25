@@ -73,7 +73,7 @@ export function formatMarkdown(raw: string): string {
   s = s.replace(/^([^\S\n]*)[•*+]\s/gm, '$1- ');
 
   // 5. Fix heading levels — ensure no gaps (e.g. # then ### without ##)
-  s = fixHeadingLevels(s);
+  // s = fixHeadingLevels(s);
 
   return s;
 }
@@ -119,14 +119,19 @@ export function assembleDocument(
   let doc = config.documentPrefix
     .replace(/\{title\}/g, sessionTitle)
     .replace(/\{output_date\}/g, dateStr);
-
+  
+  let isFirstMessage = true;
+    
   // Append each message
   for (const msg of messages) {
-    if (msg.role === 'user') {
-      doc += renderTemplate(config.userMessageTemplate, msg, config);
-    } else {
-      doc += renderTemplate(config.assistantMessageTemplate, msg, config);
+    let template = msg.role === 'user' ? config.userMessageTemplate : config.assistantMessageTemplate;
+    // If the document prefix ends with a YAML block (---), insert a blank line to break it before the first message
+    if (isFirstMessage && config.documentPrefix.trim().endsWith('---') && template.trim().startsWith('---')) {
+      // remove the leading '---' from the template to prevent confusion, and ensure there's a blank line
+      template = '\n' + template.replace(/^---/, '');
+      isFirstMessage = false;
     }
+    doc += renderTemplate(template, msg, config);
   }
 
   return doc;
@@ -180,6 +185,7 @@ export async function exportToDocx(
 
   const raw = assembleDocument(messages, config, sessionTitle);
   const formatted = formatMarkdown(raw);
+  console.debug('[GiveMeDoc] Formatted Markdown for export:', '\n' + formatted);
   const buffer = await pandoc.convert(formatted, referenceDocx);
 
   const safeName = sessionTitle.replace(/[<>:"/\\|?*]/g, '_').slice(0, 100) || 'export';

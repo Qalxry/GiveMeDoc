@@ -311,7 +311,7 @@ export function injectSingleExportButtons(onClick: (md: string) => void): void {
   function scanAll(): void {
     // All message toolbar containers
     const toolbars = document.querySelectorAll(
-      'div.ds-scroll-area div.ds-flex:not(:has(div.ds-flex))',
+      'div.ds-scroll-area div.ds-flex div.ds-flex',
     );
     toolbars.forEach(processToolbar);
   }

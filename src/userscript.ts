@@ -71,6 +71,66 @@ const gmStorage: IStorage = {
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
+// IndexedDB WASM Cache
+// ═══════════════════════════════════════════════════════════════════════════
+
+const WASM_DB_NAME = 'gmd-wasm-cache';
+const WASM_DB_VERSION = 1;
+const WASM_STORE = 'wasm';
+
+function openWasmDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(WASM_DB_NAME, WASM_DB_VERSION);
+    req.onupgradeneeded = () => { req.result.createObjectStore(WASM_STORE); };
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+  });
+}
+
+async function getCachedWasm(url: string): Promise<ArrayBuffer | null> {
+  try {
+    const db = await openWasmDb();
+    return new Promise((resolve, reject) => {
+      const tx = db.transaction(WASM_STORE, 'readonly');
+      const req = tx.objectStore(WASM_STORE).get(url);
+      req.onsuccess = () => { db.close(); resolve((req.result as ArrayBuffer) ?? null); };
+      req.onerror = () => { db.close(); reject(req.error); };
+    });
+  } catch {
+    return null;
+  }
+}
+
+async function setCachedWasm(url: string, bytes: ArrayBuffer): Promise<void> {
+  try {
+    const db = await openWasmDb();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(WASM_STORE, 'readwrite');
+      const req = tx.objectStore(WASM_STORE).put(bytes, url);
+      req.onsuccess = () => { db.close(); resolve(); };
+      req.onerror = () => { db.close(); reject(req.error); };
+    });
+  } catch (err) {
+    console.warn('[GiveMeDoc] Failed to cache WASM:', err);
+  }
+}
+
+async function clearWasmCache(): Promise<void> {
+  try {
+    const db = await openWasmDb();
+    await new Promise<void>((resolve, reject) => {
+      const tx = db.transaction(WASM_STORE, 'readwrite');
+      const req = tx.objectStore(WASM_STORE).clear();
+      req.onsuccess = () => { db.close(); resolve(); };
+      req.onerror = () => { db.close(); reject(req.error); };
+    });
+    showToast({ message: 'WASM 缓存已清除，下次加载将重新下载', level: 'success' });
+  } catch (err) {
+    showToast({ message: `清除缓存失败: ${(err as Error).message}`, level: 'error' });
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // Pandoc WASM loading
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -80,8 +140,18 @@ async function loadPandocWasm(): Promise<void> {
 
   for (const url of urls) {
     try {
+      // 优先从 IndexedDB 缓存加载，避免重复下载 58 MB 的 WASM 文件
+      const cached = await getCachedWasm(url);
+      if (cached) {
+        // showToast({ message: '从缓存加载 Pandoc WASM…', level: 'info', duration: 2000 });
+        await initPandoc(cached, new PandocWorker());
+        // showToast({ message: `Pandoc 就绪 (${await getPandocVersion()})`, level: 'success' });
+        return;
+      }
+      // 缓存未命中：下载并存入 IndexedDB（以 URL 为缓存键，URL 变更时自动失效）
       showToast({ message: '正在下载 Pandoc WASM…', level: 'info', duration: 2000 });
       const wasmBytes = await fetchWasm(url);
+      await setCachedWasm(url, wasmBytes);
       await initPandoc(wasmBytes, new PandocWorker());
       showToast({ message: `Pandoc 就绪 (${await getPandocVersion()})`, level: 'success' });
       return;
@@ -120,8 +190,9 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
 
   const callbacks = createCallbacks(gmStorage);
 
-  // 2. Register GM menu command to toggle panel
+  // 2. Register GM menu commands
   GM_registerMenuCommand('📄 Give Me Doc 面板', () => togglePanel(callbacks));
+  GM_registerMenuCommand('🗑 清除 WASM 缓存', () => clearWasmCache());
 
   // 3. Inject per-message export buttons
   injectSingleExportButtons(async (md) => {

@@ -44,10 +44,25 @@
   border-radius: var(--gmd-radius-sm);
   background: var(--gmd-surface-container-low);
   transition: background var(--gmd-duration-short) var(--gmd-easing-standard);
+  cursor: pointer;
 }
 
 .gmd-settings__tpl-row:hover {
   background: var(--gmd-surface-container);
+}
+
+.gmd-settings__tpl-row--selected {
+  background: var(--gmd-primary-container);
+  color: var(--gmd-on-primary-container);
+}
+
+.gmd-settings__tpl-row--selected:hover {
+  background: var(--gmd-primary-container);
+}
+
+.gmd-settings__tpl-row--selected .gmd-settings__tpl-name {
+  color: var(--gmd-on-primary-container);
+  font-weight: var(--gmd-font-weight-bold);
 }
 
 .gmd-settings__tpl-name {
@@ -61,10 +76,6 @@
   white-space: nowrap;
 }
 
-.gmd-settings__tpl-name--active {
-  color: var(--gmd-primary);
-  font-weight: var(--gmd-font-weight-bold);
-}
 
 .gmd-settings__tpl-desc {
   font-size: var(--gmd-font-size-xs);
