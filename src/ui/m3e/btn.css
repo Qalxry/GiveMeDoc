@@ -170,3 +170,13 @@
 .gmd-icon-btn--outlined:hover {
   background: color-mix(in srgb, var(--gmd-on-surface-variant) 8%, transparent);
 }
+
+/* ── Spin animation for icon buttons ────────────────────────────────── */
+@keyframes gmd-icon-spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.gmd-icon-btn--spinning svg {
+  animation: gmd-icon-spin 0.6s linear infinite;
+}

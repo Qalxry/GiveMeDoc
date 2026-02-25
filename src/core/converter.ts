@@ -33,6 +33,9 @@ export async function initPandoc(wasmSource: ArrayBuffer, workerUrlOrInstance: s
   pandoc = Comlink.wrap<PandocWorkerAPI>(worker);
   await pandoc.init(wasmSource);
   _version = await pandoc.getVersion();
+  if (_version.startsWith('"') && _version.endsWith('"')) {
+    _version = _version.slice(1, -1);
+  }
   _ready = true;
 }
 

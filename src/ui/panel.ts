@@ -162,9 +162,7 @@ export function isPanelVisible(): boolean {
 // ═══════════════════════════════════════════════════════════════════════════
 
 function enableDrag(handle: HTMLElement, target: HTMLElement): void {
-  let startX = 0;
   let startY = 0;
-  let origX = 0;
   let origY = 0;
   let dragging = false;
 
@@ -176,10 +174,8 @@ function enableDrag(handle: HTMLElement, target: HTMLElement): void {
     if ((e.target as HTMLElement).closest('button, input, a')) return;
 
     dragging = true;
-    startX = e.clientX;
     startY = e.clientY;
     const rect = target.getBoundingClientRect();
-    origX = rect.left;
     origY = rect.top;
     handle.style.cursor = 'grabbing';
 
@@ -190,20 +186,14 @@ function enableDrag(handle: HTMLElement, target: HTMLElement): void {
 
   function onMouseMove(e: MouseEvent): void {
     if (!dragging) return;
-    const dx = e.clientX - startX;
     const dy = e.clientY - startY;
 
-    // Clamp to viewport boundaries
-    const w = target.offsetWidth;
+    // Clamp to viewport vertical boundaries
     const h = target.offsetHeight;
-    const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const newLeft = Math.max(0, Math.min(vw - w, origX + dx));
-    const newTop  = Math.max(0, Math.min(vh - h, origY + dy));
+    const newTop = Math.max(0, Math.min(vh - h, origY + dy));
 
-    target.style.left = `${newLeft}px`;
     target.style.top = `${newTop}px`;
-    target.style.right = 'auto';
     target.style.bottom = 'auto';
   }
 

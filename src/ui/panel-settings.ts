@@ -166,6 +166,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
     cdnTextarea = createTextarea({
       label: 'CDN URL 列表（每行一个，按顺序尝试）',
       rows: 3,
+      wrap: 'off',
       onChange: debounce((v) => {
         const urls = v.split('\n').map((l) => l.trim()).filter(Boolean);
         config.cdnUrls = urls;

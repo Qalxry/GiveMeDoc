@@ -194,7 +194,6 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
 
   // 2. Register GM menu commands
   GM_registerMenuCommand('📄 Give Me Doc 面板', () => togglePanel(callbacks));
-  GM_registerMenuCommand('🗑 清除 WASM 缓存', () => clearWasmCache());
 
   // 3. Mount FAB if enabled
   loadConfig(gmStorage).then((cfg) => {

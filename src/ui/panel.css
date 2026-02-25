@@ -10,6 +10,7 @@
   top: var(--gmd-space-xl);
   right: var(--gmd-space-xl);
   width: 420px;
+  max-width: calc(100vw - var(--gmd-space-xl) * 2);
   height: calc(100vh - 48px);
   max-height: 780px;
   z-index: 100000;

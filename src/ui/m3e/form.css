@@ -140,6 +140,12 @@
   color: var(--gmd-outline);
 }
 
+.gmd-textarea__input--nowrap {
+  white-space: pre;
+  overflow-x: auto;
+  resize: horizontal;
+}
+
 /* ════════════════════════════════════════════════════════════════════════
    Switch  .gmd-switch
    ════════════════════════════════════════════════════════════════════════ */

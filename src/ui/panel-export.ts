@@ -31,12 +31,16 @@ let selectedIds = new Set<string>();
 let templates: TemplateMeta[] = [];
 let selectedTemplateId = '';
 
+let spinStartTime = 0;
+const MIN_SPIN_MS = 600; // match animation duration — at least half a rotation for better feedback
+
 // DOM refs
 let listEl: HTMLElement;
 let selectAllCb: HTMLElement;
 let templateSelect: HTMLSelectElement;
 let exportBtn: HTMLButtonElement;
 let countLabel: HTMLElement;
+let refreshBtn: HTMLButtonElement;
 let root: HTMLElement;
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -63,11 +67,15 @@ export function renderExportTab(cb: PanelCallbacks): HTMLElement {
   countLabel = el('span', 'gmd-export__count');
   countLabel.textContent = '0 条消息';
 
-  const refreshBtn = createIconButton({
+  refreshBtn = createIconButton({
     icon: ICON_REFRESH,
     title: '刷新会话',
     variant: 'standard',
-    onClick: () => loadSession(cb),
+    onClick: () => {
+      refreshBtn.classList.add('gmd-icon-btn--spinning');
+      spinStartTime = Date.now();
+      loadSession(cb);
+    },
   });
 
   append(toolbar, selectAllCb, countLabel, refreshBtn);
@@ -119,6 +127,11 @@ async function loadSession(cb: PanelCallbacks): Promise<void> {
     renderList();
   } catch (err) {
     showToast({ message: `加载会话失败: ${(err as Error).message}`, level: 'error' });
+  } finally {
+    // Ensure at least one full rotation before stopping
+    const elapsed = Date.now() - spinStartTime;
+    const remaining = Math.max(0, MIN_SPIN_MS - elapsed);
+    setTimeout(() => refreshBtn?.classList.remove('gmd-icon-btn--spinning'), remaining);
   }
 }
 

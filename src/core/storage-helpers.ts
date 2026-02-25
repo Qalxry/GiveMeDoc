@@ -114,8 +114,9 @@ export function createCallbacks(storage: IStorage, clearCacheFn?: () => Promise<
     },
 
     async onResetConfig() {
-      await storage.set('config', DEFAULT_CONFIG);
-      return DEFAULT_CONFIG;
+      const fresh = { ...DEFAULT_CONFIG };
+      await storage.set('config', fresh);
+      return fresh;
     },
 
     async onClearCache() {

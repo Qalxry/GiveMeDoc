@@ -208,6 +208,7 @@ export interface TextareaOptions {
   value?: string;
   placeholder?: string;
   rows?: number;
+  wrap?: 'off' | 'soft' | 'hard';
   onChange?: (value: string) => void;
   label?: string;
 }
@@ -225,6 +226,10 @@ export function createTextarea(opts: TextareaOptions): HTMLElement {
   if (opts.value) textarea.value = opts.value;
   if (opts.placeholder) textarea.placeholder = opts.placeholder;
   textarea.rows = opts.rows ?? 4;
+  if (opts.wrap) {
+    textarea.wrap = opts.wrap;
+    if (opts.wrap === 'off') textarea.classList.add('gmd-textarea__input--nowrap');
+  }
 
   if (opts.onChange) {
     textarea.addEventListener('input', () => opts.onChange!(textarea.value));

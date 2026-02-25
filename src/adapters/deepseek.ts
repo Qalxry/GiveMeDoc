@@ -354,9 +354,12 @@ export function injectSharePanelButton(onClick: (selectedIndices: number[]) => v
     bottomBar.setAttribute(MARKER_ATTR, '1');
 
     const exportBtn = document.createElement('button');
-    exportBtn.className = 'ds-atom-button ds-basic-button ds-basic-button--secondary';
-    exportBtn.style.marginRight = '8px';
-    exportBtn.textContent = '导出为 Word';
+    exportBtn.className = 'ds-atom-button ds-basic-button ds-basic-button--outlined';
+    exportBtn.style = 'padding: 6px 14px; font-size: 14px; line-height: 22px; min-width: 72px;';
+    exportBtn.innerHTML = `
+      <div class="ds-icon ds-atom-button__icon" style="font-size: 14px; width: 14px; height: 14px; margin-right: 6px;"><div class="ds-icon" style="font-size: 14px; width: 14px; height: 14px;">${FILE_TYPE_SVG}</div></div>
+      <span>导出为 Word</span>
+    `
 
     exportBtn.addEventListener('click', (e) => {
       e.stopPropagation();

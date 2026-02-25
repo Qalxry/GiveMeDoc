@@ -7,14 +7,13 @@
 
 .gmd-fab {
   position: fixed;
-  padding: 12px;
   right: -24px;
   top: 50%;
   transform: translateY(-50%);
   z-index: 99999;
 
-  width: 48px + 24px; /* Visible part + hidden part */
-  height: 48px + 24px;
+  width: 48px;
+  height: 48px;
   border: none;
   border-radius: var(--gmd-radius-xl);
   background: var(--gmd-primary);
@@ -43,7 +42,7 @@
 
 .gmd-fab:hover,
 .gmd-fab:focus-visible {
-  right: 0;
+  right: 12px;
   opacity: 1;
   box-shadow: var(--gmd-elevation-3);
 }
@@ -58,16 +57,33 @@
   pointer-events: none;
 }
 
-/* Dragging state — disable transitions to follow cursor smoothly */
+/* Invisible proximity hit area — extends 32px to the left of the FAB
+   so the hover triggers before the cursor reaches the visible button. */
+.gmd-fab::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  right: -50px;
+  bottom: -10px;
+  left: -10px;
+  border-radius: var(--gmd-radius-xl);  /* match FAB shape */
+  transition: 
+    background-color var(--gmd-duration-medium) var(--gmd-easing-standard),
+    opacity var(--gmd-duration-medium) var(--gmd-easing-standard);
+}
 
+/* Dragging state — disable transitions to follow cursor smoothly */
 .gmd-fab--dragging {
   transition: none;
-  right: 0;
+  right: 12px;
   opacity: 1;
+}
+.gmd-fab--dragging::before {
+  background-color: var(--gmd-primary);
+  opacity: 0.5;
 }
 
 /* Slide-out animation when panel opens */
-
 .gmd-fab--hidden {
   right: -60px;
   opacity: 0;
