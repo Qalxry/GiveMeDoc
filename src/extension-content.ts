@@ -24,7 +24,7 @@ import {
   loadConfig, createCallbacks,
   createSingleExportHandler, createShareExportHandler,
 } from './core/storage-helpers';
-import { extStorage, clearExtWasmCache } from './core/storage/webext';
+import { extStorage } from './core/storage/webext';
 
 // Vite will extract CSS as an asset — import for side-effect bundling
 import './ui/index.css';
@@ -69,7 +69,7 @@ async function loadPandocWasm(): Promise<void> {
 // Bootstrap
 // ═══════════════════════════════════════════════════════════════════════════
 
-const callbacks = createCallbacks(extStorage, clearExtWasmCache, (show) => {
+const callbacks = createCallbacks(extStorage, undefined, (show) => {
   if (show) { if (!isFabMounted()) createFab(callbacks); }
   else { destroyFab(); }
 });

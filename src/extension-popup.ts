@@ -12,7 +12,7 @@
 import type { IMessage, PanelCallbacks } from './core/types';
 import browser from 'webextension-polyfill';
 import { createCallbacks } from './core/storage-helpers';
-import { extStorage, clearExtWasmCache } from './core/storage/webext';
+import { extStorage } from './core/storage/webext';
 import { createPanel } from './ui/panel';
 
 // Import CSS — Vite will bundle it as an asset for the popup HTML
@@ -78,7 +78,7 @@ const popupOverrides: Partial<PanelCallbacks> = {
   onFabToggle: undefined,
 };
 
-const callbacks = createCallbacks(extStorage, clearExtWasmCache, undefined, popupOverrides);
+const callbacks = createCallbacks(extStorage, undefined, undefined, popupOverrides);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Mount — reuse panel.ts in embedded mode

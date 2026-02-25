@@ -30,10 +30,3 @@ export const extStorage: IStorage = {
     await browser.storage.local.set({ [key]: arrayBufferToB64(value) });
   },
 };
-
-/** Remove all pandoc-wasm-related keys from browser.storage.local. */
-export async function clearExtWasmCache(): Promise<void> {
-  const keys = await browser.storage.local.get(null);
-  const wasmKeys = Object.keys(keys).filter((k) => k.startsWith('pandoc-wasm'));
-  if (wasmKeys.length > 0) await browser.storage.local.remove(wasmKeys);
-}
