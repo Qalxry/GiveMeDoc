@@ -247,10 +247,17 @@ function navigateBranch(parentId: string | null, targetIdx: number): void {
   if (!childrenIds || targetIdx < 0 || targetIdx >= childrenIds.length) return;
 
   const targetChildId = childrenIds[targetIdx];
+  const prevSelectedIds = new Set(selectedIds);
+  const prevChainIds = new Set(chain.map((m) => m.id));
   chain = switchBranch(session, parentId, targetChildId);
 
-  // Preserve / reset selection
-  selectedIds = new Set(chain.map((m) => m.id));
+  // Preserve selection for messages that existed in the old chain;
+  // default-select only newly introduced messages on the new branch.
+  selectedIds = new Set(
+    chain
+      .filter((m) => prevChainIds.has(m.id) ? prevSelectedIds.has(m.id) : true)
+      .map((m) => m.id),
+  );
   renderList();
 }
 

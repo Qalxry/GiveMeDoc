@@ -48,13 +48,13 @@
 }
 
 .gmd-toast--success {
-  background: var(--gmd-success);
-  color: #fff;
+  background: var(--gmd-success-container);
+  color: var(--gmd-on-success-container);
 }
 
 .gmd-toast--warning {
   background: var(--gmd-warning-container);
-  color: var(--gmd-warning);
+  color: var(--gmd-on-warning-container);
 }
 
 .gmd-toast--error {

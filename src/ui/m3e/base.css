@@ -41,12 +41,16 @@
   --gmd-on-error-container: #410e0b;
 
   /* ── Success (custom) ────────────────────────────────────────────── */
-  --gmd-success:            #1b6e2d;
-  --gmd-success-container:  #a8f5a2;
+  --gmd-success:              #1b6e2d;
+  --gmd-on-success:           #ffffff;
+  --gmd-success-container:    #a8f5a2;
+  --gmd-on-success-container: #002109;
 
   /* ── Warning (custom) ────────────────────────────────────────────── */
-  --gmd-warning:            #7c5800;
-  --gmd-warning-container:  #ffdea6;
+  --gmd-warning:              #7c5800;
+  --gmd-on-warning:           #ffffff;
+  --gmd-warning-container:    #ffdea6;
+  --gmd-on-warning-container: #271900;
 
   /* ── Typography ──────────────────────────────────────────────────── */
   --gmd-font-family:        'Segoe UI', Roboto, 'Noto Sans SC', 'Helvetica Neue', Arial, sans-serif;
@@ -137,12 +141,16 @@
     --gmd-on-error-container: #f9dedc;
 
     /* ── Success (custom) ──────────────────────────────────────────── */
-    --gmd-success:            #7ddb7f;
-    --gmd-success-container:  #0a5218;
+    --gmd-success:              #7ddb7f;
+    --gmd-on-success:           #003910;
+    --gmd-success-container:    #0a5218;
+    --gmd-on-success-container: #a8f5a2;
 
     /* ── Warning (custom) ──────────────────────────────────────────── */
-    --gmd-warning:            #f5c34a;
-    --gmd-warning-container:  #5a4100;
+    --gmd-warning:              #f5c34a;
+    --gmd-on-warning:           #3f2e00;
+    --gmd-warning-container:    #5a4100;
+    --gmd-on-warning-container: #ffdea6;
 
     /* ── Elevation (shadow — reduced in dark mode) ─────────────────── */
     --gmd-elevation-1: 0 1px 3px 1px rgba(0,0,0,.30), 0 1px 2px rgba(0,0,0,.50);

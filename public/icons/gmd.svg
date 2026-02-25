@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="192" y2="192" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#D3E3FD"/>
+      <stop offset="100%" stop-color="#88A7EA"/>
+    </linearGradient>
+    <linearGradient id="fg" x1="60" y1="40" x2="140" y2="160" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1B6EF3"/>
+      <stop offset="100%" stop-color="#0042A0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- M3 圆角容器背景 -->
+  <rect x="8" y="8" width="176" height="176" rx="52" ry="52" fill="url(#bg)"/>
+
+  <!-- 文档主体 - 带折角 -->
+  <path d="M60 36 H116 L140 60 V148 Q140 156 132 156 H60 Q52 156 52 148 V44 Q52 36 60 36 Z" 
+        fill="white" fill-opacity="0.95"/>
+  
+  <!-- 折角三角 -->
+  <path d="M116 36 V52 Q116 60 124 60 H140 L116 36 Z" 
+        fill="url(#fg)" fill-opacity="0.5"/>
+
+  <!-- 文档内文本线条 -->
+  <rect x="68" y="62" width="40" height="10" rx="5" fill="url(#fg)" fill-opacity="0.3"/>
+  <rect x="68" y="80" width="56" height="10" rx="5" fill="url(#fg)" fill-opacity="0.3"/>
+
+  <!-- 下载箭头 - 核心语义 -->
+  <g stroke="url(#fg)" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" >
+    <!-- 箭头竖线 -->
+    <line x1="96" y1="104" x2="96" y2="138" opacity="0.3"/>
+    <!-- 箭头左翼 -->
+    <line x1="96" y1="138" x2="82" y2="124" opacity="0.3"/>
+    <!-- 箭头右翼 -->
+    <line x1="96" y1="138" x2="110" y2="124" opacity="0.3"/>
+  </g>
+</svg>
