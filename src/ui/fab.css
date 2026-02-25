@@ -1,0 +1,75 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — Floating Action Button (FAB)
+ *
+ *  .gmd-fab — fixed right-edge FAB for opening the panel.
+ *  Half-hidden by default, reveals on hover/focus. Supports vertical drag.
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+.gmd-fab {
+  position: fixed;
+  padding: 12px;
+  right: -24px;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 99999;
+
+  width: 48px + 24px; /* Visible part + hidden part */
+  height: 48px + 24px;
+  border: none;
+  border-radius: var(--gmd-radius-xl);
+  background: var(--gmd-primary);
+  color: var(--gmd-on-primary);
+  cursor: pointer;
+  opacity: 0.4;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--gmd-elevation-2);
+
+  font-family: var(--gmd-font-family);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition:
+    right   var(--gmd-duration-medium) var(--gmd-easing-standard),
+    opacity var(--gmd-duration-medium) var(--gmd-easing-standard),
+    box-shadow var(--gmd-duration-short) var(--gmd-easing-standard);
+
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.gmd-fab:hover,
+.gmd-fab:focus-visible {
+  right: 0;
+  opacity: 1;
+  box-shadow: var(--gmd-elevation-3);
+}
+
+.gmd-fab:active {
+  box-shadow: var(--gmd-elevation-1);
+}
+
+.gmd-fab svg {
+  width: 22px;
+  height: 22px;
+  pointer-events: none;
+}
+
+/* Dragging state — disable transitions to follow cursor smoothly */
+
+.gmd-fab--dragging {
+  transition: none;
+  right: 0;
+  opacity: 1;
+}
+
+/* Slide-out animation when panel opens */
+
+.gmd-fab--hidden {
+  right: -60px;
+  opacity: 0;
+  pointer-events: none;
+}

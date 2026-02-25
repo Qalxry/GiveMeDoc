@@ -16,6 +16,7 @@ import {
 import { renderExportTab, refreshExportTemplates } from './panel-export';
 import { renderSettingsTab } from './panel-settings';
 import { renderAboutTab } from './panel-about';
+import { showFab, isFabMounted } from './fab';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Panel state
@@ -107,6 +108,8 @@ export function createPanel(cb: PanelCallbacks): void {
     if (target.closest?.('.gmd-toast-container')) return;
     // 点击在标记了 data-gmd-trigger 的触发元素上（如分享按鈕）
     if (target.closest?.('[data-gmd-trigger]')) return;
+    // 点击在 FAB 上
+    if (target.closest?.('.gmd-fab')) return;
     hidePanel();
   };
   document.addEventListener('mousedown', clickOutsideHandler);}
@@ -128,6 +131,8 @@ export function hidePanel(): void {
   if (panelEl) {
     panelEl.classList.add('gmd-panel--hidden');
     isVisible = false;
+    // Show FAB when panel is hidden (if FAB is mounted)
+    if (isFabMounted()) showFab();
   }
 }
 
@@ -187,8 +192,17 @@ function enableDrag(handle: HTMLElement, target: HTMLElement): void {
     if (!dragging) return;
     const dx = e.clientX - startX;
     const dy = e.clientY - startY;
-    target.style.left = `${origX + dx}px`;
-    target.style.top = `${origY + dy}px`;
+
+    // Clamp to viewport boundaries
+    const w = target.offsetWidth;
+    const h = target.offsetHeight;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const newLeft = Math.max(0, Math.min(vw - w, origX + dx));
+    const newTop  = Math.max(0, Math.min(vh - h, origY + dy));
+
+    target.style.left = `${newLeft}px`;
+    target.style.top = `${newTop}px`;
     target.style.right = 'auto';
     target.style.bottom = 'auto';
   }

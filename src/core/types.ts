@@ -59,6 +59,8 @@ export interface UserConfig {
   includeThinking: boolean;
   /** When false, single-message export skips documentPrefix and message templates. */
   singleExportWithTemplate: boolean;
+  /** Whether to show the floating action button (FAB) on the page. */
+  showFab: boolean;
   selectedTemplateId: string;
   documentPrefix: string;
   userMessageTemplate: string;
@@ -71,6 +73,7 @@ export const DEFAULT_CONFIG: UserConfig = {
   locale: 'zh-CN',
   includeThinking: false,
   singleExportWithTemplate: false,
+  showFab: true,
   selectedTemplateId: 'builtin-gb',
   documentPrefix: `---
 title: {title}

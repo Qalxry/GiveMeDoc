@@ -18,6 +18,7 @@ import {
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
+import { createFab } from './ui/fab';
 import { setupUrlWatcher } from './ui/panel-export';
 import { showToast } from './ui/m3e/toast';
 import {
@@ -103,6 +104,11 @@ browser.runtime.onMessage.addListener((msg: unknown) => {
   if ((msg as { type?: string })?.type === 'TOGGLE_PANEL') {
     togglePanel(callbacks);
   }
+});
+
+// Mount FAB if enabled
+loadConfig(extStorage).then((cfg) => {
+  if (cfg.showFab) createFab(callbacks);
 });
 
 // Inject per-message export buttons

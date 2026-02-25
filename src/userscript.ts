@@ -16,6 +16,7 @@ import {
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
 import { togglePanel } from './ui/panel';
+import { createFab } from './ui/fab';
 import { setupUrlWatcher } from './ui/panel-export';
 import { showToast } from './ui/m3e/toast';
 import {
@@ -195,7 +196,12 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
   GM_registerMenuCommand('📄 Give Me Doc 面板', () => togglePanel(callbacks));
   GM_registerMenuCommand('🗑 清除 WASM 缓存', () => clearWasmCache());
 
-  // 3. Inject per-message export buttons
+  // 3. Mount FAB if enabled
+  loadConfig(gmStorage).then((cfg) => {
+    if (cfg.showFab) createFab(callbacks);
+  });
+
+  // 4. Inject per-message export buttons
   injectSingleExportButtons(async (md) => {
     if (!isPandocReady()) {
       showToast({ message: 'Pandoc 尚未就绪，请稍候…', level: 'warning' });

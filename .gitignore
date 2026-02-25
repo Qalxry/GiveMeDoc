@@ -58,3 +58,5 @@ repositories/
 docs/deepseek.md
 docs/pandoc.md
 proposals.*.md
+templates/*.docx
+src/core/builtin-templates.generated.ts

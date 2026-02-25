@@ -207,7 +207,7 @@
 }
 
 .gmd-switch__track--checked .gmd-switch__thumb {
-  left: calc(100% - 6px - 24px);
+  left: calc(100% - 3px - 24px);
   width: 24px;
   height: 24px;
   background: var(--gmd-on-primary);

@@ -17,6 +17,7 @@ import { showToast } from './m3e/toast';
 import {
   ICON_UPLOAD, ICON_TRASH, ICON_REFRESH,
 } from './m3e/icons';
+import { createFab, destroyFab, isFabMounted } from './fab';
 
 declare const __PLATFORM__: 'userscript' | 'extension';
 
@@ -41,6 +42,7 @@ let templates: TemplateMeta[] = [];
 
 // DOM refs
 let templateListEl: HTMLElement;
+let fabSwitch: HTMLElement;
 let thinkingSwitch: HTMLElement;
 let singleExportSwitch: HTMLElement;
 let prefixTextarea: HTMLElement;
@@ -71,6 +73,26 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   tplSection.appendChild(uploadBtn);
 
   root.appendChild(tplSection);
+
+  // ── Section: Display settings ────────────────────────────────────────
+  const displaySection = createSection('显示设置');
+
+  fabSwitch = createSwitch({
+    label: '显示悬浮球',
+    checked: true,
+    onChange: (checked) => {
+      config.showFab = checked;
+      cb.onConfigChange({ showFab: checked });
+      if (checked) {
+        if (!isFabMounted()) createFab(cb);
+      } else {
+        destroyFab();
+      }
+    },
+  });
+  displaySection.appendChild(fabSwitch);
+
+  root.appendChild(displaySection);
 
   // ── Section: Export settings ──────────────────────────────────────────
   const exportSettingsSection = createSection('导出设置');
@@ -166,6 +188,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
       try {
         config = await cb.onResetConfig();
         // Refresh all UI elements with the fresh config
+        setSwitchState(fabSwitch, config.showFab);
         setSwitchState(thinkingSwitch, config.includeThinking);
         setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
         setTextareaValue(prefixTextarea, config.documentPrefix);
@@ -298,6 +321,7 @@ async function loadData(cb: PanelCallbacks): Promise<void> {
     templates = await cb.getTemplateList();
 
     // Sync switches
+    setSwitchState(fabSwitch, config.showFab);
     setSwitchState(thinkingSwitch, config.includeThinking);
     setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
 
