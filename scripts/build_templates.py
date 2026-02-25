@@ -31,7 +31,12 @@ import yaml
 from docx import Document
 from docx.shared import Pt, Cm, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.style import WD_STYLE_TYPE
 from docx.oxml.ns import qn
+
+# Styles that should be created as CHARACTER type when missing
+_CHAR_STYLES = {"Verbatim Char", "Body Text Char", "Footnote Reference",
+                "Hyperlink", "Section Number", "Default Paragraph Font"}
 
 # ---------------------------------------------------------------------------
 # Path helpers
@@ -101,8 +106,17 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
             break
 
     if style is None:
-        print(f"  WARNING: style '{style_name}' not found in reference doc, skipping")
-        return
+        # Auto-create missing styles so pandoc picks them up
+        try:
+            if style_name in _CHAR_STYLES:
+                style = doc.styles.add_style(style_name, WD_STYLE_TYPE.CHARACTER)
+            else:
+                style = doc.styles.add_style(style_name, WD_STYLE_TYPE.PARAGRAPH)
+                style.base_style = doc.styles["Normal"]
+            print(f"    + created style: '{style_name}'")
+        except Exception as e:
+            print(f"  WARNING: could not create style '{style_name}': {e}")
+            return
 
     # Font settings
     font_ascii = props.get("font_ascii")
@@ -129,6 +143,10 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
     if bold is not None and hasattr(style, "font"):
         style.font.bold = bold
 
+    italic = props.get("italic")
+    if italic is not None and hasattr(style, "font"):
+        style.font.italic = italic
+
     if color and hasattr(style, "font"):
         style.font.color.rgb = RGBColor.from_string(color)
 
@@ -145,6 +163,8 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
             align = props["alignment"]
             if align in ALIGNMENT_MAP:
                 pf.alignment = ALIGNMENT_MAP[align]
+        if "first_line_indent_pt" in props:
+            pf.first_line_indent = Pt(props["first_line_indent_pt"])
 
 
 def apply_page_setup(doc: Document, page_cfg: dict[str, Any]) -> None:
@@ -181,6 +201,11 @@ def build_template(
     # Apply global page setup
     page_cfg = global_defaults.get("page", {})
     apply_page_setup(doc, page_cfg)
+
+    # Apply template-specific page setup (overrides global)
+    tpl_page_cfg = tpl_cfg.get("page", {})
+    if tpl_page_cfg:
+        apply_page_setup(doc, tpl_page_cfg)
 
     # Apply global paragraph defaults to Normal style first
     para_defaults = global_defaults.get("paragraph", {})
