@@ -1,0 +1,59 @@
+# =========================
+# Dependencies
+# =========================
+node_modules/
+
+# =========================
+# Build / Output
+# =========================
+bin/
+dist/
+dist-crx/
+dist-firefox/
+build/
+coverage/
+*.tsbuildinfo
+
+# =========================
+# Logs / Cache / Temp
+# =========================
+*.log
+.cache/
+cache/
+tmp/
+
+# =========================
+# Environment / Local config
+# =========================
+.env
+.env.*
+!.env.example
+
+# =========================
+# IDE / Editor
+# =========================
+.vscode/
+.idea/
+*.iml
+
+# =========================
+# OS files
+# =========================
+.DS_Store
+Thumbs.db
+
+# =========================
+# Jupyter
+# =========================
+.ipynb_checkpoints/
+
+# =========================
+# Project-specific
+# =========================
+repositories/
+.old/
+.vibe/
+.prompts/
+*.prompt.md
+docs/deepseek.md
+docs/pandoc.md

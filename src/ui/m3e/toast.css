@@ -1,0 +1,118 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — M3E Toast / Snack‑bar
+ *
+ *  .gmd-toast-container — fixed stack at bottom‑center
+ *  .gmd-toast           — individual notification chip
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Container ──────────────────────────────────────────────────────── */
+.gmd-toast-container {
+  position: fixed;
+  bottom: var(--gmd-space-xl);
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100001;
+  display: flex;
+  flex-direction: column-reverse;
+  gap: var(--gmd-space-sm);
+  pointer-events: none;
+}
+
+/* ── Toast ──────────────────────────────────────────────────────────── */
+.gmd-toast {
+  display: flex;
+  align-items: center;
+  gap: var(--gmd-space-md);
+  min-width: 280px;
+  max-width: 480px;
+  padding: var(--gmd-space-md) var(--gmd-space-lg);
+  border-radius: var(--gmd-radius-sm);
+  box-shadow: var(--gmd-elevation-3);
+  pointer-events: auto;
+  opacity: 0;
+  transform: translateY(16px) scale(0.95);
+  transition:
+    opacity var(--gmd-duration-medium) var(--gmd-easing-decelerate),
+    transform var(--gmd-duration-medium) var(--gmd-easing-decelerate);
+}
+
+.gmd-toast--visible {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ── Level variants ─────────────────────────────────────────────────── */
+.gmd-toast--info {
+  background: var(--gmd-on-surface);
+  color: var(--gmd-surface);
+}
+
+.gmd-toast--success {
+  background: var(--gmd-success);
+  color: #fff;
+}
+
+.gmd-toast--warning {
+  background: var(--gmd-warning-container);
+  color: var(--gmd-warning);
+}
+
+.gmd-toast--error {
+  background: var(--gmd-error-container);
+  color: var(--gmd-on-error-container);
+}
+
+/* ── Inner elements ─────────────────────────────────────────────────── */
+.gmd-toast__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.gmd-toast__icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.gmd-toast__message {
+  flex: 1;
+  font-size: var(--gmd-font-size-md);
+  line-height: var(--gmd-line-height);
+}
+
+.gmd-toast__action {
+  border: none;
+  background: transparent;
+  color: inherit;
+  font-family: var(--gmd-font-family);
+  font-size: var(--gmd-font-size-md);
+  font-weight: var(--gmd-font-weight-bold);
+  cursor: pointer;
+  padding: var(--gmd-space-xs) var(--gmd-space-sm);
+  border-radius: var(--gmd-radius-xs);
+  white-space: nowrap;
+  opacity: 0.9;
+}
+
+.gmd-toast__action:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.gmd-toast__close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: var(--gmd-space-xs);
+  border-radius: var(--gmd-radius-full);
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.gmd-toast__close:hover {
+  opacity: 1;
+  background: rgba(255, 255, 255, 0.12);
+}

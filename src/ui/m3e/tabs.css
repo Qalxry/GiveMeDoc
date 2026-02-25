@@ -1,0 +1,116 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — M3E Tabs
+ *
+ *  .gmd-tabs           — root container
+ *  .gmd-tabs__bar      — tab button strip
+ *  .gmd-tabs__tab      — individual tab button
+ *  .gmd-tabs__indicator— animated underline
+ *  .gmd-tabs__panels   — panel container
+ *  .gmd-tabs__panel    — individual tab content
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+.gmd-tabs {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* ── Tab Bar ────────────────────────────────────────────────────────── */
+.gmd-tabs__bar {
+  display: flex;
+  position: relative;
+  border-bottom: 1px solid var(--gmd-outline-variant);
+  background: var(--gmd-surface);
+  flex-shrink: 0;
+}
+
+.gmd-tabs__tab {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gmd-space-sm);
+  padding: var(--gmd-space-md) var(--gmd-space-lg);
+  height: 48px;
+  border: none;
+  background: transparent;
+  font-family: var(--gmd-font-family);
+  font-size: var(--gmd-font-size-md);
+  font-weight: var(--gmd-font-weight-medium);
+  color: var(--gmd-on-surface-variant);
+  cursor: pointer;
+  transition:
+    color var(--gmd-duration-short) var(--gmd-easing-standard),
+    background var(--gmd-duration-short) var(--gmd-easing-standard);
+  position: relative;
+  white-space: nowrap;
+}
+
+.gmd-tabs__tab:hover {
+  background: color-mix(in srgb, var(--gmd-primary) 8%, transparent);
+}
+
+.gmd-tabs__tab--active {
+  color: var(--gmd-primary);
+}
+
+.gmd-tabs__tab-icon {
+  display: inline-flex;
+}
+
+.gmd-tabs__tab-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.gmd-tabs__tab-label {
+  white-space: nowrap;
+}
+
+/* ── Indicator (sliding underline) ──────────────────────────────────── */
+.gmd-tabs__indicator {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--gmd-primary);
+  border-radius: 3px 3px 0 0;
+  transition:
+    left var(--gmd-duration-medium) var(--gmd-easing-standard),
+    width var(--gmd-duration-medium) var(--gmd-easing-standard);
+}
+
+/* ── Panels ─────────────────────────────────────────────────────────── */
+.gmd-tabs__panels {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  position: relative;
+}
+
+.gmd-tabs__panel {
+  display: none;
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--gmd-outline-variant) transparent;
+}
+
+.gmd-tabs__panel--active {
+  display: block;
+}
+
+/* Webkit scrollbar */
+.gmd-tabs__panel::-webkit-scrollbar {
+  width: 6px;
+}
+
+.gmd-tabs__panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.gmd-tabs__panel::-webkit-scrollbar-thumb {
+  background: var(--gmd-outline-variant);
+  border-radius: 3px;
+}

@@ -1,0 +1,202 @@
+# ============================================================================
+# Give Me Doc — 内置 Word 模板样式配置
+# ============================================================================
+# 修改此文件后运行:  pnpm build:templates
+# 生成物:
+#   - templates/<id>.docx            (Pandoc reference-doc)
+#   - packages/core/src/template/builtin-data.ts  (base64 嵌入)
+#
+# 字体说明:
+#   - 中文字体 (eastAsia) 与西文字体 (ascii/hAnsi) 分别指定
+#   - 值为 null 时保持 pandoc 默认值
+#
+# 所有尺寸单位: pt (磅)
+# 颜色: 6 位 hex (不带 #)
+# ============================================================================
+
+# --- 全局默认值 (各模板可覆盖) ---
+defaults:
+  page:
+    width_cm: 21.0       # A4
+    height_cm: 29.7
+    margin_top_cm: 2.54
+    margin_bottom_cm: 2.54
+    margin_left_cm: 3.18
+    margin_right_cm: 3.18
+
+  paragraph:
+    line_spacing: 1.5     # 行距倍数
+    space_after_pt: 6     # 段后间距 (pt)
+
+# --- 模板列表 ---
+templates:
+  # ── 国标文档风格 ──────────────────────────────────────────────
+  - id: builtin-gb
+    name: 国标文档风格
+    description: 参照 GB/T 9704 公文格式，黑体标题 + 仿宋正文
+    styles:
+      Normal:
+        font_ascii: Times New Roman
+        font_eastAsia: 仿宋
+        font_size_pt: 12          # 小四号
+        line_spacing: 1.5
+        space_after_pt: 0
+
+      Title:
+        font_ascii: Arial
+        font_eastAsia: 方正小标宋简体
+        font_size_pt: 22          # 二号
+        bold: true
+        alignment: center
+        space_before_pt: 0
+        space_after_pt: 12
+
+      "Heading 1":
+        font_ascii: Arial
+        font_eastAsia: 黑体
+        font_size_pt: 16          # 三号
+        bold: true
+        space_before_pt: 24
+        space_after_pt: 6
+
+      "Heading 2":
+        font_ascii: Arial
+        font_eastAsia: 楷体
+        font_size_pt: 15          # 小三
+        bold: true
+        space_before_pt: 18
+        space_after_pt: 6
+
+      "Heading 3":
+        font_ascii: Arial
+        font_eastAsia: 黑体
+        font_size_pt: 14          # 四号
+        bold: true
+        space_before_pt: 12
+        space_after_pt: 6
+
+      "First Paragraph":
+        font_ascii: Times New Roman
+        font_eastAsia: 仿宋
+        font_size_pt: 12
+        line_spacing: 1.5
+
+      "Block Text":
+        font_ascii: Consolas
+        font_eastAsia: 仿宋
+        font_size_pt: 10.5        # 五号
+
+  # ── 学术文档风格 ──────────────────────────────────────────────
+  - id: builtin-academic
+    name: 学术文档风格
+    description: 适合学术论文、技术报告，宋体正文 + 黑体标题
+    styles:
+      Normal:
+        font_ascii: Times New Roman
+        font_eastAsia: 宋体
+        font_size_pt: 12
+        line_spacing: 1.5
+        space_after_pt: 0
+
+      Title:
+        font_ascii: Times New Roman
+        font_eastAsia: 黑体
+        font_size_pt: 18          # 小二
+        bold: true
+        alignment: center
+        space_before_pt: 0
+        space_after_pt: 18
+
+      "Heading 1":
+        font_ascii: Times New Roman
+        font_eastAsia: 黑体
+        font_size_pt: 15          # 小三
+        bold: true
+        space_before_pt: 24
+        space_after_pt: 6
+
+      "Heading 2":
+        font_ascii: Times New Roman
+        font_eastAsia: 黑体
+        font_size_pt: 14          # 四号
+        bold: true
+        space_before_pt: 18
+        space_after_pt: 6
+
+      "Heading 3":
+        font_ascii: Times New Roman
+        font_eastAsia: 黑体
+        font_size_pt: 12
+        bold: true
+        space_before_pt: 12
+        space_after_pt: 6
+
+      "First Paragraph":
+        font_ascii: Times New Roman
+        font_eastAsia: 宋体
+        font_size_pt: 12
+        line_spacing: 1.5
+
+      "Block Text":
+        font_ascii: Consolas
+        font_eastAsia: 宋体
+        font_size_pt: 10.5
+
+  # ── 简洁风格 ─────────────────────────────────────────────────
+  - id: builtin-minimal
+    name: 简洁风格
+    description: 清爽简洁，微软雅黑 + 等线，适合日常阅读
+    styles:
+      Normal:
+        font_ascii: Calibri
+        font_eastAsia: 微软雅黑
+        font_size_pt: 11
+        line_spacing: 1.35
+        space_after_pt: 4
+
+      Title:
+        font_ascii: Calibri
+        font_eastAsia: 微软雅黑
+        font_size_pt: 20
+        bold: true
+        alignment: center
+        space_before_pt: 0
+        space_after_pt: 16
+
+      "Heading 1":
+        font_ascii: Calibri
+        font_eastAsia: 微软雅黑
+        font_size_pt: 16
+        bold: true
+        color: "1a1a2e"
+        space_before_pt: 20
+        space_after_pt: 6
+
+      "Heading 2":
+        font_ascii: Calibri
+        font_eastAsia: 微软雅黑
+        font_size_pt: 14
+        bold: true
+        color: "2d3748"
+        space_before_pt: 16
+        space_after_pt: 4
+
+      "Heading 3":
+        font_ascii: Calibri
+        font_eastAsia: 微软雅黑
+        font_size_pt: 12
+        bold: true
+        color: "4a5568"
+        space_before_pt: 12
+        space_after_pt: 4
+
+      "First Paragraph":
+        font_ascii: Calibri
+        font_eastAsia: 微软雅黑
+        font_size_pt: 11
+        line_spacing: 1.35
+
+      "Block Text":
+        font_ascii: Cascadia Code
+        font_eastAsia: 等线
+        font_size_pt: 10

@@ -1,0 +1,119 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — About Tab
+ *
+ *  .gmd-about        — tab root
+ *  .gmd-about__card  — information card
+ *  .gmd-about__row   — label → value key‑pair
+ *  .gmd-about__link  — clickable external link row
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+.gmd-about {
+  padding: var(--gmd-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-lg);
+}
+
+/* ── Card ───────────────────────────────────────────────────────────── */
+.gmd-about__card {
+  background: var(--gmd-surface-container-low);
+  border-radius: var(--gmd-radius-md);
+  padding: var(--gmd-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-md);
+}
+
+.gmd-about__card-title {
+  font-size: var(--gmd-font-size-md);
+  font-weight: var(--gmd-font-weight-bold);
+  color: var(--gmd-on-surface);
+  padding-bottom: var(--gmd-space-xs);
+  border-bottom: 1px solid var(--gmd-outline-variant);
+}
+
+/* ── Info row ───────────────────────────────────────────────────────── */
+.gmd-about__row {
+  display: flex;
+  align-items: baseline;
+  gap: var(--gmd-space-md);
+}
+
+.gmd-about__label {
+  font-size: var(--gmd-font-size-sm);
+  color: var(--gmd-on-surface-variant);
+  flex-shrink: 0;
+  min-width: 72px;
+}
+
+.gmd-about__value {
+  font-size: var(--gmd-font-size-md);
+  color: var(--gmd-on-surface);
+  word-break: break-word;
+}
+
+.gmd-about__value--ok {
+  color: var(--gmd-success);
+  font-weight: var(--gmd-font-weight-medium);
+}
+
+.gmd-about__value--ok::before {
+  content: '●';
+  margin-right: var(--gmd-space-xs);
+  font-size: 10px;
+}
+
+.gmd-about__value--warn {
+  color: var(--gmd-warning);
+  font-weight: var(--gmd-font-weight-medium);
+}
+
+.gmd-about__value--warn::before {
+  content: '●';
+  margin-right: var(--gmd-space-xs);
+  font-size: 10px;
+}
+
+/* ── Link row ───────────────────────────────────────────────────────── */
+.gmd-about__link {
+  display: flex;
+  align-items: center;
+  gap: var(--gmd-space-md);
+  padding: var(--gmd-space-sm) var(--gmd-space-md);
+  border-radius: var(--gmd-radius-sm);
+  text-decoration: none;
+  color: var(--gmd-on-surface);
+  transition: background var(--gmd-duration-short) var(--gmd-easing-standard);
+}
+
+.gmd-about__link:hover {
+  background: var(--gmd-surface-container);
+}
+
+.gmd-about__link-icon {
+  display: inline-flex;
+  color: var(--gmd-primary);
+  flex-shrink: 0;
+}
+
+.gmd-about__link-icon svg {
+  width: 20px;
+  height: 20px;
+}
+
+.gmd-about__link-label {
+  flex: 1;
+  font-size: var(--gmd-font-size-md);
+}
+
+.gmd-about__link-arrow {
+  display: inline-flex;
+  color: var(--gmd-on-surface-variant);
+  opacity: 0.5;
+  flex-shrink: 0;
+}
+
+.gmd-about__link-arrow svg {
+  width: 16px;
+  height: 16px;
+}

@@ -1,0 +1,109 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — M3E Design Tokens & Base Reset
+ *
+ *  Material 3 Expressive inspired CSS custom properties.
+ *  All components reference these tokens; override them to re‑theme.
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+:root {
+  /* ── Surface / Background ────────────────────────────────────────── */
+  --gmd-surface:            #fffbff;
+  --gmd-surface-container:  #f3edf7;
+  --gmd-surface-container-low: #f7f2fa;
+  --gmd-surface-container-high: #ece6f0;
+  --gmd-surface-variant:    #e7e0ec;
+  --gmd-on-surface:         #1d1b20;
+  --gmd-on-surface-variant: #49454f;
+  --gmd-outline:            #79747e;
+  --gmd-outline-variant:    #cac4d0;
+
+  /* ── Primary ─────────────────────────────────────────────────────── */
+  --gmd-primary:            #6750a4;
+  --gmd-on-primary:         #ffffff;
+  --gmd-primary-container:  #eaddff;
+  --gmd-on-primary-container: #21005d;
+
+  /* ── Secondary ───────────────────────────────────────────────────── */
+  --gmd-secondary:          #625b71;
+  --gmd-on-secondary:       #ffffff;
+  --gmd-secondary-container:#e8def8;
+  --gmd-on-secondary-container:#1d192b;
+
+  /* ── Tertiary ────────────────────────────────────────────────────── */
+  --gmd-tertiary:           #7d5260;
+  --gmd-on-tertiary:        #ffffff;
+  --gmd-tertiary-container: #ffd8e4;
+
+  /* ── Error ───────────────────────────────────────────────────────── */
+  --gmd-error:              #b3261e;
+  --gmd-on-error:           #ffffff;
+  --gmd-error-container:    #f9dedc;
+  --gmd-on-error-container: #410e0b;
+
+  /* ── Success (custom) ────────────────────────────────────────────── */
+  --gmd-success:            #1b6e2d;
+  --gmd-success-container:  #a8f5a2;
+
+  /* ── Warning (custom) ────────────────────────────────────────────── */
+  --gmd-warning:            #7c5800;
+  --gmd-warning-container:  #ffdea6;
+
+  /* ── Typography ──────────────────────────────────────────────────── */
+  --gmd-font-family:        'Segoe UI', Roboto, 'Noto Sans SC', 'Helvetica Neue', Arial, sans-serif;
+  --gmd-font-size-xs:       11px;
+  --gmd-font-size-sm:       12px;
+  --gmd-font-size-md:       14px;
+  --gmd-font-size-lg:       16px;
+  --gmd-font-size-title:    18px;
+  --gmd-font-weight-regular: 400;
+  --gmd-font-weight-medium:  500;
+  --gmd-font-weight-bold:    600;
+  --gmd-line-height:        1.5;
+
+  /* ── Shape ───────────────────────────────────────────────────────── */
+  --gmd-radius-xs:          4px;
+  --gmd-radius-sm:          8px;
+  --gmd-radius-md:          12px;
+  --gmd-radius-lg:          16px;
+  --gmd-radius-xl:          28px;
+  --gmd-radius-full:        9999px;
+
+  /* ── Elevation (shadow) ──────────────────────────────────────────── */
+  --gmd-elevation-1: 0 1px 3px 1px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.3);
+  --gmd-elevation-2: 0 2px 6px 2px rgba(0,0,0,.15), 0 1px 2px rgba(0,0,0,.3);
+  --gmd-elevation-3: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
+
+  /* ── Transition ──────────────────────────────────────────────────── */
+  --gmd-duration-short:  150ms;
+  --gmd-duration-medium: 250ms;
+  --gmd-duration-long:   400ms;
+  --gmd-easing-standard: cubic-bezier(0.2, 0, 0, 1);
+  --gmd-easing-decelerate: cubic-bezier(0, 0, 0, 1);
+  --gmd-easing-accelerate: cubic-bezier(0.3, 0, 1, 1);
+
+  /* ── Spacing ─────────────────────────────────────────────────────── */
+  --gmd-space-xs:  4px;
+  --gmd-space-sm:  8px;
+  --gmd-space-md:  12px;
+  --gmd-space-lg:  16px;
+  --gmd-space-xl:  24px;
+  --gmd-space-xxl: 32px;
+}
+
+/* ── Minimal reset scoped to .gmd-panel ─────────────────────────────── */
+.gmd-panel *,
+.gmd-panel *::before,
+.gmd-panel *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.gmd-panel {
+  font-family: var(--gmd-font-family);
+  font-size: var(--gmd-font-size-md);
+  line-height: var(--gmd-line-height);
+  color: var(--gmd-on-surface);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

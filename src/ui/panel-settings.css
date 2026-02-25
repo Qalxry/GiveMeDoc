@@ -1,0 +1,106 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — Settings Tab
+ *
+ *  .gmd-settings              — tab root
+ *  .gmd-settings__section     — grouped section with title
+ *  .gmd-settings__tpl-*       — template management list
+ *  .gmd-settings__hint        — help text
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+.gmd-settings {
+  padding: var(--gmd-space-lg);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-xl);
+}
+
+/* ── Section ────────────────────────────────────────────────────────── */
+.gmd-settings__section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-md);
+}
+
+.gmd-settings__section-title {
+  font-size: var(--gmd-font-size-md);
+  font-weight: var(--gmd-font-weight-bold);
+  color: var(--gmd-primary);
+  padding-bottom: var(--gmd-space-xs);
+  border-bottom: 1px solid var(--gmd-outline-variant);
+}
+
+/* ── Template list ──────────────────────────────────────────────────── */
+.gmd-settings__tpl-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-xs);
+}
+
+.gmd-settings__tpl-row {
+  display: flex;
+  align-items: center;
+  gap: var(--gmd-space-sm);
+  padding: var(--gmd-space-sm) var(--gmd-space-md);
+  border-radius: var(--gmd-radius-sm);
+  background: var(--gmd-surface-container-low);
+  transition: background var(--gmd-duration-short) var(--gmd-easing-standard);
+}
+
+.gmd-settings__tpl-row:hover {
+  background: var(--gmd-surface-container);
+}
+
+.gmd-settings__tpl-name {
+  font-size: var(--gmd-font-size-md);
+  font-weight: var(--gmd-font-weight-medium);
+  color: var(--gmd-on-surface);
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.gmd-settings__tpl-name--active {
+  color: var(--gmd-primary);
+  font-weight: var(--gmd-font-weight-bold);
+}
+
+.gmd-settings__tpl-desc {
+  font-size: var(--gmd-font-size-xs);
+  color: var(--gmd-on-surface-variant);
+  flex-shrink: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 120px;
+}
+
+.gmd-settings__tpl-badge {
+  font-size: var(--gmd-font-size-xs);
+  padding: 2px var(--gmd-space-sm);
+  border-radius: var(--gmd-radius-full);
+  background: var(--gmd-surface-variant);
+  color: var(--gmd-on-surface-variant);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+/* ── Icon buttons in template rows (smaller) ────────────────────────── */
+.gmd-settings__tpl-row .gmd-icon-btn {
+  width: 32px;
+  height: 32px;
+}
+
+.gmd-settings__tpl-row .gmd-icon-btn svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Hint text ──────────────────────────────────────────────────────── */
+.gmd-settings__hint {
+  font-size: var(--gmd-font-size-xs);
+  color: var(--gmd-on-surface-variant);
+  padding: var(--gmd-space-xs) 0;
+  font-style: italic;
+}

@@ -1,0 +1,172 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — M3E Button & Icon‑Button
+ *
+ *  .gmd-btn          — regular button (filled / tonal / outlined / text / elevated)
+ *  .gmd-icon-btn     — icon‑only button (standard / filled / tonal / outlined)
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── Common button reset ────────────────────────────────────────────── */
+.gmd-btn,
+.gmd-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gmd-space-sm);
+  border: none;
+  cursor: pointer;
+  font-family: var(--gmd-font-family);
+  font-weight: var(--gmd-font-weight-medium);
+  transition:
+    background var(--gmd-duration-short) var(--gmd-easing-standard),
+    box-shadow var(--gmd-duration-short) var(--gmd-easing-standard),
+    opacity var(--gmd-duration-short);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.gmd-btn:disabled,
+.gmd-icon-btn:disabled {
+  opacity: 0.38;
+  cursor: default;
+  pointer-events: none;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Regular Button  .gmd-btn
+   ════════════════════════════════════════════════════════════════════════ */
+.gmd-btn {
+  height: 40px;
+  padding: 0 var(--gmd-space-xl);
+  border-radius: var(--gmd-radius-full);
+  font-size: var(--gmd-font-size-md);
+  line-height: 40px;
+  white-space: nowrap;
+  position: relative;
+  overflow: hidden;
+}
+
+.gmd-btn__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.gmd-btn__icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.gmd-btn__label {
+  white-space: nowrap;
+}
+
+/* ── Filled ─────────────────────────────────────────────────────────── */
+.gmd-btn--filled {
+  background: var(--gmd-primary);
+  color: var(--gmd-on-primary);
+}
+
+.gmd-btn--filled:hover {
+  box-shadow: var(--gmd-elevation-1);
+  filter: brightness(1.08);
+}
+
+.gmd-btn--filled:active {
+  filter: brightness(0.92);
+}
+
+/* ── Tonal ──────────────────────────────────────────────────────────── */
+.gmd-btn--tonal {
+  background: var(--gmd-secondary-container);
+  color: var(--gmd-on-secondary-container);
+}
+
+.gmd-btn--tonal:hover {
+  box-shadow: var(--gmd-elevation-1);
+  filter: brightness(0.96);
+}
+
+/* ── Outlined ───────────────────────────────────────────────────────── */
+.gmd-btn--outlined {
+  background: transparent;
+  color: var(--gmd-primary);
+  border: 1px solid var(--gmd-outline);
+}
+
+.gmd-btn--outlined:hover {
+  background: color-mix(in srgb, var(--gmd-primary) 8%, transparent);
+}
+
+/* ── Text ───────────────────────────────────────────────────────────── */
+.gmd-btn--text {
+  background: transparent;
+  color: var(--gmd-primary);
+  padding: 0 var(--gmd-space-md);
+}
+
+.gmd-btn--text:hover {
+  background: color-mix(in srgb, var(--gmd-primary) 8%, transparent);
+}
+
+/* ── Elevated ───────────────────────────────────────────────────────── */
+.gmd-btn--elevated {
+  background: var(--gmd-surface-container-low);
+  color: var(--gmd-primary);
+  box-shadow: var(--gmd-elevation-1);
+}
+
+.gmd-btn--elevated:hover {
+  box-shadow: var(--gmd-elevation-2);
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Icon Button  .gmd-icon-btn
+   ════════════════════════════════════════════════════════════════════════ */
+.gmd-icon-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--gmd-radius-full);
+  padding: 0;
+  font-size: 0;
+  background: transparent;
+  color: var(--gmd-on-surface-variant);
+  flex-shrink: 0;
+}
+
+.gmd-icon-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ── Standard ───────────────────────────────────────────────────────── */
+.gmd-icon-btn--standard:hover {
+  background: color-mix(in srgb, var(--gmd-on-surface-variant) 8%, transparent);
+}
+
+/* ── Filled ─────────────────────────────────────────────────────────── */
+.gmd-icon-btn--filled {
+  background: var(--gmd-primary);
+  color: var(--gmd-on-primary);
+}
+
+.gmd-icon-btn--filled:hover {
+  filter: brightness(1.08);
+}
+
+/* ── Tonal ──────────────────────────────────────────────────────────── */
+.gmd-icon-btn--tonal {
+  background: var(--gmd-secondary-container);
+  color: var(--gmd-on-secondary-container);
+}
+
+.gmd-icon-btn--tonal:hover {
+  filter: brightness(0.96);
+}
+
+/* ── Outlined ───────────────────────────────────────────────────────── */
+.gmd-icon-btn--outlined {
+  border: 1px solid var(--gmd-outline);
+  color: var(--gmd-on-surface-variant);
+}
+
+.gmd-icon-btn--outlined:hover {
+  background: color-mix(in srgb, var(--gmd-on-surface-variant) 8%, transparent);
+}

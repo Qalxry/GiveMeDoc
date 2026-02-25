@@ -1,0 +1,65 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — Panel Shell
+ *
+ *  .gmd-panel          — floating side panel container
+ *  .gmd-panel__header  — drag handle + title + close btn
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+.gmd-panel {
+  position: fixed;
+  top: var(--gmd-space-xl);
+  right: var(--gmd-space-xl);
+  width: 420px;
+  height: calc(100vh - 48px);
+  max-height: 780px;
+  z-index: 100000;
+  display: flex;
+  flex-direction: column;
+  background: var(--gmd-surface);
+  border-radius: var(--gmd-radius-lg);
+  box-shadow: var(--gmd-elevation-3);
+  overflow: hidden;
+  transition:
+    opacity var(--gmd-duration-medium) var(--gmd-easing-standard),
+    transform var(--gmd-duration-medium) var(--gmd-easing-standard);
+}
+
+.gmd-panel--hidden {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(24px);
+}
+
+/* ── Header ─────────────────────────────────────────────────────────── */
+.gmd-panel__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--gmd-space-md) var(--gmd-space-lg);
+  background: var(--gmd-surface-container-low);
+  border-bottom: 1px solid var(--gmd-outline-variant);
+  flex-shrink: 0;
+  user-select: none;
+}
+
+.gmd-panel__title-wrap {
+  display: flex;
+  align-items: center;
+  gap: var(--gmd-space-sm);
+}
+
+.gmd-panel__logo {
+  display: inline-flex;
+  color: var(--gmd-primary);
+}
+
+.gmd-panel__logo svg {
+  width: 22px;
+  height: 22px;
+}
+
+.gmd-panel__title {
+  font-size: var(--gmd-font-size-title);
+  font-weight: var(--gmd-font-weight-bold);
+  color: var(--gmd-on-surface);
+}

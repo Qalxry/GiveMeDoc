@@ -1,0 +1,23 @@
+/*  ═══════════════════════════════════════════════════════════════════════
+ *  Give Me Doc — CSS Entry Point
+ *
+ *  Import order matters: tokens → primitives → composites → page‑level.
+ *  Vite will bundle all @import into one CSS string.
+ *  ═══════════════════════════════════════════════════════════════════════ */
+
+/* ── M3E Design tokens & reset ──────────────────────────────────────── */
+@import './m3e/base.css';
+
+/* ── M3E Primitive components ───────────────────────────────────────── */
+@import './m3e/btn.css';
+@import './m3e/form.css';
+@import './m3e/tabs.css';
+@import './m3e/toast.css';
+
+/* ── Panel shell ────────────────────────────────────────────────────── */
+@import './panel.css';
+
+/* ── Tab pages ──────────────────────────────────────────────────────── */
+@import './panel-export.css';
+@import './panel-settings.css';
+@import './panel-about.css';

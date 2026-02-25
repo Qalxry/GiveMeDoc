@@ -1,0 +1,47 @@
+{
+  "manifest_version": 3,
+  "name": "Give Me Doc",
+  "version": "1.0.0",
+  "description": "将 AI 对话导出为 Word 文档 — 由 Pandoc WASM 驱动",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "clipboardRead"
+  ],
+  "host_permissions": [
+    "https://chat.deepseek.com/*",
+    "https://pandoc.org/*",
+    "https://cdn.jsdelivr.net/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/icon-16.png",
+      "48": "icons/icon-48.png",
+      "128": "icons/icon-128.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon-16.png",
+    "48": "icons/icon-48.png",
+    "128": "icons/icon-128.png"
+  },
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://chat.deepseek.com/*"],
+      "js": ["content.js"],
+      "css": ["assets/style.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["pandoc.worker.js"],
+      "matches": ["https://chat.deepseek.com/*"]
+    }
+  ]
+}

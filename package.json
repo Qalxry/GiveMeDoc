@@ -1,0 +1,27 @@
+{
+  "name": "give-me-doc",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "license": "AGPL-3.0",
+  "description": "Convert AI chat to Word documents — powered by Pandoc WASM",
+  "scripts": {
+    "dev": "vite",
+    "build:templates": "python3 scripts/build_templates.py",
+    "build:userscript": "vite build --mode userscript",
+    "build:extension": "vite build --mode extension",
+    "build:chrome": "pnpm build:extension && node scripts/copy-manifest.mjs chrome",
+    "build:firefox": "pnpm build:extension && node scripts/copy-manifest.mjs firefox",
+    "build": "pnpm build:templates && pnpm build:userscript && pnpm build:extension",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@bjorn3/browser_wasi_shim": "^0.3.0",
+    "comlink": "^4.4.2",
+    "typescript": "^5.7.0",
+    "vite": "^6.1.0",
+    "webextension-polyfill": "^0.12.0",
+    "@types/webextension-polyfill": "^0.12.1"
+  },
+  "dependencies": {}
+}
