@@ -188,7 +188,7 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
   // 1. Inject styles
   GM_addStyle(css);
 
-  const callbacks = createCallbacks(gmStorage);
+  const callbacks = createCallbacks(gmStorage, clearWasmCache);
 
   // 2. Register GM menu commands
   GM_registerMenuCommand('📄 Give Me Doc 面板', () => togglePanel(callbacks));

@@ -90,7 +90,12 @@ async function loadPandocWasm(): Promise<void> {
 // Bootstrap
 // ═══════════════════════════════════════════════════════════════════════════
 
-const callbacks = createCallbacks(extStorage);
+const callbacks = createCallbacks(extStorage, async () => {
+  // Extension WASM is managed by the service worker; clear local storage cache entries
+  const keys = await browser.storage.local.get(null);
+  const wasmKeys = Object.keys(keys).filter((k) => k.startsWith('pandoc-wasm'));
+  if (wasmKeys.length > 0) await browser.storage.local.remove(wasmKeys);
+});
 
 // Listen for toggle from popup / background
 browser.runtime.onMessage.addListener((msg: unknown) => {

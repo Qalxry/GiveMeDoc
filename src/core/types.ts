@@ -133,6 +133,10 @@ export interface PanelCallbacks {
   onTemplateDelete(id: string): Promise<void>;
   /** Persist a partial config change. */
   onConfigChange(partial: Partial<UserConfig>): Promise<void>;
+  /** Reset config to DEFAULT_CONFIG and return the fresh config. */
+  onResetConfig(): Promise<UserConfig>;
+  /** Clear Pandoc WASM cache. */
+  onClearCache(): Promise<void>;
   /** Read the current config. */
   getConfig(): Promise<UserConfig>;
   /** List all available templates (builtin + custom). */

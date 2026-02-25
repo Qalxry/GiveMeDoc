@@ -60,23 +60,52 @@ export async function getPandocVersion(): Promise<string> {
 export function formatMarkdown(raw: string): string {
   let s = raw;
 
+  // ── Protect code regions from math processing ───────────────────────
+  // Temporarily replace fenced code blocks and inline code with placeholders
+  // so that $ signs inside them are not touched.
+  const codeSlots: string[] = [];
+  function stash(m: string): string {
+    codeSlots.push(m);
+    return `\x00CODE${codeSlots.length - 1}\x00`;
+  }
+  // Fenced code blocks (``` or ~~~)
+  s = s.replace(/^(`{3,}|~{3,}).*\n[\s\S]*?\n\1\s*$/gm, stash);
+  // Inline code (backtick runs)
+  s = s.replace(/`[^`]+`/g, stash);
+
   // 1. Inline math: \(...\) → $...$
   s = s.replace(/\\\((.+?)\\\)/gs, (_, inner) => `$${inner}$`);
 
   // 2. Display math: \[...\] → $$...$$
   s = s.replace(/\\\[(.+?)\\\]/gs, (_, inner) => `$$${inner}$$`);
 
-  // 3. Remove citation references: [citation:N]
+  // 3. Normalize inline math spacing: $ content $ → $content$
+  //    Trim leading/trailing whitespace inside single-$ delimiters.
+  //    Uses negative lookahead/lookbehind to skip $$ (display math).
+  //    Inner content must not contain $ or newlines, preventing cross-formula spans.
+  s = s.replace(
+    /(?<!\$)\$(?!\$)([^\S\n]*)([^\$\n]+?)([^\S\n]*)\$(?!\$)/g,
+    (match, pre, inner, post) => {
+      const trimmed = inner.trim();
+      if (trimmed === inner && !pre && !post) return match; // already tight — no change
+      return `$${trimmed}$`;
+    },
+  );
+
+  // 4. Remove citation references: [citation:N]
   s = s.replace(/\[citation:\d+\]/g, '');
 
-  // 4. Collapse excessive blank lines
+  // 5. Collapse excessive blank lines
   s = s.replace(/\n{3,}/g, '\n\n');
 
-  // 5. Unify list bullets at line start: •, *, + → -
+  // 6. Unify list bullets at line start: •, *, + → -
   s = s.replace(/^([^\S\n]*)[•*+]\s/gm, '$1- ');
 
-  // 6. Fix heading levels — ensure no gaps (e.g. # then ### without ##)
+  // 7. Fix heading levels — ensure no gaps (e.g. # then ### without ##)
   // s = fixHeadingLevels(s);
+
+  // ── Restore code regions ────────────────────────────────────────────
+  s = s.replace(/\x00CODE(\d+)\x00/g, (_, idx) => codeSlots[Number(idx)]);
 
   return s;
 }
@@ -179,8 +208,11 @@ export async function exportToDocx(
   if (!pandoc) throw new Error('Pandoc Worker not initialized');
 
   const raw = assembleDocument(messages, config, sessionTitle);
+
+  console.debug('[GiveMeDoc] Assembled Markdown before formatting:', '\n' + raw);
   const formatted = formatMarkdown(raw);
   console.debug('[GiveMeDoc] Formatted Markdown for export:', '\n' + formatted);
+  
   const buffer = await pandoc.convert(formatted, referenceDocx);
 
   const safeName = sessionTitle.replace(/[<>:"/\\|?*]/g, '_').slice(0, 100) || 'export';

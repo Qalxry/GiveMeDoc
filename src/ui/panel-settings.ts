@@ -15,7 +15,7 @@ import {
 import { createSwitch, setSwitchState } from './m3e/switch';
 import { showToast } from './m3e/toast';
 import {
-  ICON_UPLOAD, ICON_TRASH,
+  ICON_UPLOAD, ICON_TRASH, ICON_REFRESH,
 } from './m3e/icons';
 
 declare const __PLATFORM__: 'userscript' | 'extension';
@@ -143,6 +143,49 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
 
     root.appendChild(cdnSection);
   }
+
+  // ── Section: Danger zone ─────────────────────────────────────────────
+  const dangerSection = createSection('危险区域');
+
+  const resetBtn = createButton({
+    label: '重置设置',
+    icon: ICON_REFRESH,
+    variant: 'tonal',
+    onClick: async () => {
+      try {
+        config = await cb.onResetConfig();
+        // Refresh all UI elements with the fresh config
+        setSwitchState(thinkingSwitch, config.includeThinking);
+        setTextareaValue(prefixTextarea, config.documentPrefix);
+        setTextareaValue(userTplTextarea, config.userMessageTemplate);
+        setTextareaValue(assistantTplTextarea, config.assistantMessageTemplate);
+        if (cdnSection && __PLATFORM__ === 'userscript') {
+          setTextareaValue(cdnTextarea, config.cdnUrls.join('\n'));
+        }
+        showToast({ message: '设置已重置为默认值', level: 'success' });
+      } catch (err) {
+        showToast({ message: `重置失败: ${(err as Error).message}`, level: 'error' });
+      }
+    },
+  });
+  dangerSection.appendChild(resetBtn);
+
+  const clearCacheBtn = createButton({
+    label: '清除缓存',
+    icon: ICON_TRASH,
+    variant: 'tonal',
+    onClick: async () => {
+      try {
+        await cb.onClearCache();
+        showToast({ message: '缓存已清除，下次加载将重新下载', level: 'success' });
+      } catch (err) {
+        showToast({ message: `清除缓存失败: ${(err as Error).message}`, level: 'error' });
+      }
+    },
+  });
+  dangerSection.appendChild(clearCacheBtn);
+
+  root.appendChild(dangerSection);
 
   // ── Load data ────────────────────────────────────────────────────────
   loadData(cb);

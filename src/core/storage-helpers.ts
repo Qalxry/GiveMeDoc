@@ -83,7 +83,7 @@ export async function getTemplateBlob(
 // Panel Callbacks factory
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function createCallbacks(storage: IStorage): PanelCallbacks {
+export function createCallbacks(storage: IStorage, clearCacheFn?: () => Promise<void>): PanelCallbacks {
   return {
     async onExport(selectedIds, templateId) {
       const sessionId = getCurrentSessionId();
@@ -111,6 +111,17 @@ export function createCallbacks(storage: IStorage): PanelCallbacks {
 
     async onConfigChange(partial) {
       await saveConfigPartial(storage, partial);
+    },
+
+    async onResetConfig() {
+      await storage.set('config', DEFAULT_CONFIG);
+      return DEFAULT_CONFIG;
+    },
+
+    async onClearCache() {
+      if (clearCacheFn) {
+        await clearCacheFn();
+      }
     },
 
     async getConfig() {
