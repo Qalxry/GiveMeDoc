@@ -202,19 +202,21 @@ export function getActiveChain(session: IChatSession): IMessage[] {
  */
 export function switchBranch(
   session: IChatSession,
-  nodeId: string,
+  nodeId: string | null,
   targetChildId: string,
 ): IMessage[] {
   const messages = session.messages;
 
-  // Build prefix: root → nodeId
+  // Build prefix: root → nodeId (empty if nodeId is null = virtual root)
   const prefix: IMessage[] = [];
-  let id: string | null = nodeId;
-  while (id) {
-    const msg = messages.get(id);
-    if (!msg) break;
-    prefix.unshift(msg);
-    id = msg.parentId;
+  if (nodeId !== null) {
+    let id: string | null = nodeId;
+    while (id) {
+      const msg = messages.get(id);
+      if (!msg) break;
+      prefix.unshift(msg);
+      id = msg.parentId;
+    }
   }
 
   // Build suffix: targetChildId → leaf (always follow first child)
@@ -230,17 +232,28 @@ export function switchBranch(
   return [...prefix, ...suffix];
 }
 
-/** Check if a node has multiple children (i.e. a branch point). */
-export function hasBranch(session: IChatSession, nodeId: string): boolean {
+/** Check if a node has multiple children (i.e. a branch point). Pass null for virtual root. */
+export function hasBranch(session: IChatSession, nodeId: string | null): boolean {
+  if (nodeId === null) return getRootIds(session).length > 1;
   const msg = session.messages.get(nodeId);
   return !!msg && msg.childrenIds.length > 1;
 }
 
-/** Get the index of a child within its parent's childrenIds. */
-export function getChildIndex(session: IChatSession, parentId: string, childId: string): number {
+/** Get the index of a child within its parent's childrenIds. Pass null parentId for root. */
+export function getChildIndex(session: IChatSession, parentId: string | null, childId: string): number {
+  if (parentId === null) return getRootIds(session).indexOf(childId);
   const parent = session.messages.get(parentId);
   if (!parent) return 0;
   return parent.childrenIds.indexOf(childId);
+}
+
+/** Get all root message IDs (parentId === null) in insertion order. */
+export function getRootIds(session: IChatSession): string[] {
+  const ids: string[] = [];
+  for (const msg of session.messages.values()) {
+    if (msg.parentId === null) ids.push(msg.id);
+  }
+  return ids;
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -263,7 +276,7 @@ const FILE_TYPE_SVG = iconSize(ICON_FILE_TYPE, 16);
  * Inject a "export to docx" icon button after each copy button in the message toolbar.
  * Uses MutationObserver to handle dynamically added messages.
  */
-export function injectSingleExportButtons(onClick: (md: string) => void): void {
+export function injectSingleExportButtons(onClick: (md: string, title: string) => void): void {
   const MARKER_ATTR = 'data-gmd-injected';
 
   function processToolbar(toolbar: Element): void {
@@ -298,7 +311,10 @@ export function injectSingleExportButtons(onClick: (md: string) => void): void {
       // 3. Read clipboard
       try {
         const md = await navigator.clipboard.readText();
-        if (md) onClick(md);
+        if (md) {
+          const title = document.title.replace(/ - DeepSeek$/, '').trim() || '单条消息导出';
+          onClick(md, title);
+        }
       } catch (err) {
         console.error('[GiveMeDoc] Clipboard read failed:', err);
       }

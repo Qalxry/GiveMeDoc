@@ -201,7 +201,7 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
   });
 
   // 4. Inject per-message export buttons
-  injectSingleExportButtons(async (md) => {
+  injectSingleExportButtons(async (md, title) => {
     if (!isPandocReady()) {
       showToast({ message: 'Pandoc 尚未就绪，请稍候…', level: 'warning' });
       return;
@@ -216,7 +216,7 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
       const { blob, filename } = await exportToDocx(
         [{ id: '0', parentId: null, role: 'assistant', content: md, thinkingContent: '', timestamp: Date.now(), status: 'finished', childrenIds: [] }],
         effectiveConfig,
-        `单条消息导出`,
+        title,
         refDocx,
       );
       downloadBlob(blob, filename);

@@ -13,7 +13,7 @@ import { createTabs, type Tab } from './m3e/tabs';
 import {
   ICON_LIST, ICON_SETTINGS, ICON_INFO, ICON_FILE_TEXT, ICON_X,
 } from './m3e/icons';
-import { renderExportTab, refreshExportTemplates } from './panel-export';
+import { renderExportTab, refreshExportTab, refreshExportTemplates } from './panel-export';
 import { renderSettingsTab } from './panel-settings';
 import { renderAboutTab } from './panel-about';
 import { showFab, isFabMounted } from './fab';
@@ -118,12 +118,14 @@ export function createPanel(cb: PanelCallbacks): void {
 // Show / Hide / Toggle / Destroy
 // ═══════════════════════════════════════════════════════════════════════════
 
-export function showPanel(cb: PanelCallbacks): void {
+export async function showPanel(cb: PanelCallbacks): Promise<void> {
   if (!panelEl) {
     createPanel(cb);
   } else {
     panelEl.classList.remove('gmd-panel--hidden');
     isVisible = true;
+    const cfg = await cb.getConfig();
+    if (cfg.autoRefreshOnOpen) refreshExportTab(cb);
   }
 }
 

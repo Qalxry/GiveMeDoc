@@ -61,6 +61,8 @@ export interface UserConfig {
   singleExportWithTemplate: boolean;
   /** Whether to show the floating action button (FAB) on the page. */
   showFab: boolean;
+  /** Whether to auto-refresh the export tab when the panel is opened. */
+  autoRefreshOnOpen: boolean;
   selectedTemplateId: string;
   documentPrefix: string;
   userMessageTemplate: string;
@@ -74,6 +76,7 @@ export const DEFAULT_CONFIG: UserConfig = {
   includeThinking: false,
   singleExportWithTemplate: false,
   showFab: true,
+  autoRefreshOnOpen: true,
   selectedTemplateId: 'builtin-gb',
   documentPrefix: `---
 title: {title}

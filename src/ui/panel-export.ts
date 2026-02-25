@@ -18,7 +18,7 @@ import {
   ICON_USER, ICON_BOT, ICON_CHECK, ICON_LIST, ICON_REFRESH,
 } from './m3e/icons';
 import {
-  getActiveChain, switchBranch, hasBranch, getChildIndex, getCurrentSessionId,
+  getActiveChain, switchBranch, hasBranch, getChildIndex, getRootIds, getCurrentSessionId,
 } from '../adapters/deepseek';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -194,8 +194,8 @@ function createMessageRow(msg: IMessage): HTMLElement {
   summary.title = plain.slice(0, 300);
   row.appendChild(summary);
 
-  // Branch switcher (only if parent has multiple children)
-  if (session && msg.parentId && hasBranch(session, msg.parentId)) {
+  // Branch switcher (if parent has multiple children, or multiple roots)
+  if (session && hasBranch(session, msg.parentId)) {
     const branchCtrl = createBranchSwitcher(msg);
     row.appendChild(branchCtrl);
   }
@@ -204,11 +204,14 @@ function createMessageRow(msg: IMessage): HTMLElement {
 }
 
 function createBranchSwitcher(msg: IMessage): HTMLElement {
-  if (!session || !msg.parentId) return el('span', '');
+  if (!session) return el('span', '');
 
-  const parent = session.messages.get(msg.parentId)!;
-  const idx = getChildIndex(session, msg.parentId, msg.id);
-  const total = parent.childrenIds.length;
+  const parentId = msg.parentId;
+  const childrenIds = parentId === null
+    ? getRootIds(session)
+    : session.messages.get(parentId)!.childrenIds;
+  const idx = getChildIndex(session, parentId, msg.id);
+  const total = childrenIds.length;
 
   const ctrl = el('span', 'gmd-export__branch');
 
@@ -216,7 +219,7 @@ function createBranchSwitcher(msg: IMessage): HTMLElement {
     icon: ICON_CHEVRON_LEFT,
     title: '上一分支',
     variant: 'standard',
-    onClick: () => navigateBranch(msg.parentId!, idx - 1),
+    onClick: () => navigateBranch(parentId, idx - 1),
   });
   if (idx <= 0) prevBtn.disabled = true;
 
@@ -227,7 +230,7 @@ function createBranchSwitcher(msg: IMessage): HTMLElement {
     icon: ICON_CHEVRON_RIGHT,
     title: '下一分支',
     variant: 'standard',
-    onClick: () => navigateBranch(msg.parentId!, idx + 1),
+    onClick: () => navigateBranch(parentId, idx + 1),
   });
   if (idx >= total - 1) nextBtn.disabled = true;
 
@@ -235,12 +238,15 @@ function createBranchSwitcher(msg: IMessage): HTMLElement {
   return ctrl;
 }
 
-function navigateBranch(parentId: string, targetIdx: number): void {
+function navigateBranch(parentId: string | null, targetIdx: number): void {
   if (!session) return;
-  const parent = session.messages.get(parentId);
-  if (!parent || targetIdx < 0 || targetIdx >= parent.childrenIds.length) return;
 
-  const targetChildId = parent.childrenIds[targetIdx];
+  const childrenIds = parentId === null
+    ? getRootIds(session)
+    : session.messages.get(parentId)?.childrenIds;
+  if (!childrenIds || targetIdx < 0 || targetIdx >= childrenIds.length) return;
+
+  const targetChildId = childrenIds[targetIdx];
   chain = switchBranch(session, parentId, targetChildId);
 
   // Preserve / reset selection

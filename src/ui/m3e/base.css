@@ -99,6 +99,58 @@
   padding: 0;
 }
 
+/* ── Dark mode token overrides ──────────────────────────────────────── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ── Surface / Background ──────────────────────────────────────── */
+    --gmd-surface:            #141218;
+    --gmd-surface-container:  #211f26;
+    --gmd-surface-container-low: #1d1b20;
+    --gmd-surface-container-high: #2b2930;
+    --gmd-surface-variant:    #49454f;
+    --gmd-on-surface:         #e6e0e9;
+    --gmd-on-surface-variant: #cac4d0;
+    --gmd-outline:            #938f99;
+    --gmd-outline-variant:    #49454f;
+
+    /* ── Primary ───────────────────────────────────────────────────── */
+    --gmd-primary:            #d0bcff;
+    --gmd-on-primary:         #381e72;
+    --gmd-primary-container:  #4f378b;
+    --gmd-on-primary-container: #eaddff;
+
+    /* ── Secondary ─────────────────────────────────────────────────── */
+    --gmd-secondary:          #ccc2dc;
+    --gmd-on-secondary:       #332d41;
+    --gmd-secondary-container:#4a4458;
+    --gmd-on-secondary-container:#e8def8;
+
+    /* ── Tertiary ──────────────────────────────────────────────────── */
+    --gmd-tertiary:           #efb8c8;
+    --gmd-on-tertiary:        #492532;
+    --gmd-tertiary-container: #633b48;
+
+    /* ── Error ─────────────────────────────────────────────────────── */
+    --gmd-error:              #f2b8b5;
+    --gmd-on-error:           #601410;
+    --gmd-error-container:    #8c1d18;
+    --gmd-on-error-container: #f9dedc;
+
+    /* ── Success (custom) ──────────────────────────────────────────── */
+    --gmd-success:            #7ddb7f;
+    --gmd-success-container:  #0a5218;
+
+    /* ── Warning (custom) ──────────────────────────────────────────── */
+    --gmd-warning:            #f5c34a;
+    --gmd-warning-container:  #5a4100;
+
+    /* ── Elevation (shadow — reduced in dark mode) ─────────────────── */
+    --gmd-elevation-1: 0 1px 3px 1px rgba(0,0,0,.30), 0 1px 2px rgba(0,0,0,.50);
+    --gmd-elevation-2: 0 2px 6px 2px rgba(0,0,0,.30), 0 1px 2px rgba(0,0,0,.50);
+    --gmd-elevation-3: 0 4px 8px 3px rgba(0,0,0,.30), 0 1px 3px rgba(0,0,0,.50);
+  }
+}
+
 .gmd-panel {
   font-family: var(--gmd-font-family);
   font-size: var(--gmd-font-size-md);

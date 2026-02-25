@@ -45,6 +45,7 @@ let templateListEl: HTMLElement;
 let fabSwitch: HTMLElement;
 let thinkingSwitch: HTMLElement;
 let singleExportSwitch: HTMLElement;
+let autoRefreshSwitch: HTMLElement;
 let prefixTextarea: HTMLElement;
 let userTplTextarea: HTMLElement;
 let assistantTplTextarea: HTMLElement;
@@ -91,6 +92,16 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
     },
   });
   displaySection.appendChild(fabSwitch);
+
+  autoRefreshSwitch = createSwitch({
+    label: '打开面板时自动刷新',
+    checked: true,
+    onChange: (checked) => {
+      config.autoRefreshOnOpen = checked;
+      cb.onConfigChange({ autoRefreshOnOpen: checked });
+    },
+  });
+  displaySection.appendChild(autoRefreshSwitch);
 
   root.appendChild(displaySection);
 
@@ -190,6 +201,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
         config = await cb.onResetConfig();
         // Refresh all UI elements with the fresh config
         setSwitchState(fabSwitch, config.showFab);
+        setSwitchState(autoRefreshSwitch, config.autoRefreshOnOpen);
         setSwitchState(thinkingSwitch, config.includeThinking);
         setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
         setTextareaValue(prefixTextarea, config.documentPrefix);
@@ -323,6 +335,7 @@ async function loadData(cb: PanelCallbacks): Promise<void> {
 
     // Sync switches
     setSwitchState(fabSwitch, config.showFab);
+    setSwitchState(autoRefreshSwitch, config.autoRefreshOnOpen);
     setSwitchState(thinkingSwitch, config.includeThinking);
     setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
 
