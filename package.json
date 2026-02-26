@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "vite",
     "build:templates": "python3 scripts/build_templates.py",
+    "build:gmdicon": "python3 scripts/build_gmd_icon.py",
     "build:icons": "python3 scripts/build_icons.py",
     "build:userscript": "vite build --mode userscript",
     "build:extension": "vite build --mode extension-content && vite build --mode extension-worker && vite build --mode extension",
