@@ -200,7 +200,7 @@ AbstractTitle:
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: true
   keep_together: true
   widow_control: true

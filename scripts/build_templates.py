@@ -112,7 +112,14 @@ def generate_base_reference_doc(output_path: Path) -> None:
 
 
 def set_run_font(run_or_rpr, *, ascii: str | None, east_asia: str | None) -> None:
-    """Set font names on a run or rPr element using OOXML."""
+    """Set font names on a run or rPr element using OOXML.
+
+    Importantly, this also removes any theme font attributes (asciiTheme,
+    hAnsiTheme, eastAsiaTheme, cstheme) that would otherwise override the
+    explicit font names we set.  Pandoc's default reference.docx uses theme
+    fonts on Heading styles, which is why headings revert to Calibri + 宋体
+    unless the theme attributes are stripped.
+    """
     # Find or create rFonts element
     rpr = run_or_rpr
     rfonts = rpr.find(qn("w:rFonts"))
@@ -122,8 +129,15 @@ def set_run_font(run_or_rpr, *, ascii: str | None, east_asia: str | None) -> Non
     if ascii:
         rfonts.set(qn("w:ascii"), ascii)
         rfonts.set(qn("w:hAnsi"), ascii)
+        # Remove theme overrides so explicit names take effect
+        for attr in (qn("w:asciiTheme"), qn("w:hAnsiTheme")):
+            rfonts.attrib.pop(attr, None)
     if east_asia:
         rfonts.set(qn("w:eastAsia"), east_asia)
+        rfonts.attrib.pop(qn("w:eastAsiaTheme"), None)
+    # Also clear cstheme if we're setting any explicit font
+    if ascii or east_asia:
+        rfonts.attrib.pop(qn("w:cstheme"), None)
 
 
 def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
