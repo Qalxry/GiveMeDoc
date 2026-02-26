@@ -79,6 +79,12 @@ export const ICON_TRIANGLE_ALERT = `<svg ${S}><path d="m21.73 18-8-14a2 2 0 0 0-
 /** circle-x — error toast */
 export const ICON_CIRCLE_X = `<svg ${S}><circle cx="12" cy="12" r="10"/> <path d="m15 9-6 6"/> <path d="m9 9 6 6"/></svg>`;
 
+/** text-cursor-input — free-text input mode */
+export const ICON_TEXT_CURSOR_INPUT = `<svg ${S}><path d="M12 20h-1a2 2 0 0 1-2-2 2 2 0 0 1-2 2H6"/> <path d="M13 8h7a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-7"/> <path d="M5 16H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h1"/> <path d="M6 4h1a2 2 0 0 1 2 2 2 2 0 0 1 2-2h1"/> <path d="M9 6v12"/></svg>`;
+
+/** messages-square — message export */
+export const ICON_MESSAGES_SQUARE = `<svg ${S}><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/> <path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"/></svg>`;
+
 // ── Size helper ────────────────────────────────────────────────────────
 
 /**

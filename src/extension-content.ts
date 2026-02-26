@@ -115,6 +115,19 @@ browser.runtime.onMessage.addListener(((msg: unknown, _sender: unknown, sendResp
       return true;
     }
 
+    case 'EXPORT_RAW': {
+      const { markdown, templateId: tplId, filename } = m as { markdown: string; templateId: string; filename: string; type: string };
+      (async () => {
+        try {
+          await callbacks.onExportRaw(markdown, tplId, filename);
+          sendResponse({ ok: true });
+        } catch (err) {
+          sendResponse({ error: (err as Error).message });
+        }
+      })();
+      return true;
+    }
+
     case 'GET_PANDOC_STATUS': {
       (async () => {
         try {

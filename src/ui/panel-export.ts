@@ -11,11 +11,13 @@ import {
   el, append, html,
   createButton, createCheckbox, createIconButton,
   createSelect, setCheckboxState, getCheckboxState,
+  createSegmentedControl, createInput, createTextarea,
 } from './m3e/dom';
 import { showToast } from './m3e/toast';
 import {
   ICON_DOWNLOAD, ICON_CHEVRON_LEFT, ICON_CHEVRON_RIGHT,
-  ICON_USER, ICON_BOT, ICON_CHECK, ICON_LIST, ICON_REFRESH,
+  ICON_USER, ICON_BOT, ICON_MESSAGES_SQUARE, ICON_REFRESH,
+  ICON_TEXT_CURSOR_INPUT,
 } from './m3e/icons';
 import {
   getActiveChain, switchBranch, hasBranch, getChildIndex, getRootIds, getCurrentSessionId,
@@ -34,6 +36,11 @@ let selectedTemplateId = '';
 let spinStartTime = 0;
 const MIN_SPIN_MS = 600; // match animation duration — at least half a rotation for better feedback
 
+// Mode: 'session' = DeepSeek conversation export, 'freetext' = paste-your-own Markdown
+let mode: 'session' | 'freetext' = 'session';
+let freetextMd = '';
+let freetextFilename = 'export';
+
 // DOM refs
 let listEl: HTMLElement;
 let selectAllCb: HTMLElement;
@@ -43,12 +50,36 @@ let countLabel: HTMLElement;
 let refreshBtn: HTMLButtonElement;
 let root: HTMLElement;
 
+// DOM refs — session mode container (toolbar + list)
+let sessionContainer!: HTMLElement;
+// DOM refs — freetext mode container
+let freetextContainer!: HTMLElement;
+
 // ═══════════════════════════════════════════════════════════════════════════
 // Public render
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function renderExportTab(cb: PanelCallbacks): HTMLElement {
   root = el('div', 'gmd-export');
+
+  // ── Mode Switch (Segmented Control) ───────────────────────────────
+  const modeSwitch = el('div', 'gmd-export__mode-switch');
+  const segmented = createSegmentedControl({
+    segments: [
+      { id: 'session', label: '当前会话', icon: ICON_MESSAGES_SQUARE },
+      { id: 'freetext', label: '自由输入', icon: ICON_TEXT_CURSOR_INPUT },
+    ],
+    activeId: mode,
+    onChange: (id) => {
+      mode = id as 'session' | 'freetext';
+      applyModeSwitch();
+    },
+  });
+  modeSwitch.appendChild(segmented);
+  root.appendChild(modeSwitch);
+
+  // ── Session mode container ──────────────────────────────────────────
+  sessionContainer = el('div', 'gmd-export__session');
 
   // ── Toolbar ──────────────────────────────────────────────────────────
   const toolbar = el('div', 'gmd-export__toolbar');
@@ -79,11 +110,43 @@ export function renderExportTab(cb: PanelCallbacks): HTMLElement {
   });
 
   append(toolbar, selectAllCb, countLabel, refreshBtn);
-  root.appendChild(toolbar);
+  sessionContainer.appendChild(toolbar);
 
   // ── Message List ─────────────────────────────────────────────────────
   listEl = el('div', 'gmd-export__list');
-  root.appendChild(listEl);
+  sessionContainer.appendChild(listEl);
+
+  root.appendChild(sessionContainer);
+
+  // ── Freetext mode container ─────────────────────────────────────────
+  freetextContainer = el('div', 'gmd-export__freetext');
+  freetextContainer.style.display = 'none';
+
+  const filenameInput = createInput({
+    label: '导出文件名',
+    value: freetextFilename,
+    placeholder: 'export',
+    onChange: (v) => {
+      freetextFilename = v;
+      syncExportBtnState();
+    },
+  });
+  freetextContainer.appendChild(filenameInput);
+
+  const mdTextarea = createTextarea({
+    label: 'Markdown 内容',
+    value: freetextMd,
+    placeholder: '在此粘贴或输入 Markdown 文本…',
+    rows: 12,
+    onChange: (v) => {
+      freetextMd = v;
+      syncExportBtnState();
+    },
+  });
+  mdTextarea.classList.add('gmd-export__freetext-editor');
+  freetextContainer.appendChild(mdTextarea);
+
+  root.appendChild(freetextContainer);
 
   // ── Bottom Bar ───────────────────────────────────────────────────────
   const bottomBar = el('div', 'gmd-export__bottom');
@@ -262,6 +325,30 @@ function navigateBranch(parentId: string | null, targetIdx: number): void {
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Mode switching
+// ═══════════════════════════════════════════════════════════════════════════
+
+function applyModeSwitch(): void {
+  if (mode === 'session') {
+    sessionContainer.style.display = '';
+    freetextContainer.style.display = 'none';
+  } else {
+    sessionContainer.style.display = 'none';
+    freetextContainer.style.display = '';
+  }
+  syncExportBtnState();
+}
+
+/** Update export button disabled state based on current mode's content. */
+function syncExportBtnState(): void {
+  if (mode === 'freetext') {
+    exportBtn.disabled = !freetextMd.trim();
+  } else {
+    exportBtn.disabled = selectedIds.size === 0;
+  }
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // Sync helpers
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -285,7 +372,7 @@ function syncCount(): void {
   const allChecked = total > 0 && selected === total;
   setCheckboxState(selectAllCb, allChecked);
 
-  exportBtn.disabled = selected === 0;
+  syncExportBtnState();
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -293,6 +380,30 @@ function syncCount(): void {
 // ═══════════════════════════════════════════════════════════════════════════
 
 async function doExport(cb: PanelCallbacks): Promise<void> {
+  if (mode === 'freetext') {
+    if (!freetextMd.trim()) {
+      showToast({ message: '请输入 Markdown 文本', level: 'warning' });
+      return;
+    }
+
+    exportBtn.disabled = true;
+    const origLabel = exportBtn.querySelector('.gmd-btn__label')!;
+    const prevText = origLabel.textContent;
+    origLabel.textContent = '导出中…';
+
+    try {
+      await cb.onExportRaw(freetextMd, selectedTemplateId, freetextFilename || 'export');
+      showToast({ message: '导出成功', level: 'success' });
+    } catch (err) {
+      showToast({ message: `导出失败: ${(err as Error).message}`, level: 'error' });
+    } finally {
+      origLabel.textContent = prevText;
+      exportBtn.disabled = false;
+    }
+    return;
+  }
+
+  // Session mode
   if (selectedIds.size === 0) {
     showToast({ message: '请至少选择一条消息', level: 'warning' });
     return;

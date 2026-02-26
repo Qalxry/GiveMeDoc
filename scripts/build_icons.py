@@ -54,6 +54,8 @@ ICONS: dict[str, tuple[str, str]] = {
     "ICON_CIRCLE_CHECK":    ("circle-check",     "success toast"),
     "ICON_TRIANGLE_ALERT":  ("triangle-alert",   "warning toast"),
     "ICON_CIRCLE_X":        ("circle-x",         "error toast"),
+    "ICON_TEXT_CURSOR_INPUT": ("text-cursor-input", "free-text input mode"),
+    "ICON_MESSAGES_SQUARE": ("messages-square",  "message export"),
 }
 
 

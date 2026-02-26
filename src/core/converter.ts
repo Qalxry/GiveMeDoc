@@ -225,6 +225,30 @@ export async function exportToDocx(
   };
 }
 
+/**
+ * Export raw Markdown text to DOCX — skips assembleDocument(), applies only formatMarkdown().
+ * Used for the free-text mode where users paste their own Markdown.
+ */
+export async function exportRawToDocx(
+  markdown: string,
+  filename: string,
+  referenceDocx?: ArrayBuffer,
+): Promise<{ blob: Blob; filename: string }> {
+  if (!pandoc) throw new Error('Pandoc Worker not initialized');
+
+  console.debug('[GiveMeDoc] Raw Markdown before formatting:', '\n' + markdown);
+  const formatted = formatMarkdown(markdown);
+  console.debug('[GiveMeDoc] Formatted raw Markdown for export:', '\n' + formatted);
+
+  const buffer = await pandoc.convert(formatted, referenceDocx);
+
+  const safeName = filename.replace(/[<>:"/\\|?*]/g, '_').slice(0, 100) || 'export';
+  return {
+    blob: new Blob([buffer], { type: DOCX_MIME }),
+    filename: `${safeName}.docx`,
+  };
+}
+
 /** Trigger a browser download for a Blob. */
 export function downloadBlob(blob: Blob, filename: string): void {
   const url = URL.createObjectURL(blob);

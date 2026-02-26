@@ -136,6 +136,8 @@ export interface PandocWorkerAPI {
 export interface PanelCallbacks {
   /** Export selected messages to Word. */
   onExport(selectedIds: string[], templateId: string): Promise<void>;
+  /** Export raw Markdown text to Word (free-text mode). */
+  onExportRaw(markdown: string, templateId: string, filename: string): Promise<void>;
   /** Upload a custom template. */
   onTemplateUpload(name: string, data: ArrayBuffer): Promise<void>;
   /** Delete a custom template. */

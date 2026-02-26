@@ -50,6 +50,13 @@ const popupOverrides: Partial<PanelCallbacks> = {
     if (resp?.error) throw new Error(resp.error);
   },
 
+  async onExportRaw(markdown, templateId, filename) {
+    const resp = await sendToContentScript<{ ok?: boolean; error?: string }>({
+      type: 'EXPORT_RAW', markdown, templateId, filename,
+    });
+    if (resp?.error) throw new Error(resp.error);
+  },
+
   async getSession() {
     try {
       const resp = await sendToContentScript<{

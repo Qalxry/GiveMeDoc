@@ -202,6 +202,86 @@ export function createSelect(opts: SelectOptions): HTMLSelectElement {
   return select;
 }
 
+// ── M3E Segmented Control ──────────────────────────────────────────────────
+
+export interface Segment {
+  id: string;
+  label: string;
+  icon?: string; // SVG string
+}
+
+export interface SegmentedControlOptions {
+  segments: Segment[];
+  activeId: string;
+  onChange?: (id: string) => void;
+}
+
+/**
+ * Create an M3E-styled segmented button group.
+ * BEM: .gmd-segmented, .gmd-segmented__btn, .gmd-segmented__btn--active
+ */
+export function createSegmentedControl(opts: SegmentedControlOptions): HTMLElement {
+  const root = el('div', 'gmd-segmented');
+  const buttons: HTMLButtonElement[] = [];
+
+  for (const seg of opts.segments) {
+    const btn = el('button', 'gmd-segmented__btn');
+    btn.type = 'button';
+    btn.dataset.segmentId = seg.id;
+    if (seg.icon) {
+      const iconSpan = html('span', 'gmd-segmented__icon', seg.icon);
+      btn.appendChild(iconSpan);
+    }
+    const labelSpan = el('span', 'gmd-segmented__label');
+    labelSpan.textContent = seg.label;
+    btn.appendChild(labelSpan);
+    if (seg.id === opts.activeId) btn.classList.add('gmd-segmented__btn--active');
+    btn.addEventListener('click', () => {
+      for (const b of buttons) b.classList.remove('gmd-segmented__btn--active');
+      btn.classList.add('gmd-segmented__btn--active');
+      opts.onChange?.(seg.id);
+    });
+    buttons.push(btn);
+    root.appendChild(btn);
+  }
+
+  return root;
+}
+
+// ── M3E Input ──────────────────────────────────────────────────────────────
+
+export interface InputOptions {
+  value?: string;
+  placeholder?: string;
+  onChange?: (value: string) => void;
+  label?: string;
+}
+
+/**
+ * Create an M3E-styled text input.
+ * BEM: .gmd-input, .gmd-input__label, .gmd-input__field
+ */
+export function createInput(opts: InputOptions): HTMLElement {
+  const wrapper = el('div', 'gmd-input');
+
+  if (opts.label) {
+    const lbl = el('label', 'gmd-input__label');
+    lbl.textContent = opts.label;
+    wrapper.appendChild(lbl);
+  }
+
+  const input = el('input', 'gmd-input__field', { type: 'text' });
+  if (opts.value) input.value = opts.value;
+  if (opts.placeholder) input.placeholder = opts.placeholder;
+
+  if (opts.onChange) {
+    input.addEventListener('input', () => opts.onChange!(input.value));
+  }
+
+  wrapper.appendChild(input);
+  return wrapper;
+}
+
 // ── M3E Textarea ───────────────────────────────────────────────────────────
 
 export interface TextareaOptions {

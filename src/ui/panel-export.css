@@ -1,11 +1,14 @@
 /*  ═══════════════════════════════════════════════════════════════════════
  *  Give Me Doc — Export Tab
  *
- *  .gmd-export          — tab root
- *  .gmd-export__toolbar — top bar (select‑all + count + refresh)
- *  .gmd-export__list    — scrollable message list
- *  .gmd-export__row     — single message row
- *  .gmd-export__bottom  — action bar (template select + export btn)
+ *  .gmd-export              — tab root
+ *  .gmd-export__mode-switch — segmented control bar (session / freetext)
+ *  .gmd-export__session     — session mode container (toolbar + list)
+ *  .gmd-export__toolbar     — top bar (select‑all + count + refresh)
+ *  .gmd-export__list        — scrollable message list
+ *  .gmd-export__row         — single message row
+ *  .gmd-export__freetext    — freetext mode container (filename + editor)
+ *  .gmd-export__bottom      — action bar (template select + export btn)
  *  ═══════════════════════════════════════════════════════════════════════ */
 
 .gmd-export {
@@ -14,13 +17,36 @@
   height: 100%;
 }
 
+/* ── Mode switch ────────────────────────────────────────────────────── */
+.gmd-export__mode-switch {
+  display: flex;
+  justify-content: center;
+  padding: var(--gmd-space-lg) var(--gmd-space-lg) 0;
+  flex-shrink: 0;
+}
+
+.gmd-export__mode-switch .gmd-segmented {
+  width: 100%;
+}
+
+.gmd-export__mode-switch .gmd-segmented__btn {
+  flex: 1;
+}
+
+/* ── Session mode container ─────────────────────────────────────────── */
+.gmd-export__session {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
 /* ── Toolbar ────────────────────────────────────────────────────────── */
 .gmd-export__toolbar {
   display: flex;
   align-items: center;
   gap: var(--gmd-space-md);
-  padding: var(--gmd-space-md) var(--gmd-space-lg);
-  border-bottom: 1px solid var(--gmd-outline-variant);
+  padding: var(--gmd-space-lg) var(--gmd-space-lg) 0 var(--gmd-space-lg);
   flex-shrink: 0;
 }
 
@@ -34,7 +60,7 @@
 .gmd-export__list {
   flex: 1;
   overflow-y: auto;
-  padding: var(--gmd-space-sm) 0;
+  padding: 0 0 var(--gmd-space-sm) 0;
   scrollbar-width: thin;
   scrollbar-color: var(--gmd-outline-variant) transparent;
 }
@@ -125,4 +151,32 @@
 
 .gmd-export__bottom .gmd-btn {
   flex-shrink: 0;
+}
+
+/* ── Freetext mode ──────────────────────────────────────────────────── */
+.gmd-export__freetext {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-md);
+  padding: var(--gmd-space-lg) var(--gmd-space-lg);
+  min-height: 0;
+  overflow: hidden;
+}
+
+.gmd-export__freetext .gmd-input {
+  flex-shrink: 0;
+}
+
+/* Make the editor textarea fill remaining vertical space */
+.gmd-export__freetext-editor {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.gmd-export__freetext-editor .gmd-textarea__input {
+  flex: 1;
+  resize: none;
 }

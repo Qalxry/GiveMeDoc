@@ -238,3 +238,111 @@
 .gmd-switch:hover .gmd-switch__track--checked .gmd-switch__thumb {
   box-shadow: 0 0 0 4px color-mix(in srgb, var(--gmd-primary) 12%, transparent);
 }
+
+/* ════════════════════════════════════════════════════════════════════════
+   Segmented Control  .gmd-segmented
+   ════════════════════════════════════════════════════════════════════════ */
+.gmd-segmented {
+  display: inline-flex;
+  border: 1px solid var(--gmd-outline);
+  border-radius: var(--gmd-radius-full);
+  overflow: hidden;
+  background: var(--gmd-surface);
+}
+
+.gmd-segmented__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--gmd-space-md);
+  padding: var(--gmd-space-xs) var(--gmd-space-lg);
+  height: 36px;
+  border: none;
+  background: transparent;
+  color: var(--gmd-on-surface);
+  font-family: var(--gmd-font-family);
+  font-size: var(--gmd-font-size-sm);
+  font-weight: var(--gmd-font-weight-medium);
+  cursor: pointer;
+  transition:
+    background var(--gmd-duration-short) var(--gmd-easing-standard),
+    color var(--gmd-duration-short) var(--gmd-easing-standard);
+  position: relative;
+}
+
+/* Vertical divider between segments */
+.gmd-segmented__btn + .gmd-segmented__btn::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 25%;
+  height: 50%;
+  width: 1px;
+  background: var(--gmd-outline-variant);
+  transition: opacity var(--gmd-duration-short) var(--gmd-easing-standard);
+}
+
+.gmd-segmented__btn--active + .gmd-segmented__btn::before,
+.gmd-segmented__btn--active::before {
+  opacity: 0;
+}
+
+.gmd-segmented__btn:hover:not(.gmd-segmented__btn--active) {
+  background: color-mix(in srgb, var(--gmd-on-surface) 8%, transparent);
+}
+
+.gmd-segmented__btn--active {
+  background: var(--gmd-secondary-container);
+  color: var(--gmd-on-secondary-container);
+}
+
+.gmd-segmented__icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+.gmd-segmented__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.gmd-segmented__label {
+  white-space: nowrap;
+}
+
+/* ════════════════════════════════════════════════════════════════════════
+   Input  .gmd-input
+   ════════════════════════════════════════════════════════════════════════ */
+.gmd-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gmd-space-xs);
+}
+
+.gmd-input__label {
+  font-size: var(--gmd-font-size-sm);
+  font-weight: var(--gmd-font-weight-medium);
+  color: var(--gmd-on-surface-variant);
+}
+
+.gmd-input__field {
+  height: 40px;
+  padding: 0 var(--gmd-space-lg);
+  border: 1px solid var(--gmd-outline);
+  border-radius: var(--gmd-radius-sm);
+  background: var(--gmd-surface);
+  color: var(--gmd-on-surface);
+  font-family: var(--gmd-font-family);
+  font-size: var(--gmd-font-size-md);
+  transition: border-color var(--gmd-duration-short) var(--gmd-easing-standard);
+}
+
+.gmd-input__field:focus {
+  outline: none;
+  border-color: var(--gmd-primary);
+  box-shadow: 0 0 0 1px var(--gmd-primary);
+}
+
+.gmd-input__field::placeholder {
+  color: var(--gmd-outline);
+}

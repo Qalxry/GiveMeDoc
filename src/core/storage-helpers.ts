@@ -7,7 +7,7 @@
  */
 import type { IStorage, UserConfig, TemplateMeta, PanelCallbacks, IMessage } from './types';
 import { DEFAULT_CONFIG } from './types';
-import { exportToDocx, downloadBlob, isPandocReady, getPandocVersion } from './converter';
+import { exportToDocx, exportRawToDocx, downloadBlob, isPandocReady, getPandocVersion } from './converter';
 import { getCurrentSessionId, getSession, getActiveChain } from '../adapters/deepseek';
 import { BUILTIN_TEMPLATES } from './builtin-templates.generated';
 import { b64ToArrayBuffer } from './b64';
@@ -103,6 +103,13 @@ export function createCallbacks(
       const refDocx = await getTemplateBlob(storage, templateId);
       const { blob, filename } = await exportToDocx(messages, config, session.title, refDocx);
       downloadBlob(blob, filename);
+    },
+
+    async onExportRaw(markdown, templateId, filename) {
+      if (!isPandocReady()) throw new Error('Pandoc 尚未就绪');
+      const refDocx = await getTemplateBlob(storage, templateId);
+      const { blob, filename: outName } = await exportRawToDocx(markdown, filename, refDocx);
+      downloadBlob(blob, outName);
     },
 
     async onTemplateUpload(name, data) {
