@@ -5,7 +5,7 @@ build_templates.py — 根据 config.yaml 生成内置 Word 模板
 读取 templates/config.yaml 中的样式定义，基于 pandoc 默认 reference.docx
 修改字体/字号/行距等样式，输出:
     1. templates/<id>.docx               — 可作为 pandoc reference-doc 使用
-    2. packages/core/src/template/builtin-data.ts — base64 嵌入，运行时种子数据
+    2. src/core/builtin-templates.generated.ts — base64 嵌入，运行时种子数据
 
 用法:
     python3 scripts/build_templates.py           # 从项目根目录运行
@@ -25,14 +25,27 @@ import tempfile
 from pathlib import Path
 from typing import Any
 
-import yaml
+try:
+    import yaml
+except ImportError:
+    print("ERROR: PyYAML not found. Please install it with `pip install pyyaml`.", file=sys.stderr)
+    sys.exit(1)
 
-# python-docx imports
-from docx import Document
-from docx.shared import Pt, Cm, RGBColor
-from docx.enum.text import WD_ALIGN_PARAGRAPH
-from docx.enum.style import WD_STYLE_TYPE
-from docx.oxml.ns import qn
+# Check for pandoc in PATH before importing python-docx, since it's a hard dependency for the generated .docx files to be usable as pandoc reference docs.
+if not shutil.which("pandoc"):
+    print("ERROR: pandoc not found in PATH. Please install pandoc and ensure it's available as a command-line tool.", file=sys.stderr)
+    sys.exit(1)
+
+# Verify python-docx can be imported and is functional
+try:
+    from docx import Document
+    from docx.shared import Pt, Cm, RGBColor
+    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.style import WD_STYLE_TYPE
+    from docx.oxml.ns import qn
+except ImportError:
+    print("ERROR: python-docx not found. Please install it with `pip install python-docx`.", file=sys.stderr)
+    sys.exit(1)
 
 # Styles that should be created as CHARACTER type when missing
 _CHAR_STYLES = {"Verbatim Char", "Body Text Char", "Footnote Reference",
