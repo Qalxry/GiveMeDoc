@@ -15,7 +15,7 @@ Normal:
   line_spacing: 1.5
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 24
+  first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: justify
