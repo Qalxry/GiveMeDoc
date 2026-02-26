@@ -692,7 +692,7 @@ Hyperlink:
     bottom:   { val: single, sz: 8, color: "000000" }
     left:     { val: none }
     right:    { val: none }
-    insideH:  { val: none }
+    insideH:  { val: single, sz: 4, color: "000000" }
     insideV:  { val: none }
   cell_margin:
     top: 40

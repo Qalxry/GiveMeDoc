@@ -94,9 +94,30 @@ export function createCallbacks(
       if (!sessionId) throw new Error('未检测到会话 ID');
 
       const session = await getSession(sessionId);
-      const chain = getActiveChain(session);
-      const selectedSet = new Set(selectedIds);
-      const messages = chain.filter((m) => selectedSet.has(m.id));
+
+      // Look up selected messages directly from the message map.
+      // This avoids relying on getActiveChain (which always follows
+      // session.currentMessageId) and correctly handles branch-switched selections.
+      const messages: IMessage[] = [];
+      for (const id of selectedIds) {
+        const msg = session.messages.get(id);
+        if (msg) messages.push(msg);
+      }
+
+      // Sort by tree depth (root → leaf) to ensure correct document order.
+      const depthOf = (m: IMessage): number => {
+        let d = 0;
+        let cur: string | null = m.parentId;
+        while (cur) {
+          const p = session.messages.get(cur);
+          if (!p) break;
+          d++;
+          cur = p.parentId;
+        }
+        return d;
+      };
+      messages.sort((a, b) => depthOf(a) - depthOf(b));
+
       if (messages.length === 0) throw new Error('没有选中任何消息');
 
       const config = await loadConfig(storage);

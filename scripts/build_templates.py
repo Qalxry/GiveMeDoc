@@ -422,9 +422,9 @@ def apply_table_style(doc: Document, style_name: str, props: dict[str, Any]) -> 
                 print(f"  WARNING: unknown conditional type '{cond_type}', skipping")
                 continue
             tsp = style_el.makeelement(qn("w:tblStylePr"), {qn("w:type"): cond_type})
-            # Build rPr, pPr, tcPr in schema order
-            _build_cond_rpr(tsp, cond_props)
+            # Build in OOXML schema order: pPr, rPr, tblPr, trPr, tcPr
             _build_cond_ppr(tsp, cond_props)
+            _build_cond_rpr(tsp, cond_props)
             _build_cond_tcpr(tsp, cond_props)
             style_el.append(tsp)
 
