@@ -1,10 +1,12 @@
-<h1 align='center'><img src="./public/logo.svg" alt="GiveMeDoc Logo" width="50" style="vertical-align: middle; margin: 0 15px 5px 0;" />GiveMeDoc</h1>
-
-<center><a href="README.zh-CN.md">中文</a></center>
-
-<center><b>🚫 Stop paying</b> for <b>your own</b> conversations.</center>
-<center>An AI conversation export tool based on <b><em>⚡️Pandoc WASM⚡️</em></b> for all platforms.</center>
-
+<div align='center'>
+  <img src="./public/logo.svg" alt="GiveMeDoc Logo" width="64"/>
+  <h1>GiveMeDoc</h1>
+  <a href="README.zh-CN.md">中文</a>
+</div>
+<br/>
+<div align='center'><b>🚫 Stop paying</b> for <b>your own</b> conversations.</div>
+<div align='center'>An AI conversation export tool based on <b><em>⚡️Pandoc WASM⚡️</em></b> for all platforms.</div>
+<br/>
 
 | ![](./assets/tab1-1.png) | ![](./assets/tab1-2.png) | ![](./assets/tab2.png) | ![](./assets/tab3.png) |
 | ----- | ---- | ---- | ---- |
@@ -19,7 +21,7 @@ I've had enough of those garbage plugins that just wrap Pandoc in a paywall, and
 
 - **No backend**: Pure client-side WASM conversion, your privacy stays local. All processing happens in your browser, no data is sent to any server.
 
-- **Truly open source**: AGPL-3.0 license, welcome any hardcore players to PR.
+- **Open source**: AGPL-3.0 license.
 
 ## ⚡️ Core Tech
 
