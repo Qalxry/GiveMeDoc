@@ -1,9 +1,15 @@
-# 📄 GiveMeDoc
+<h1 align='center'><img src="./public/logo.svg" alt="GiveMeDoc Logo" width="50" style="vertical-align: middle; margin: 0 15px 5px 0;" />GiveMeDoc</h1>
 
-[中文](README.zh-CN.md)
+<center><a href="README.zh-CN.md">中文</a></center>
 
-> **🚫 Stop paying** for **your own** conversations.
-> An AI conversation export tool based on ***⚡️Pandoc WASM⚡️*** for all platforms.
+<center><b>🚫 Stop paying</b> for <b>your own</b> conversations.</center>
+<center>An AI conversation export tool based on <b><em>⚡️Pandoc WASM⚡️</em></b> for all platforms.</center>
+
+
+| ![](./assets/tab1-1.png) | ![](./assets/tab1-2.png) | ![](./assets/tab2.png) | ![](./assets/tab3.png) |
+| ----- | ---- | ---- | ---- |
+
+
 
 ## 🤔 Why GiveMeDoc?
 

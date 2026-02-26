@@ -5,14 +5,14 @@ import * as fs from 'fs';
 const USERSCRIPT_META = `// ==UserScript==
 // @name         Give Me Doc
 // @name:zh-CN   Give Me Doc — AI 对话导出 Word
-// @namespace    https://github.com/nichuanfang/GiveMeDoc
+// @namespace    https://github.com/Qalxry/GiveMeDoc
 // @version      1.0.0
 // @description  Convert AI chat to Word documents — powered by Pandoc WASM
 // @description:zh-CN  将 AI 对话导出为 Word 文档 — 由 Pandoc WASM 驱动
 // @author       GiveMeDoc Contributors
-// @homepageURL  https://github.com/nichuanfang/GiveMeDoc
-// @supportURL   https://github.com/nichuanfang/GiveMeDoc/issues
-// @icon         https://raw.githubusercontent.com/nichuanfang/GiveMeDoc/main/icons/icon-128.png
+// @homepageURL  https://github.com/Qalxry/GiveMeDoc
+// @supportURL   https://github.com/Qalxry/GiveMeDoc/issues
+// @icon         https://raw.githubusercontent.com/Qalxry/GiveMeDoc/main/public/logo.svg
 // @match        https://chat.deepseek.com/*
 // @grant        GM_getValue
 // @grant        GM_setValue

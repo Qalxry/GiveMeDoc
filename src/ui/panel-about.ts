@@ -70,10 +70,10 @@ export function renderAboutTab(cb: PanelCallbacks): HTMLElement {
   linksCard.appendChild(linksTitle);
 
   linksCard.appendChild(
-    createLinkRow(ICON_GITHUB, 'GitHub 仓库', 'https://github.com/nichuanfang/GiveMeDoc'),
+    createLinkRow(ICON_GITHUB, 'GitHub 仓库', 'https://github.com/Qalxry/GiveMeDoc'),
   );
   linksCard.appendChild(
-    createLinkRow(ICON_BUG, '报告问题', 'https://github.com/nichuanfang/GiveMeDoc/issues/new'),
+    createLinkRow(ICON_BUG, '报告问题', 'https://github.com/Qalxry/GiveMeDoc/issues/new'),
   );
   linksCard.appendChild(
     createLinkRow(ICON_EXTERNAL_LINK, 'Pandoc 官网', 'https://pandoc.org'),
