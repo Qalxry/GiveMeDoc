@@ -202,22 +202,22 @@ defaults:
 # ============================================================================
 templates:
 
-  - id: builtin-gb
-    name: 国标文档风格
-    description: 参照 GB/T 9704 公文格式，黑体标题 + 仿宋正文
-    styles_file: builtin-gb.yaml
-
   - id: builtin-academic
     name: 学术文档风格
     description: 适合学术论文、技术报告，宋体正文 + 黑体标题
     styles_file: builtin-academic.yaml
 
-  - id: builtin-minimal
-    name: 极简风格
-    description: 纯宋体，统一字号，无额外格式，极致简洁
-    styles_file: builtin-minimal.yaml
+  - id: builtin-gb
+    name: 国标文档风格
+    description: 参照 GB/T 9704 公文格式，黑体标题 + 仿宋正文
+    styles_file: builtin-gb.yaml
 
   - id: builtin-modern
     name: 现代商务风格
     description: 精致现代，深蓝色系，适合商务报告与演示文档
     styles_file: builtin-modern.yaml
+
+  - id: builtin-minimal
+    name: 极简风格
+    description: 纯宋体，统一字号，无额外格式，极致简洁
+    styles_file: builtin-minimal.yaml
