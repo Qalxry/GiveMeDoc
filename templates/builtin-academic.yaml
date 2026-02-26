@@ -683,6 +683,35 @@ Hyperlink:
   underline: true
   color: "0563C1"
 
+# ── 表格 ────────────────────────────────────────────────────
+# 学术三线表：顶线 + 表头底线（较粗）+ 底线，无纵向边框
+"Table":
+  table_alignment: center
+  borders:
+    top:      { val: single, sz: 8, color: "000000" }
+    bottom:   { val: single, sz: 8, color: "000000" }
+    left:     { val: none }
+    right:    { val: none }
+    insideH:  { val: none }
+    insideV:  { val: none }
+  cell_margin:
+    top: 40
+    bottom: 40
+    left: 108
+    right: 108
+  paragraph:
+    line_spacing: 1.15
+    space_before_pt: 2
+    space_after_pt: 2
+    alignment: center
+  conditional:
+    firstRow:
+      bold: true
+      alignment: center
+      borders:
+        bottom: { val: single, sz: 4, color: "000000" }
+      vertical_alignment: bottom
+
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":
   font_ascii: Times New Roman

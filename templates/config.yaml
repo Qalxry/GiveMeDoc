@@ -63,6 +63,49 @@
 #   widow_control        孤行控制 (true/false)
 #   page_break_before    段前分页 (true/false)
 #
+# 表格样式属性 (仅用于 "Table" 样式):
+# ----------------------------------------
+# 表格样式使用特殊的属性结构，不同于段落/字符样式。
+# 注意: 表格内文字字体由 Compact 段落样式控制，不在此处设置。
+#
+#   table_alignment:             表格在页面中的水平对齐 (left|center|right)
+#
+#   borders:                     全局表格边框
+#     top/bottom/left/right:     外边框
+#     insideH/insideV:           内部网格线
+#       val:    边框类型 (none|single|double|dotted|dashed|thick)
+#       sz:     粗细 (半磅单位, 4=0.5pt, 8=1pt, 12=1.5pt)
+#       color:  颜色 (6位 hex 或 "auto")
+#       space:  间距 (默认 0)
+#
+#   cell_margin:                 单元格内边距 (单位: twips, 1pt≈20twips)
+#     top/bottom/left/right:     各方向边距值 (整数)
+#
+#   paragraph:                   表格内段落默认属性 (覆盖 Compact 样式)
+#     line_spacing:              行距倍数
+#     space_before_pt:           段前 (pt)
+#     space_after_pt:            段后 (pt)
+#     alignment:                 对齐 (left|center|right|justify)
+#
+#   font_ascii:                  表格默认西文字体 (可选, 通常用 Compact 控制)
+#   font_eastAsia:               表格默认中文字体 (可选)
+#   font_size_pt:                表格默认字号 (可选)
+#   bold/italic/color:           表格默认文字格式 (可选)
+#
+#   conditional:                 条件格式 (按区域覆盖默认值)
+#     firstRow/lastRow:          表头行 / 表尾行
+#     firstCol/lastCol:          首列 / 末列
+#     band1Horz/band2Horz:       奇数行 / 偶数行 (交替行底纹)
+#     band1Vert/band2Vert:       奇数列 / 偶数列
+#     每个条件区段可设:
+#       bold/italic/color:       文字格式覆盖
+#       font_ascii/font_eastAsia/font_size_pt: 字体覆盖
+#       alignment:               对齐覆盖
+#       line_spacing/space_before_pt/space_after_pt: 间距覆盖
+#       shading:                 背景填充色 (6位 hex, 如 "D9E2F3")
+#       vertical_alignment:      垂直对齐 (top|center|bottom)
+#       borders:                 边框覆盖 (结构同全局 borders, 使用 tcBorders)
+#
 # ============================================================================
 #
 # Pandoc 使用的 Word 样式名参考
@@ -126,6 +169,9 @@
 # 章节编号 (字符样式):
 #   Section Number       章节编号
 #
+# 表格 (表格样式):
+#   Table                表格样式（控制边框/底纹/内边距/条件格式）
+#
 # ============================================================================
 #
 # 中文字号与 pt 对照
@@ -167,6 +213,11 @@ templates:
     styles_file: builtin-academic.yaml
 
   - id: builtin-minimal
-    name: 简洁风格
-    description: 清爽简洁，微软雅黑 + 等线，适合日常阅读
+    name: 极简风格
+    description: 纯宋体，统一字号，无额外格式，极致简洁
     styles_file: builtin-minimal.yaml
+
+  - id: builtin-modern
+    name: 现代商务风格
+    description: 精致现代，深蓝色系，适合商务报告与演示文档
+    styles_file: builtin-modern.yaml

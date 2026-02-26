@@ -51,6 +51,9 @@ except ImportError:
 _CHAR_STYLES = {"Verbatim Char", "Body Text Char", "Footnote Reference",
                 "Hyperlink", "Section Number", "Default Paragraph Font"}
 
+# Styles that should be treated as TABLE type
+_TABLE_STYLES = {"Table"}
+
 # ---------------------------------------------------------------------------
 # Path helpers
 # ---------------------------------------------------------------------------
@@ -140,8 +143,324 @@ def set_run_font(run_or_rpr, *, ascii: str | None, east_asia: str | None) -> Non
         rfonts.attrib.pop(qn("w:cstheme"), None)
 
 
+# ---------------------------------------------------------------------------
+# Table style helpers
+# ---------------------------------------------------------------------------
+
+# Valid border style values for OOXML w:val attribute
+_BORDER_VALS = {"none", "single", "double", "dotted", "dashed", "thick",
+                "dashSmallGap", "dotDash", "dotDotDash", "triple",
+                "thinThickSmallGap", "thickThinSmallGap",
+                "thinThickMediumGap", "thickThinMediumGap",
+                "thinThickLargeGap", "thickThinLargeGap", "wave",
+                "doubleWave", "dashDotStroked", "threeDEmboss",
+                "threeDEngrave", "outset", "inset", "nil"}
+
+# Conditional formatting area types supported by OOXML
+_COND_TYPES = {"firstRow", "lastRow", "firstCol", "lastCol",
+               "band1Horz", "band2Horz", "band1Vert", "band2Vert",
+               "neCell", "nwCell", "seCell", "swCell"}
+
+ALIGNMENT_JC_MAP = {
+    "left": "start",
+    "center": "center",
+    "right": "end",
+    "justify": "both",
+}
+
+
+def _make_border_el(parent, tag: str, cfg: dict[str, Any]) -> None:
+    """Create a single border element (e.g. <w:top>) under *parent*.
+
+    cfg keys: val (str), sz (int, half-pt, 4=0.5pt), color (hex str), space (int, default 0)
+    """
+    val = str(cfg.get("val", "single"))
+    attrs = {qn("w:val"): val}
+    if val not in ("none", "nil"):
+        attrs[qn("w:sz")] = str(cfg.get("sz", 4))
+        attrs[qn("w:color")] = cfg.get("color", "auto")
+        attrs[qn("w:space")] = str(cfg.get("space", 0))
+    el = parent.makeelement(qn(f"w:{tag}"), attrs)
+    parent.append(el)
+
+
+def _make_borders(parent, borders_cfg: dict[str, Any], tag: str = "tblBorders") -> None:
+    """Build a <w:tblBorders> or <w:tcBorders> element under *parent*."""
+    borders_el = parent.makeelement(qn(f"w:{tag}"), {})
+    # Order matters in OOXML schema: top, left, bottom, right, insideH, insideV
+    for side in ("top", "left", "bottom", "right", "insideH", "insideV"):
+        if side in borders_cfg:
+            _make_border_el(borders_el, side, borders_cfg[side])
+    parent.append(borders_el)
+
+
+def _make_shd(parent, fill: str) -> None:
+    """Create a <w:shd> element for cell shading."""
+    shd = parent.makeelement(qn("w:shd"), {
+        qn("w:val"): "clear",
+        qn("w:color"): "auto",
+        qn("w:fill"): fill,
+    })
+    parent.append(shd)
+
+
+def _make_spacing(parent, *, line_spacing=None, space_before_pt=None, space_after_pt=None) -> None:
+    """Create a <w:spacing> element under a <w:pPr> for paragraph spacing."""
+    attrs = {}
+    if line_spacing is not None:
+        # line_spacing is a multiplier; OOXML uses 240ths of a line
+        attrs[qn("w:line")] = str(int(line_spacing * 240))
+        attrs[qn("w:lineRule")] = "auto"
+    if space_before_pt is not None:
+        # OOXML uses twips (1 pt = 20 twips)
+        attrs[qn("w:before")] = str(int(space_before_pt * 20))
+    if space_after_pt is not None:
+        attrs[qn("w:after")] = str(int(space_after_pt * 20))
+    if attrs:
+        spacing = parent.makeelement(qn("w:spacing"), attrs)
+        parent.append(spacing)
+
+
+def _build_cond_rpr(parent, cond_cfg: dict[str, Any]) -> None:
+    """Build <w:rPr> inside a <w:tblStylePr> from conditional config."""
+    has_font = cond_cfg.get("font_ascii") or cond_cfg.get("font_eastAsia")
+    has_bold = "bold" in cond_cfg
+    has_italic = "italic" in cond_cfg
+    has_color = "color" in cond_cfg
+    has_size = "font_size_pt" in cond_cfg
+
+    if not (has_font or has_bold or has_italic or has_color or has_size):
+        return
+
+    rpr = parent.makeelement(qn("w:rPr"), {})
+    if has_font:
+        set_run_font(rpr, ascii=cond_cfg.get("font_ascii"), east_asia=cond_cfg.get("font_eastAsia"))
+    if has_bold:
+        b_el = rpr.makeelement(qn("w:b"), {qn("w:val"): "1" if cond_cfg["bold"] else "0"})
+        rpr.append(b_el)
+    if has_italic:
+        i_el = rpr.makeelement(qn("w:i"), {qn("w:val"): "1" if cond_cfg["italic"] else "0"})
+        rpr.append(i_el)
+    if has_color:
+        c_el = rpr.makeelement(qn("w:color"), {qn("w:val"): cond_cfg["color"]})
+        rpr.append(c_el)
+    if has_size:
+        # w:sz is in half-points
+        sz_el = rpr.makeelement(qn("w:sz"), {qn("w:val"): str(int(cond_cfg["font_size_pt"] * 2))})
+        rpr.append(sz_el)
+        szCs = rpr.makeelement(qn("w:szCs"), {qn("w:val"): str(int(cond_cfg["font_size_pt"] * 2))})
+        rpr.append(szCs)
+    parent.append(rpr)
+
+
+def _build_cond_ppr(parent, cond_cfg: dict[str, Any]) -> None:
+    """Build <w:pPr> inside a <w:tblStylePr> from conditional config."""
+    has_align = "alignment" in cond_cfg
+    has_spacing = any(k in cond_cfg for k in ("line_spacing", "space_before_pt", "space_after_pt"))
+
+    if not (has_align or has_spacing):
+        return
+
+    ppr = parent.makeelement(qn("w:pPr"), {})
+    if has_align:
+        jc_val = ALIGNMENT_JC_MAP.get(cond_cfg["alignment"])
+        if jc_val:
+            jc = ppr.makeelement(qn("w:jc"), {qn("w:val"): jc_val})
+            ppr.append(jc)
+    if has_spacing:
+        _make_spacing(ppr,
+                      line_spacing=cond_cfg.get("line_spacing"),
+                      space_before_pt=cond_cfg.get("space_before_pt"),
+                      space_after_pt=cond_cfg.get("space_after_pt"))
+    parent.append(ppr)
+
+
+def _build_cond_tcpr(parent, cond_cfg: dict[str, Any]) -> None:
+    """Build <w:tcPr> inside a <w:tblStylePr> from conditional config."""
+    has_borders = "borders" in cond_cfg
+    has_shading = "shading" in cond_cfg
+    has_valign = "vertical_alignment" in cond_cfg
+
+    if not (has_borders or has_shading or has_valign):
+        return
+
+    tcpr = parent.makeelement(qn("w:tcPr"), {})
+    if has_borders:
+        _make_borders(tcpr, cond_cfg["borders"], tag="tcBorders")
+    if has_shading:
+        _make_shd(tcpr, cond_cfg["shading"])
+    if has_valign:
+        va_val = cond_cfg["vertical_alignment"]  # top, center, bottom
+        va = tcpr.makeelement(qn("w:vAlign"), {qn("w:val"): va_val})
+        tcpr.append(va)
+    parent.append(tcpr)
+
+
+def apply_table_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
+    """Apply table style properties (borders, cell margins, conditional formatting).
+
+    This operates on WD_STYLE_TYPE.TABLE styles using low-level OOXML because
+    python-docx has very limited high-level API support for table styles.
+    """
+    # Find existing table style
+    style = None
+    for s in doc.styles:
+        if s.name == style_name and s.type == WD_STYLE_TYPE.TABLE:
+            style = s
+            break
+
+    if style is None:
+        try:
+            style = doc.styles.add_style(style_name, WD_STYLE_TYPE.TABLE)
+            style.base_style = doc.styles["Table Normal"]
+            print(f"    + created table style: '{style_name}'")
+        except Exception as e:
+            print(f"  WARNING: could not create table style '{style_name}': {e}")
+            return
+
+    style_el = style.element
+
+    # --- Clear existing tblPr sub-elements we're about to set ---
+    tbl_pr = style_el.find(qn("w:tblPr"))
+    if tbl_pr is None:
+        tbl_pr = style_el.makeelement(qn("w:tblPr"), {})
+        style_el.append(tbl_pr)
+
+    # Remove existing borders, cell margins, jc (we'll recreate them)
+    for old_tag in ("w:tblBorders", "w:tblCellMar", "w:jc"):
+        old = tbl_pr.find(qn(old_tag))
+        if old is not None:
+            tbl_pr.remove(old)
+
+    # Remove ALL existing tblStylePr (conditional formatting sections)
+    for old_cond in style_el.findall(qn("w:tblStylePr")):
+        style_el.remove(old_cond)
+
+    # Remove existing top-level rPr and pPr on the table style
+    for old_tag in ("w:rPr", "w:pPr"):
+        old = style_el.find(qn(old_tag))
+        if old is not None:
+            style_el.remove(old)
+
+    # --- 0) Table alignment (horizontal position on page) ---
+    table_alignment = props.get("table_alignment")
+    if table_alignment:
+        jc_val = ALIGNMENT_JC_MAP.get(table_alignment)
+        if jc_val:
+            jc = tbl_pr.makeelement(qn("w:jc"), {qn("w:val"): jc_val})
+            tbl_pr.append(jc)
+
+    # --- 1) Table borders ---
+    borders_cfg = props.get("borders")
+    if borders_cfg:
+        _make_borders(tbl_pr, borders_cfg)
+
+    # --- 2) Cell margins ---
+    cell_margin_cfg = props.get("cell_margin")
+    if cell_margin_cfg:
+        cm_el = tbl_pr.makeelement(qn("w:tblCellMar"), {})
+        for side in ("top", "left", "bottom", "right"):
+            if side in cell_margin_cfg:
+                side_el = cm_el.makeelement(qn(f"w:{side}"), {
+                    qn("w:w"): str(cell_margin_cfg[side]),
+                    qn("w:type"): "dxa",
+                })
+                cm_el.append(side_el)
+        tbl_pr.append(cm_el)
+
+    # --- 3) Table-level paragraph defaults (spacing, alignment) ---
+    para_cfg = props.get("paragraph")
+    if para_cfg:
+        ppr = style_el.makeelement(qn("w:pPr"), {})
+        if "alignment" in para_cfg:
+            jc_val = ALIGNMENT_JC_MAP.get(para_cfg["alignment"])
+            if jc_val:
+                jc = ppr.makeelement(qn("w:jc"), {qn("w:val"): jc_val})
+                ppr.append(jc)
+        has_spacing = any(k in para_cfg for k in ("line_spacing", "space_before_pt", "space_after_pt"))
+        if has_spacing:
+            _make_spacing(ppr,
+                          line_spacing=para_cfg.get("line_spacing"),
+                          space_before_pt=para_cfg.get("space_before_pt"),
+                          space_after_pt=para_cfg.get("space_after_pt"))
+        # Insert pPr before tblPr for correct schema order
+        tbl_pr_index = list(style_el).index(tbl_pr)
+        style_el.insert(tbl_pr_index, ppr)
+
+    # --- 4) Table-level font defaults ---
+    font_cfg_keys = ("font_ascii", "font_eastAsia", "font_size_pt", "bold", "italic", "color")
+    if any(k in props for k in font_cfg_keys):
+        rpr = style_el.makeelement(qn("w:rPr"), {})
+        if props.get("font_ascii") or props.get("font_eastAsia"):
+            set_run_font(rpr, ascii=props.get("font_ascii"), east_asia=props.get("font_eastAsia"))
+        if "bold" in props:
+            b_el = rpr.makeelement(qn("w:b"), {qn("w:val"): "1" if props["bold"] else "0"})
+            rpr.append(b_el)
+        if "italic" in props:
+            i_el = rpr.makeelement(qn("w:i"), {qn("w:val"): "1" if props["italic"] else "0"})
+            rpr.append(i_el)
+        if "color" in props:
+            c_el = rpr.makeelement(qn("w:color"), {qn("w:val"): props["color"]})
+            rpr.append(c_el)
+        if "font_size_pt" in props:
+            sz_val = str(int(props["font_size_pt"] * 2))
+            sz_el = rpr.makeelement(qn("w:sz"), {qn("w:val"): sz_val})
+            rpr.append(sz_el)
+            szCs = rpr.makeelement(qn("w:szCs"), {qn("w:val"): sz_val})
+            rpr.append(szCs)
+        # Insert rPr at beginning (before pPr and tblPr) per schema
+        style_el.insert(0 if style_el.find(qn("w:name")) is None else 1, rpr)
+        # Find correct position: after w:name, w:aliases, w:basedOn, etc.
+        # Simplification: insert after last metadata element
+        _insert_rpr_after_metadata(style_el, rpr)
+
+    # --- 5) Conditional formatting ---
+    cond_cfg = props.get("conditional")
+    if cond_cfg:
+        for cond_type, cond_props in cond_cfg.items():
+            if cond_type not in _COND_TYPES:
+                print(f"  WARNING: unknown conditional type '{cond_type}', skipping")
+                continue
+            tsp = style_el.makeelement(qn("w:tblStylePr"), {qn("w:type"): cond_type})
+            # Build rPr, pPr, tcPr in schema order
+            _build_cond_rpr(tsp, cond_props)
+            _build_cond_ppr(tsp, cond_props)
+            _build_cond_tcpr(tsp, cond_props)
+            style_el.append(tsp)
+
+    print(f"    ✓ table style: '{style_name}'")
+
+
+def _insert_rpr_after_metadata(style_el, rpr) -> None:
+    """Insert rPr element after style metadata elements in correct schema order."""
+    # Remove if already appended
+    if rpr.getparent() is not None:
+        rpr.getparent().remove(rpr)
+    # Schema order: name, aliases, basedOn, next, link, autoRedefine, hidden,
+    #               uiPriority, semiHidden, unhideWhenUsed, qFormat, locked,
+    #               personal*, rsid, rPr, ...
+    metadata_tags = {qn(f"w:{t}") for t in (
+        "name", "aliases", "basedOn", "next", "link", "autoRedefine",
+        "hidden", "uiPriority", "semiHidden", "unhideWhenUsed",
+        "qFormat", "locked", "personal", "personalCompose",
+        "personalReply", "rsid",
+    )}
+    insert_pos = 0
+    for i, child in enumerate(style_el):
+        if child.tag in metadata_tags:
+            insert_pos = i + 1
+        else:
+            break
+    style_el.insert(insert_pos, rpr)
+
+
 def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
     """Apply style properties to a named style in the document."""
+    # Delegate table styles to specialized handler
+    if style_name in _TABLE_STYLES or _is_table_style_props(props):
+        apply_table_style(doc, style_name, props)
+        return
+
     # Find the style object
     style = None
     for s in doc.styles:
@@ -225,6 +544,11 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
             pf.widow_control = props["widow_control"]
         if "page_break_before" in props:
             pf.page_break_before = props["page_break_before"]
+
+
+def _is_table_style_props(props: dict[str, Any]) -> bool:
+    """Detect if props dict contains table-style-specific keys."""
+    return any(k in props for k in ("borders", "cell_margin", "conditional", "paragraph", "table_alignment"))
 
 
 def apply_page_setup(doc: Document, page_cfg: dict[str, Any]) -> None:

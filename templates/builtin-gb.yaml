@@ -683,6 +683,34 @@ Hyperlink:
   underline: true
   color: "0563C1"
 
+# ── 表格 ────────────────────────────────────────────────────
+# 国标风格：全边框 + 表头加粗 + 浅灰底纹
+"Table":
+  table_alignment: center
+  borders:
+    top:      { val: single, sz: 4, color: "000000" }
+    bottom:   { val: single, sz: 4, color: "000000" }
+    left:     { val: single, sz: 4, color: "000000" }
+    right:    { val: single, sz: 4, color: "000000" }
+    insideH:  { val: single, sz: 4, color: "000000" }
+    insideV:  { val: single, sz: 4, color: "000000" }
+  cell_margin:
+    top: 40
+    bottom: 40
+    left: 108
+    right: 108
+  paragraph:
+    line_spacing: 1.15
+    space_before_pt: 2
+    space_after_pt: 2
+    alignment: center
+  conditional:
+    firstRow:
+      bold: true
+      alignment: center
+      shading: "D9D9D9"
+      vertical_alignment: center
+
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":
   font_ascii: Arial
