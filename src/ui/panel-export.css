@@ -180,3 +180,27 @@
   flex: 1;
   resize: none;
 }
+
+/* Empty session placeholder */
+.gmd-export__empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: var(--gmd-on-surface-variant);
+  padding: var(--gmd-space-lg);
+  text-align: center;
+}
+
+.gmd-export__empty-icon svg {
+  width: 64px;
+  height: 64px;
+  color: var(--gmd-on-surface-variant);
+  margin-bottom: var(--gmd-space-md);
+}
+
+.gmd-export__empty-text {
+  font-size: 14px;
+  color: var(--gmd-on-surface-variant);
+}

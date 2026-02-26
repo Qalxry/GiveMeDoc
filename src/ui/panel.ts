@@ -12,6 +12,7 @@ import { el, append, createIconButton, html } from './m3e/dom';
 import { createTabs, type Tab } from './m3e/tabs';
 import {
   ICON_LIST, ICON_SETTINGS, ICON_INFO, ICON_FILE_TEXT, ICON_X,
+  ICON_FILE_TYPE,
 } from './m3e/icons';
 import { renderExportTab, refreshExportTab, refreshExportTemplates } from './panel-export';
 import { renderSettingsTab } from './panel-settings';
@@ -73,18 +74,18 @@ export function createPanel(cb: PanelCallbacks, opts?: CreatePanelOptions): void
       onClick: () => hidePanel(),
     });
     append(header, titleWrap, closeBtn);
+    panelEl.appendChild(header);
   } else {
-    header.appendChild(titleWrap);
+    // header.appendChild(titleWrap);
   }
 
-  panelEl.appendChild(header);
 
   // ── Tabs ─────────────────────────────────────────────────────────────
   const tabs: Tab[] = [
     {
       id: 'export',
       label: '导出',
-      icon: ICON_LIST,
+      icon: ICON_FILE_TEXT,
       render: () => renderExportTab(cb),
     },
     {

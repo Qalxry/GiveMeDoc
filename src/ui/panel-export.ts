@@ -182,7 +182,12 @@ async function loadSession(cb: PanelCallbacks): Promise<void> {
   try {
     session = await cb.getSession();
     if (!session) {
-      listEl.textContent = '未检测到当前会话，请打开一个对话。';
+      listEl.innerHTML = `
+        <div class="gmd-export__empty">
+          <div class="gmd-export__empty-icon">${ICON_MESSAGES_SQUARE}</div>
+          <div class="gmd-export__empty-text">未检测到消息，请打开一个对话。<br/>或者复制内容后粘贴到“自由输入”中导出。</div>
+        </div>
+      `;
       return;
     }
     chain = getActiveChain(session);
