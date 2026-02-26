@@ -1,0 +1,312 @@
+# ══════════════════════════════════════════════════════════════
+# 学术文档风格 (builtin-academic)
+# 宋体正文 + 黑体标题，适合学术论文 / 技术报告
+# ══════════════════════════════════════════════════════════════
+
+# ── 正文 ────────────────────────────────────────────────────
+Normal:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  line_spacing: 1.5
+  space_after_pt: 0
+  first_line_indent_pt: 24
+  widow_control: true
+
+"Body Text":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  line_spacing: 1.5
+  space_after_pt: 0
+  first_line_indent_pt: 24
+
+"First Paragraph":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  line_spacing: 1.5
+  first_line_indent_pt: 24
+
+# ── 文档信息 ────────────────────────────────────────────────
+Title:
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 18            # 小二
+  bold: true
+  alignment: center
+  space_before_pt: 0
+  space_after_pt: 18
+  keep_with_next: true
+
+Subtitle:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 14            # 四号
+  alignment: center
+  space_before_pt: 0
+  space_after_pt: 12
+  keep_with_next: true
+
+Author:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  alignment: center
+  space_after_pt: 4
+
+Date:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  alignment: center
+  space_after_pt: 12
+
+Abstract:
+  font_ascii: Times New Roman
+  font_eastAsia: 楷体
+  font_size_pt: 10.5          # 五号
+  line_spacing: 1.3
+  first_line_indent_pt: 21    # 10.5pt×2
+  space_before_pt: 6
+  space_after_pt: 6
+
+AbstractTitle:
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 14            # 四号
+  bold: true
+  alignment: center
+  space_before_pt: 12
+  space_after_pt: 6
+  keep_with_next: true
+
+# ── 标题 ────────────────────────────────────────────────────
+"Heading 1":
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 15            # 小三
+  bold: true
+  space_before_pt: 24
+  space_after_pt: 6
+  keep_with_next: true
+  keep_together: true
+
+"Heading 2":
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 14            # 四号
+  bold: true
+  space_before_pt: 18
+  space_after_pt: 6
+  keep_with_next: true
+  keep_together: true
+
+"Heading 3":
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 12
+  bold: true
+  space_before_pt: 12
+  space_after_pt: 6
+  keep_with_next: true
+  keep_together: true
+
+"Heading 4":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  bold: true
+  space_before_pt: 12
+  space_after_pt: 4
+  keep_with_next: true
+
+"Heading 5":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  bold: true
+  italic: true
+  space_before_pt: 6
+  space_after_pt: 4
+  keep_with_next: true
+
+"Heading 6":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  italic: true
+  space_before_pt: 6
+  space_after_pt: 4
+  keep_with_next: true
+
+"Heading 7":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  space_before_pt: 6
+  space_after_pt: 4
+  keep_with_next: true
+
+"Heading 8":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  italic: true
+  space_before_pt: 6
+  space_after_pt: 4
+  keep_with_next: true
+
+"Heading 9":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  italic: true
+  space_before_pt: 6
+  space_after_pt: 4
+  keep_with_next: true
+
+# ── 引用 ────────────────────────────────────────────────────
+"Block Text":
+  font_ascii: Times New Roman
+  font_eastAsia: 楷体
+  font_size_pt: 12
+  line_spacing: 1.5
+  space_before_pt: 6
+  space_after_pt: 6
+  indent_left_pt: 24
+  indent_right_pt: 24
+
+"Footnote Block Text":
+  font_ascii: Times New Roman
+  font_eastAsia: 楷体
+  font_size_pt: 9
+  line_spacing: 1.0
+  space_before_pt: 3
+  space_after_pt: 3
+  indent_left_pt: 18
+  indent_right_pt: 18
+
+# ── 代码 ────────────────────────────────────────────────────
+"Source Code":
+  font_ascii: Consolas
+  font_eastAsia: 宋体
+  font_size_pt: 10.5
+  line_spacing: 1.15
+  space_before_pt: 4
+  space_after_pt: 4
+
+"Verbatim Char":
+  font_ascii: Consolas
+  font_eastAsia: 宋体
+  font_size_pt: 10.5
+
+# ── 题注 ────────────────────────────────────────────────────
+Caption:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 10.5
+  alignment: center
+  space_before_pt: 6
+  space_after_pt: 6
+  keep_with_next: true
+
+"Table Caption":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 10.5
+  bold: true
+  alignment: center
+  space_before_pt: 6
+  space_after_pt: 4
+  keep_with_next: true
+
+"Image Caption":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 10.5
+  alignment: center
+  space_before_pt: 4
+  space_after_pt: 6
+
+# ── 图片 ────────────────────────────────────────────────────
+Figure:
+  alignment: center
+  space_before_pt: 6
+  space_after_pt: 6
+  keep_with_next: true
+
+"Captioned Figure":
+  alignment: center
+  space_before_pt: 6
+  space_after_pt: 6
+  keep_together: true
+
+# ── 列表 ────────────────────────────────────────────────────
+Compact:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  line_spacing: 1.3
+  space_before_pt: 0
+  space_after_pt: 0
+
+# ── 定义列表 ───────────────────────────────────────────────
+"Definition Term":
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 12
+  bold: true
+  space_before_pt: 6
+  space_after_pt: 0
+  keep_with_next: true
+
+Definition:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 12
+  space_before_pt: 0
+  space_after_pt: 4
+
+# ── 脚注 ────────────────────────────────────────────────────
+"Footnote Text":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 9
+  line_spacing: 1.0
+  space_after_pt: 0
+
+"Footnote Reference":
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 9
+
+# ── 目录 ────────────────────────────────────────────────────
+"TOC Heading":
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体
+  font_size_pt: 15
+  bold: true
+  alignment: center
+  space_before_pt: 12
+  space_after_pt: 12
+
+# ── 参考文献 ───────────────────────────────────────────────
+Bibliography:
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
+  font_size_pt: 10.5          # 五号
+  line_spacing: 1.3
+  space_after_pt: 0
+  indent_left_pt: 21
+  first_line_indent_pt: -21   # 悬挂缩进
+
+# ── 超链接 ──────────────────────────────────────────────────
+Hyperlink:
+  color: "0563C1"
+  underline: true
+
+# ── 章节编号 ───────────────────────────────────────────────
+"Section Number":
+  font_ascii: Times New Roman
+  font_eastAsia: 黑体

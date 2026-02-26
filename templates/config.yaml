@@ -1,12 +1,11 @@
 # ============================================================================
-# Give Me Doc — 内置 Word 模板样式配置
+# Give Me Doc — 内置 Word 模板样式配置（主配置）
 # ============================================================================
 #
 # 概述
 # ----
-# 本文件定义了项目内置的 pandoc reference-doc (.docx) 模板。
-# 构建脚本 (scripts/build_templates.py) 读取此配置，基于 pandoc 默认
-# reference.docx 修改样式属性，生成可直接使用的模板文件。
+# 本文件定义全局默认值和模板注册列表。
+# 每个模板的样式定义拆分为独立 YAML 文件，通过 styles_file 引用。
 #
 # 构建方式
 # --------
@@ -24,10 +23,7 @@
 # defaults:                      # 全局默认值（所有模板共享）
 #   page:                        # 页面尺寸与边距
 #     width_cm / height_cm       # 页面宽高 (cm)
-#     margin_top_cm              # 上边距 (cm)
-#     margin_bottom_cm           # 下边距 (cm)
-#     margin_left_cm             # 左边距 (cm)
-#     margin_right_cm            # 右边距 (cm)
+#     margin_top_cm / ...        # 边距 (cm)
 #   paragraph:                   # 段落默认值（应用于 Normal 样式）
 #     line_spacing               # 行距倍数
 #     space_after_pt             # 段后间距 (pt)
@@ -36,15 +32,13 @@
 #   - id:          <string>      # 唯一标识符，生成文件名
 #     name:        <string>      # 显示名称
 #     description: <string>      # 描述文字
+#     styles_file: <string>      # 样式定义文件 (相对于 templates/ 目录)
 #     page:        { ... }       # (可选) 覆盖全局页面设置
-#     styles:                    # 样式定义 (键名 = Word 样式名)
-#       <StyleName>:
-#         <属性>: <值>
 #
 # ============================================================================
 #
-# 可用样式属性
-# ------------
+# 可用样式属性（在各模板样式文件中使用）
+# ----------------------------------------
 #
 # 字体属性:
 #   font_ascii          西文字体名 (ascii/hAnsi)
@@ -52,6 +46,7 @@
 #   font_size_pt        字号 (pt, 磅)
 #   bold                粗体 (true/false)
 #   italic              斜体 (true/false)
+#   underline           下划线 (true/false)
 #   color               字体颜色 (6 位 hex, 不带 #, 如 "0563C1")
 #
 # 段落属性:
@@ -59,66 +54,77 @@
 #   space_before_pt      段前间距 (pt)
 #   space_after_pt       段后间距 (pt)
 #   first_line_indent_pt 首行缩进 (pt, 中文常用 24 = 12pt×2字符)
+#                        设为负值可实现悬挂缩进 (需配合 indent_left_pt)
+#   indent_left_pt       左缩进 (pt)
+#   indent_right_pt      右缩进 (pt)
 #   alignment            对齐 (left | center | right | justify)
+#   keep_with_next       与下段同页 (true/false, 常用于标题/题注)
+#   keep_together        段中不分页 (true/false)
+#   widow_control        孤行控制 (true/false)
+#   page_break_before    段前分页 (true/false)
 #
 # ============================================================================
 #
 # Pandoc 使用的 Word 样式名参考
 # ----------------------------
-# 下列样式名与 pandoc 输出的 docx 中实际使用的样式一一对应。
-# 未在模板中定义的样式将保留 pandoc 默认外观。
+# 所有模板均已完整覆盖以下全部样式。
 # 带 * 号的样式不存在于默认 reference.docx，构建脚本会自动创建。
 #
-# 正文类:
+# 正文类 (段落样式):
 #   Normal               默认段落（正文基础样式，所有段落继承此样式）
 #   Body Text            正文段落
 #   First Paragraph      紧跟标题后的首段（常无缩进或有特殊格式）
 #
-# 文档元信息:
+# 文档元信息 (段落样式):
 #   Title                文档标题
 #   Subtitle             文档副标题
 #   Author               作者
 #   Date                 日期
 #   Abstract             摘要正文
-#   Abstract Title       摘要标题 (如 "摘要")
+#   AbstractTitle     *  摘要标题 (如 "摘要"；注意无空格)
 #
-# 标题层级:
-#   Heading 1 – 9        一级到九级标题 (常用 1–6)
+# 标题层级 (段落样式):
+#   Heading 1 – 9        一级到九级标题
 #
-# 引用:
+# 引用 (段落样式):
 #   Block Text           块引用 (Markdown "> ...")
+#   Footnote Block Text *脚注内块引用
 #
-# 代码:
+# 代码 (段落/字符样式):
 #   Source Code        *  代码块段落 (```...```)
 #   Verbatim Char        行内代码字符样式 (`...`)
 #
-# 题注:
+# 题注 (段落样式):
 #   Caption              通用题注
 #   Table Caption        表格题注
 #   Image Caption        图片题注
+#
+# 图片 (段落样式):
+#   Figure               图片段落（无题注时）
 #   Captioned Figure     带题注图片的容器段落
 #
-# 列表:
+# 列表 (段落样式):
 #   Compact              紧凑列表项（列表项之间无空行时使用）
 #
-# 定义列表:
+# 定义列表 (段落样式):
 #   Definition Term      定义术语
 #   Definition           定义内容
 #
-# 脚注:
+# 脚注 (段落/字符样式):
 #   Footnote Text        脚注正文
 #   Footnote Reference   脚注引用标记（字符样式）
 #
-# 目录:
+# 目录 (段落样式):
 #   TOC Heading          目录标题
 #
-# 链接:
-#   Hyperlink            超链接（字符样式）
-#
-# 其他:
-#   Figure               图片段落
+# 参考文献 (段落样式):
 #   Bibliography         参考文献条目
-#   Section Number       章节编号（字符样式）
+#
+# 链接 (字符样式):
+#   Hyperlink            超链接
+#
+# 章节编号 (字符样式):
+#   Section Number       章节编号
 #
 # ============================================================================
 #
@@ -150,670 +156,17 @@ defaults:
 # ============================================================================
 templates:
 
-  # ══════════════════════════════════════════════════════════════
-  # 国标文档风格
-  # 参照 GB/T 9704 公文格式；黑体标题 + 仿宋正文
-  # ══════════════════════════════════════════════════════════════
   - id: builtin-gb
     name: 国标文档风格
     description: 参照 GB/T 9704 公文格式，黑体标题 + 仿宋正文
-    styles:
+    styles_file: builtin-gb.yaml
 
-      # ── 正文 ────────────────────────────────────────────────
-      Normal:
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 12            # 小四号
-        line_spacing: 1.5
-        space_after_pt: 0
-        first_line_indent_pt: 24    # 首行缩进 2 字符 (12pt×2)
-
-      "Body Text":
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 12
-        line_spacing: 1.5
-        space_after_pt: 0
-        first_line_indent_pt: 24
-
-      "First Paragraph":
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 12
-        line_spacing: 1.5
-        first_line_indent_pt: 24
-
-      # ── 文档信息 ────────────────────────────────────────────
-      Title:
-        font_ascii: Arial
-        font_eastAsia: 方正小标宋简体
-        font_size_pt: 22            # 二号
-        bold: true
-        alignment: center
-        space_before_pt: 0
-        space_after_pt: 12
-
-      Subtitle:
-        font_ascii: Arial
-        font_eastAsia: 仿宋
-        font_size_pt: 15            # 小三
-        alignment: center
-        space_before_pt: 0
-        space_after_pt: 6
-
-      Author:
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 14            # 四号
-        alignment: center
-        space_after_pt: 4
-
-      Date:
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 14
-        alignment: center
-        space_after_pt: 12
-
-      Abstract:
-        font_ascii: Times New Roman
-        font_eastAsia: 楷体
-        font_size_pt: 12
-        line_spacing: 1.5
-        first_line_indent_pt: 24
-        space_after_pt: 6
-
-      # ── 标题 ────────────────────────────────────────────────
-      "Heading 1":
-        font_ascii: Arial
-        font_eastAsia: 黑体
-        font_size_pt: 16            # 三号
-        bold: true
-        space_before_pt: 24
-        space_after_pt: 6
-
-      "Heading 2":
-        font_ascii: Arial
-        font_eastAsia: 楷体
-        font_size_pt: 15            # 小三
-        bold: true
-        space_before_pt: 18
-        space_after_pt: 6
-
-      "Heading 3":
-        font_ascii: Arial
-        font_eastAsia: 黑体
-        font_size_pt: 14            # 四号
-        bold: true
-        space_before_pt: 12
-        space_after_pt: 6
-
-      "Heading 4":
-        font_ascii: Arial
-        font_eastAsia: 仿宋
-        font_size_pt: 14            # 四号
-        bold: true
-        space_before_pt: 12
-        space_after_pt: 4
-
-      "Heading 5":
-        font_ascii: Arial
-        font_eastAsia: 仿宋
-        font_size_pt: 12            # 小四
-        bold: true
-        space_before_pt: 6
-        space_after_pt: 4
-
-      "Heading 6":
-        font_ascii: Arial
-        font_eastAsia: 仿宋
-        font_size_pt: 12
-        space_before_pt: 6
-        space_after_pt: 4
-
-      # ── 引用 ────────────────────────────────────────────────
-      "Block Text":
-        font_ascii: Times New Roman
-        font_eastAsia: 楷体
-        font_size_pt: 12
-        line_spacing: 1.5
-        space_before_pt: 6
-        space_after_pt: 6
-
-      # ── 代码 ────────────────────────────────────────────────
-      "Source Code":
-        font_ascii: Consolas
-        font_eastAsia: 仿宋
-        font_size_pt: 10.5          # 五号
-        line_spacing: 1.15
-        space_before_pt: 4
-        space_after_pt: 4
-
-      "Verbatim Char":
-        font_ascii: Consolas
-        font_eastAsia: 仿宋
-        font_size_pt: 10.5
-
-      # ── 题注 ────────────────────────────────────────────────
-      Caption:
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 10.5
-        alignment: center
-        space_before_pt: 6
-        space_after_pt: 6
-
-      "Table Caption":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 10.5
-        alignment: center
-        space_before_pt: 6
-        space_after_pt: 4
-
-      "Image Caption":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 10.5
-        alignment: center
-        space_before_pt: 4
-        space_after_pt: 6
-
-      # ── 脚注 ────────────────────────────────────────────────
-      "Footnote Text":
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 9
-        line_spacing: 1.0
-        space_after_pt: 0
-
-      # ── 紧凑列表 ───────────────────────────────────────────
-      Compact:
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 12
-        line_spacing: 1.3
-        space_before_pt: 0
-        space_after_pt: 0
-
-      # ── 定义列表 ───────────────────────────────────────────
-      "Definition Term":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 12
-        bold: true
-        space_before_pt: 6
-        space_after_pt: 0
-
-      Definition:
-        font_ascii: Times New Roman
-        font_eastAsia: 仿宋
-        font_size_pt: 12
-        space_before_pt: 0
-        space_after_pt: 4
-
-      # ── 目录 ────────────────────────────────────────────────
-      "TOC Heading":
-        font_ascii: Arial
-        font_eastAsia: 黑体
-        font_size_pt: 15
-        bold: true
-        alignment: center
-        space_before_pt: 12
-        space_after_pt: 12
-
-      # ── 超链接 ──────────────────────────────────────────────
-      Hyperlink:
-        color: "0563C1"
-
-  # ══════════════════════════════════════════════════════════════
-  # 学术文档风格
-  # 宋体正文 + 黑体标题，适合学术论文 / 技术报告
-  # ══════════════════════════════════════════════════════════════
   - id: builtin-academic
     name: 学术文档风格
     description: 适合学术论文、技术报告，宋体正文 + 黑体标题
-    styles:
+    styles_file: builtin-academic.yaml
 
-      # ── 正文 ────────────────────────────────────────────────
-      Normal:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        line_spacing: 1.5
-        space_after_pt: 0
-        first_line_indent_pt: 24
-
-      "Body Text":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        line_spacing: 1.5
-        space_after_pt: 0
-        first_line_indent_pt: 24
-
-      "First Paragraph":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        line_spacing: 1.5
-        first_line_indent_pt: 24
-
-      # ── 文档信息 ────────────────────────────────────────────
-      Title:
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 18            # 小二
-        bold: true
-        alignment: center
-        space_before_pt: 0
-        space_after_pt: 18
-
-      Subtitle:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 14            # 四号
-        alignment: center
-        space_before_pt: 0
-        space_after_pt: 12
-
-      Author:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        alignment: center
-        space_after_pt: 4
-
-      Date:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        alignment: center
-        space_after_pt: 12
-
-      Abstract:
-        font_ascii: Times New Roman
-        font_eastAsia: 楷体
-        font_size_pt: 10.5          # 五号
-        line_spacing: 1.3
-        first_line_indent_pt: 21    # 10.5pt×2
-        space_before_pt: 6
-        space_after_pt: 6
-
-      # ── 标题 ────────────────────────────────────────────────
-      "Heading 1":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 15            # 小三
-        bold: true
-        space_before_pt: 24
-        space_after_pt: 6
-
-      "Heading 2":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 14            # 四号
-        bold: true
-        space_before_pt: 18
-        space_after_pt: 6
-
-      "Heading 3":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 12
-        bold: true
-        space_before_pt: 12
-        space_after_pt: 6
-
-      "Heading 4":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        bold: true
-        space_before_pt: 12
-        space_after_pt: 4
-
-      "Heading 5":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        bold: true
-        italic: true
-        space_before_pt: 6
-        space_after_pt: 4
-
-      "Heading 6":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        italic: true
-        space_before_pt: 6
-        space_after_pt: 4
-
-      # ── 引用 ────────────────────────────────────────────────
-      "Block Text":
-        font_ascii: Times New Roman
-        font_eastAsia: 楷体
-        font_size_pt: 12
-        line_spacing: 1.5
-        space_before_pt: 6
-        space_after_pt: 6
-
-      # ── 代码 ────────────────────────────────────────────────
-      "Source Code":
-        font_ascii: Consolas
-        font_eastAsia: 宋体
-        font_size_pt: 10.5
-        line_spacing: 1.15
-        space_before_pt: 4
-        space_after_pt: 4
-
-      "Verbatim Char":
-        font_ascii: Consolas
-        font_eastAsia: 宋体
-        font_size_pt: 10.5
-
-      # ── 题注 ────────────────────────────────────────────────
-      Caption:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 10.5
-        alignment: center
-        space_before_pt: 6
-        space_after_pt: 6
-
-      "Table Caption":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 10.5
-        bold: true
-        alignment: center
-        space_before_pt: 6
-        space_after_pt: 4
-
-      "Image Caption":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 10.5
-        alignment: center
-        space_before_pt: 4
-        space_after_pt: 6
-
-      # ── 脚注 ────────────────────────────────────────────────
-      "Footnote Text":
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 9
-        line_spacing: 1.0
-        space_after_pt: 0
-
-      # ── 紧凑列表 ───────────────────────────────────────────
-      Compact:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        line_spacing: 1.3
-        space_before_pt: 0
-        space_after_pt: 0
-
-      # ── 定义列表 ───────────────────────────────────────────
-      "Definition Term":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 12
-        bold: true
-        space_before_pt: 6
-        space_after_pt: 0
-
-      Definition:
-        font_ascii: Times New Roman
-        font_eastAsia: 宋体
-        font_size_pt: 12
-        space_before_pt: 0
-        space_after_pt: 4
-
-      # ── 目录 ────────────────────────────────────────────────
-      "TOC Heading":
-        font_ascii: Times New Roman
-        font_eastAsia: 黑体
-        font_size_pt: 15
-        bold: true
-        alignment: center
-        space_before_pt: 12
-        space_after_pt: 12
-
-      # ── 超链接 ──────────────────────────────────────────────
-      Hyperlink:
-        color: "0563C1"
-
-  # ══════════════════════════════════════════════════════════════
-  # 简洁风格
-  # 微软雅黑 + 等线，清爽简洁，适合日常阅读
-  # ══════════════════════════════════════════════════════════════
   - id: builtin-minimal
     name: 简洁风格
     description: 清爽简洁，微软雅黑 + 等线，适合日常阅读
-    styles:
-
-      # ── 正文 ────────────────────────────────────────────────
-      Normal:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        line_spacing: 1.35
-        space_after_pt: 4
-
-      "Body Text":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        line_spacing: 1.35
-        space_after_pt: 4
-
-      "First Paragraph":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        line_spacing: 1.35
-
-      # ── 文档信息 ────────────────────────────────────────────
-      Title:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 20
-        bold: true
-        alignment: center
-        color: "1a1a2e"
-        space_before_pt: 0
-        space_after_pt: 16
-
-      Subtitle:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 14
-        color: "4a5568"
-        alignment: center
-        space_before_pt: 0
-        space_after_pt: 12
-
-      Author:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        color: "4a5568"
-        alignment: center
-        space_after_pt: 2
-
-      Date:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        color: "718096"
-        alignment: center
-        space_after_pt: 12
-
-      Abstract:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        italic: true
-        color: "4a5568"
-        line_spacing: 1.35
-        space_before_pt: 6
-        space_after_pt: 10
-
-      # ── 标题 ────────────────────────────────────────────────
-      "Heading 1":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 16
-        bold: true
-        color: "1a1a2e"
-        space_before_pt: 20
-        space_after_pt: 6
-
-      "Heading 2":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 14
-        bold: true
-        color: "2d3748"
-        space_before_pt: 16
-        space_after_pt: 4
-
-      "Heading 3":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 12
-        bold: true
-        color: "4a5568"
-        space_before_pt: 12
-        space_after_pt: 4
-
-      "Heading 4":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        bold: true
-        color: "4a5568"
-        space_before_pt: 10
-        space_after_pt: 4
-
-      "Heading 5":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        bold: true
-        space_before_pt: 6
-        space_after_pt: 4
-
-      "Heading 6":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        italic: true
-        color: "718096"
-        space_before_pt: 6
-        space_after_pt: 4
-
-      # ── 引用 ────────────────────────────────────────────────
-      "Block Text":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        italic: true
-        color: "4a5568"
-        line_spacing: 1.35
-        space_before_pt: 6
-        space_after_pt: 6
-
-      # ── 代码 ────────────────────────────────────────────────
-      "Source Code":
-        font_ascii: Cascadia Code
-        font_eastAsia: 等线
-        font_size_pt: 10
-        line_spacing: 1.2
-        space_before_pt: 4
-        space_after_pt: 4
-
-      "Verbatim Char":
-        font_ascii: Cascadia Code
-        font_eastAsia: 等线
-        font_size_pt: 10
-
-      # ── 题注 ────────────────────────────────────────────────
-      Caption:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 10
-        color: "718096"
-        alignment: center
-        space_before_pt: 4
-        space_after_pt: 4
-
-      "Table Caption":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 10
-        color: "4a5568"
-        alignment: center
-        space_before_pt: 6
-        space_after_pt: 4
-
-      "Image Caption":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 10
-        color: "718096"
-        alignment: center
-        space_before_pt: 4
-        space_after_pt: 6
-
-      # ── 脚注 ────────────────────────────────────────────────
-      "Footnote Text":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 9
-        color: "718096"
-        line_spacing: 1.0
-        space_after_pt: 0
-
-      # ── 紧凑列表 ───────────────────────────────────────────
-      Compact:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        line_spacing: 1.2
-        space_before_pt: 0
-        space_after_pt: 0
-
-      # ── 定义列表 ───────────────────────────────────────────
-      "Definition Term":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        bold: true
-        color: "2d3748"
-        space_before_pt: 6
-        space_after_pt: 0
-
-      Definition:
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 11
-        space_before_pt: 0
-        space_after_pt: 4
-
-      # ── 目录 ────────────────────────────────────────────────
-      "TOC Heading":
-        font_ascii: Calibri
-        font_eastAsia: 微软雅黑
-        font_size_pt: 14
-        bold: true
-        color: "1a1a2e"
-        space_before_pt: 12
-        space_after_pt: 8
-
-      # ── 超链接 ──────────────────────────────────────────────
-      Hyperlink:
-        color: "3182CE"
+    styles_file: builtin-minimal.yaml

@@ -69,7 +69,7 @@ ALIGNMENT_MAP = {
 
 
 def load_config() -> dict[str, Any]:
-    """Load and validate config.yaml."""
+    """Load and validate config.yaml, resolving external styles_file references."""
     if not CONFIG_PATH.exists():
         print(f"ERROR: config not found: {CONFIG_PATH}", file=sys.stderr)
         sys.exit(1)
@@ -78,6 +78,23 @@ def load_config() -> dict[str, Any]:
     if "templates" not in cfg or not cfg["templates"]:
         print("ERROR: config.yaml must define at least one template", file=sys.stderr)
         sys.exit(1)
+
+    # Resolve external style files: if a template has styles_file instead of
+    # inline styles, load the referenced YAML and merge into the template dict.
+    for tpl in cfg["templates"]:
+        styles_file = tpl.pop("styles_file", None)
+        if styles_file and "styles" not in tpl:
+            styles_path = TEMPLATES_DIR / styles_file
+            if not styles_path.exists():
+                print(f"ERROR: styles file not found: {styles_path}", file=sys.stderr)
+                sys.exit(1)
+            with open(styles_path, encoding="utf-8") as f:
+                styles = yaml.safe_load(f)
+            if not isinstance(styles, dict):
+                print(f"ERROR: styles file must be a YAML mapping: {styles_path}", file=sys.stderr)
+                sys.exit(1)
+            tpl["styles"] = styles
+
     return cfg
 
 
@@ -163,6 +180,10 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
     if color and hasattr(style, "font"):
         style.font.color.rgb = RGBColor.from_string(color)
 
+    underline = props.get("underline")
+    if underline is not None and hasattr(style, "font"):
+        style.font.underline = underline
+
     # Paragraph settings
     if hasattr(style, "paragraph_format"):
         pf = style.paragraph_format
@@ -178,6 +199,18 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
                 pf.alignment = ALIGNMENT_MAP[align]
         if "first_line_indent_pt" in props:
             pf.first_line_indent = Pt(props["first_line_indent_pt"])
+        if "indent_left_pt" in props:
+            pf.left_indent = Pt(props["indent_left_pt"])
+        if "indent_right_pt" in props:
+            pf.right_indent = Pt(props["indent_right_pt"])
+        if "keep_with_next" in props:
+            pf.keep_with_next = props["keep_with_next"]
+        if "keep_together" in props:
+            pf.keep_together = props["keep_together"]
+        if "widow_control" in props:
+            pf.widow_control = props["widow_control"]
+        if "page_break_before" in props:
+            pf.page_break_before = props["page_break_before"]
 
 
 def apply_page_setup(doc: Document, page_cfg: dict[str, Any]) -> None:
