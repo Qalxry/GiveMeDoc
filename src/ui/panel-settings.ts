@@ -282,6 +282,14 @@ function renderTemplateList(cb: PanelCallbacks): void {
         onClick: async () => {
           await cb.onTemplateDelete(tpl.id);
           templates = templates.filter((t) => t.id !== tpl.id);
+          // If the deleted template was the default, fall back to the first built-in
+          if (config.selectedTemplateId === tpl.id) {
+            const fallback = templates.find((t) => t.isBuiltin) ?? templates[0];
+            if (fallback) {
+              config.selectedTemplateId = fallback.id;
+              await cb.onConfigChange({ selectedTemplateId: fallback.id });
+            }
+          }
           renderTemplateList(cb);
           showToast({ message: `已删除 "${tpl.name}"`, level: 'info' });
         },
