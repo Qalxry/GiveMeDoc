@@ -15,6 +15,7 @@ import {
   PreopenDirectory,
 } from '@bjorn3/browser_wasi_shim';
 import type { PandocWorkerAPI } from './types';
+import tableStyleLua from './table-style.lua?raw';
 
 // ── State ──────────────────────────────────────────────────────────────────
 let instance: WebAssembly.Instance | null = null;
@@ -230,6 +231,8 @@ const api: PandocWorkerAPI = {
     if (referenceDocx) {
       options['reference-doc'] = 'reference.docx';
     }
+    // Lua filter: separate table cell paragraphs from list Compact style
+    options['filters'] = ['table-style.lua'];
 
     const optsStr = JSON.stringify(options);
     const optsBytes = new TextEncoder().encode(optsStr);
@@ -247,6 +250,8 @@ const api: PandocWorkerAPI = {
     if (referenceDocx) {
       addFileSync('reference.docx', new Uint8Array(referenceDocx), true);
     }
+    // Write Lua filter to virtual filesystem
+    addFileSync('table-style.lua', new TextEncoder().encode(tableStyleLua), true);
 
     // Execute conversion
     exp().convert(optsPtr, optsBytes.length);

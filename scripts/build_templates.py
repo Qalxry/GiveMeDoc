@@ -199,7 +199,7 @@ def _make_borders(parent, borders_cfg: dict[str, Any], tag: str = "tblBorders") 
 
 
 def _make_shd(parent, fill: str) -> None:
-    """Create a <w:shd> element for cell shading."""
+    """Create a <w:shd> element (works in rPr for char shading, tcPr for cell shading)."""
     shd = parent.makeelement(qn("w:shd"), {
         qn("w:val"): "clear",
         qn("w:color"): "auto",
@@ -241,8 +241,9 @@ def _build_cond_rpr(parent, cond_cfg: dict[str, Any]) -> None:
     has_italic = "italic" in cond_cfg
     has_color = "color" in cond_cfg
     has_size = "font_size_pt" in cond_cfg
+    has_char_shading = "char_shading" in cond_cfg
 
-    if not (has_font or has_bold or has_italic or has_color or has_size):
+    if not (has_font or has_bold or has_italic or has_color or has_size or has_char_shading):
         return
 
     rpr = parent.makeelement(qn("w:rPr"), {})
@@ -263,6 +264,8 @@ def _build_cond_rpr(parent, cond_cfg: dict[str, Any]) -> None:
         rpr.append(sz_el)
         szCs = rpr.makeelement(qn("w:szCs"), {qn("w:val"): str(int(cond_cfg["font_size_pt"] * 2))})
         rpr.append(szCs)
+    if has_char_shading:
+        _make_shd(rpr, cond_cfg["char_shading"])
     parent.append(rpr)
 
 
@@ -382,54 +385,22 @@ def apply_table_style(doc: Document, style_name: str, props: dict[str, Any]) -> 
                 cm_el.append(side_el)
         tbl_pr.append(cm_el)
 
-    # --- 3) Table-level paragraph defaults (spacing, alignment) ---
-    para_cfg = props.get("paragraph")
-    if para_cfg:
-        ppr = style_el.makeelement(qn("w:pPr"), {})
-        if "alignment" in para_cfg:
-            jc_val = ALIGNMENT_JC_MAP.get(para_cfg["alignment"])
-            if jc_val:
-                jc = ppr.makeelement(qn("w:jc"), {qn("w:val"): jc_val})
-                ppr.append(jc)
-        has_spacing = any(k in para_cfg for k in ("line_spacing", "line_spacing_pt", "space_before_pt", "space_after_pt"))
-        if has_spacing:
-            _make_spacing(ppr,
-                          line_spacing=para_cfg.get("line_spacing"),
-                          line_spacing_pt=para_cfg.get("line_spacing_pt"),
-                          space_before_pt=para_cfg.get("space_before_pt"),
-                          space_after_pt=para_cfg.get("space_after_pt"))
-        # Insert pPr before tblPr for correct schema order
+    # --- 3) Table-level default cell properties (shading, vertical alignment) ---
+    has_shading = "shading" in props
+    has_valign = "vertical_alignment" in props
+    if has_shading or has_valign:
+        # These are expressed as default tcPr on the table style
+        tcpr = style_el.makeelement(qn("w:tcPr"), {})
+        if has_shading:
+            _make_shd(tcpr, props["shading"])
+        if has_valign:
+            va = tcpr.makeelement(qn("w:vAlign"), {qn("w:val"): props["vertical_alignment"]})
+            tcpr.append(va)
+        # Insert tcPr after tblPr per schema order
         tbl_pr_index = list(style_el).index(tbl_pr)
-        style_el.insert(tbl_pr_index, ppr)
+        style_el.insert(tbl_pr_index + 1, tcpr)
 
-    # --- 4) Table-level font defaults ---
-    font_cfg_keys = ("font_ascii", "font_eastAsia", "font_size_pt", "bold", "italic", "color")
-    if any(k in props for k in font_cfg_keys):
-        rpr = style_el.makeelement(qn("w:rPr"), {})
-        if props.get("font_ascii") or props.get("font_eastAsia"):
-            set_run_font(rpr, ascii=props.get("font_ascii"), east_asia=props.get("font_eastAsia"))
-        if "bold" in props:
-            b_el = rpr.makeelement(qn("w:b"), {qn("w:val"): "1" if props["bold"] else "0"})
-            rpr.append(b_el)
-        if "italic" in props:
-            i_el = rpr.makeelement(qn("w:i"), {qn("w:val"): "1" if props["italic"] else "0"})
-            rpr.append(i_el)
-        if "color" in props:
-            c_el = rpr.makeelement(qn("w:color"), {qn("w:val"): props["color"]})
-            rpr.append(c_el)
-        if "font_size_pt" in props:
-            sz_val = str(int(props["font_size_pt"] * 2))
-            sz_el = rpr.makeelement(qn("w:sz"), {qn("w:val"): sz_val})
-            rpr.append(sz_el)
-            szCs = rpr.makeelement(qn("w:szCs"), {qn("w:val"): sz_val})
-            rpr.append(szCs)
-        # Insert rPr at beginning (before pPr and tblPr) per schema
-        style_el.insert(0 if style_el.find(qn("w:name")) is None else 1, rpr)
-        # Find correct position: after w:name, w:aliases, w:basedOn, etc.
-        # Simplification: insert after last metadata element
-        _insert_rpr_after_metadata(style_el, rpr)
-
-    # --- 5) Conditional formatting ---
+    # --- 4) Conditional formatting ---
     cond_cfg = props.get("conditional")
     if cond_cfg:
         for cond_type, cond_props in cond_cfg.items():
@@ -532,6 +503,19 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
     if underline is not None and hasattr(style, "font"):
         style.font.underline = underline
 
+    # Character shading (text background color)
+    char_shading = props.get("char_shading")
+    if char_shading:
+        rpr = style.element.find(qn("w:rPr"))
+        if rpr is None:
+            rpr = style.element.makeelement(qn("w:rPr"), {})
+            style.element.append(rpr)
+        # Remove existing shd if present
+        old_shd = rpr.find(qn("w:shd"))
+        if old_shd is not None:
+            rpr.remove(old_shd)
+        _make_shd(rpr, char_shading)
+
     # Paragraph settings
     if hasattr(style, "paragraph_format"):
         pf = style.paragraph_format
@@ -567,7 +551,7 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
 
 def _is_table_style_props(props: dict[str, Any]) -> bool:
     """Detect if props dict contains table-style-specific keys."""
-    return any(k in props for k in ("borders", "cell_margin", "conditional", "paragraph", "table_alignment"))
+    return any(k in props for k in ("borders", "cell_margin", "conditional", "table_alignment"))
 
 
 def apply_page_setup(doc: Document, page_cfg: dict[str, Any]) -> None:

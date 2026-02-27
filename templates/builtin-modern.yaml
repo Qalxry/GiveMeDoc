@@ -436,6 +436,7 @@ AbstractTitle:
   italic: false
   underline: false
   color: "000000"
+  char_shading: "E2EFDA"
 
 # ── 题注 ────────────────────────────────────────────────────
 Caption:
@@ -683,6 +684,28 @@ Hyperlink:
   underline: true
   color: "0563C1"
 
+# ── 表格段落 ───────────────────────────────────────────────
+# 表格内单元格文字的段落样式（独立于列表 Compact 样式）
+"Table Contents":
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 12
+  bold: false
+  italic: false
+  underline: false
+  color: "000000"
+  line_spacing: 1.0
+  space_before_pt: 0
+  space_after_pt: 0
+  first_line_indent_pt: 0
+  indent_left_pt: 0
+  indent_right_pt: 0
+  alignment: center
+  keep_with_next: false
+  keep_together: false
+  widow_control: true
+  page_break_before: false
+
 # ── 表格 ────────────────────────────────────────────────────
 # 现代商务：深蓝表头 + 精致细线 + 交替行底纹
 "Table":
@@ -699,22 +722,10 @@ Hyperlink:
     bottom: 50
     left: 120
     right: 120
-  paragraph:
-    line_spacing: 1.0
-    space_before_pt: 0
-    space_after_pt: 0
-    alignment: center
+  vertical_alignment: center
   conditional:
     firstRow:
       bold: true
-      color: "000000"
-      alignment: center
-      # shading: "1A5276"
-      # borders:
-        # bottom: { val: single, sz: 6, color: "000000" }
-      vertical_alignment: center
-    # band1Horz:
-      # shading: "EBF5FB"
 
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":

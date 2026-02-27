@@ -683,6 +683,28 @@ Hyperlink:
   underline: true
   color: "0563C1"
 
+# ── 表格段落 ───────────────────────────────────────────────
+# 表格内单元格文字的段落样式（独立于列表 Compact 样式）
+"Table Contents":
+  font_ascii: Times New Roman
+  font_eastAsia: 仿宋
+  font_size_pt: 16
+  bold: false
+  italic: false
+  underline: false
+  color: "000000"
+  line_spacing: 1.0
+  space_before_pt: 0
+  space_after_pt: 0
+  first_line_indent_pt: 0
+  indent_left_pt: 0
+  indent_right_pt: 0
+  alignment: center
+  keep_with_next: false
+  keep_together: false
+  widow_control: true
+  page_break_before: false
+
 # ── 表格 ────────────────────────────────────────────────────
 "Table":
   table_alignment: center
@@ -698,18 +720,10 @@ Hyperlink:
     bottom: 40
     left: 108
     right: 108
-  paragraph:
-    line_spacing: 1.0
-    space_before_pt: 0
-    space_after_pt: 0
-    first_line_indent_pt: 0
-    alignment: center
+  vertical_alignment: center
   conditional:
     firstRow:
       bold: true
-      alignment: center
-      # shading: "D9D9D9"
-      vertical_alignment: center
 
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":

@@ -48,6 +48,7 @@
 #   italic              斜体 (true/false)
 #   underline           下划线 (true/false)
 #   color               字体颜色 (6 位 hex, 不带 #, 如 "0563C1")
+#   char_shading        文字底纹色 (6 位 hex, 如 "E2EFDA", 用于代码等背景高亮)
 #
 # 段落属性:
 #   line_spacing         行距倍数 (如 1.5)
@@ -65,8 +66,8 @@
 #
 # 表格样式属性 (仅用于 "Table" 样式):
 # ----------------------------------------
-# 表格样式使用特殊的属性结构，不同于段落/字符样式。
-# 注意: 表格内文字字体由 Compact 段落样式控制，不在此处设置。
+# 表格样式控制边框、内边距等表格级/单元格级属性。
+# 文字格式（字体、字号、行距等）由 "Table Contents" 段落样式控制。
 #
 #   table_alignment:             表格在页面中的水平对齐 (left|center|right)
 #
@@ -81,25 +82,17 @@
 #   cell_margin:                 单元格内边距 (单位: twips, 1pt≈20twips)
 #     top/bottom/left/right:     各方向边距值 (整数)
 #
-#   paragraph:                   表格内段落默认属性 (覆盖 Compact 样式)
-#     line_spacing:              行距倍数
-#     line_spacing_pt:           行距固定值 (pt, 优先级高于 line_spacing)
-#     space_before_pt:           段前 (pt)
-#     space_after_pt:            段后 (pt)
-#     alignment:                 对齐 (left|center|right|justify)
+#   shading:                     全局单元格背景色 (6位 hex, 如 "F2F2F2")
+#   vertical_alignment:          全局单元格垂直对齐 (top|center|bottom)
 #
-#   font_ascii:                  表格默认西文字体 (可选, 通常用 Compact 控制)
-#   font_eastAsia:               表格默认中文字体 (可选)
-#   font_size_pt:                表格默认字号 (可选)
-#   bold/italic/color:           表格默认文字格式 (可选)
-#
-#   conditional:                 条件格式 (按区域覆盖默认值)
+#   conditional:                 条件格式 (按区域覆盖 Table Contents 的默认值)
 #     firstRow/lastRow:          表头行 / 表尾行
 #     firstCol/lastCol:          首列 / 末列
 #     band1Horz/band2Horz:       奇数行 / 偶数行 (交替行底纹)
 #     band1Vert/band2Vert:       奇数列 / 偶数列
 #     每个条件区段可设:
-#       bold/italic/color:       文字格式覆盖
+#       bold/italic/color:       文字格式覆盖 (优先级高于 Table Contents)
+#       char_shading:            文字底纹色 (6位 hex)
 #       font_ascii/font_eastAsia/font_size_pt: 字体覆盖
 #       alignment:               对齐覆盖
 #       line_spacing/space_before_pt/space_after_pt: 间距覆盖
@@ -148,7 +141,10 @@
 #   Captioned Figure     带题注图片的容器段落
 #
 # 列表 (段落样式):
-#   Compact              紧凑列表项（列表项之间无空行时使用）
+#   Compact              紧凑列表项（列表项之间无空行时使用，仅用于列表）
+#
+# 表格段落 (段落样式):
+#   Table Contents       表格内单元格文字（独立于列表 Compact 样式）
 #
 # 定义列表 (段落样式):
 #   Definition Term      定义术语
