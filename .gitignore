@@ -59,4 +59,5 @@ docs/deepseek.md
 docs/pandoc.md
 proposals.*.md
 templates/*.docx
+!templates/pandoc-reference-base.docx
 src/core/builtin-templates.generated.ts

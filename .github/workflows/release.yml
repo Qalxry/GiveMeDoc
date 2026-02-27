@@ -50,12 +50,7 @@ jobs:
           "
 
       - name: Build all
-        run: |
-          pnpm build:icons
-          pnpm build:templates
-          pnpm build:userscript
-          pnpm build:chrome
-          pnpm build:firefox
+        run: pnpm build:all
 
       - name: Prepare userscript artifact
         run: cp dist/userscript/give-me-doc.user.js dist/give-me-doc.user.js

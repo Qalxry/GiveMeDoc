@@ -14,7 +14,8 @@
     "build:extension": "vite build --mode extension-content && vite build --mode extension-worker && vite build --mode extension",
     "build:chrome": "pnpm build:extension && node scripts/copy-manifest.mjs chrome",
     "build:firefox": "pnpm build:extension && node scripts/copy-manifest.mjs firefox",
-    "build": "pnpm build:icons && pnpm build:templates && pnpm build:userscript && pnpm build:extension",
+    "build:all": "pnpm build:icons && pnpm build:templates && pnpm build:userscript && pnpm build:extension && node scripts/copy-manifest.mjs firefox && node scripts/copy-manifest.mjs chrome",
+    "build": "pnpm build:all",
     "typecheck": "tsc --noEmit",
     "release": "node -e \"const v=process.argv[1];if(!v){console.error('Usage: pnpm release <version>  (e.g. pnpm release 1.0.1)');process.exit(1)};const t='v'+v;require('child_process').execSync('git tag '+t+' && git push origin '+t,{stdio:'inherit'})\" --"
   },
