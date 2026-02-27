@@ -37,7 +37,7 @@ declare const __PLATFORM__: 'userscript' | 'extension';
 
 async function loadPandocWasm(): Promise<void> {
   try {
-    showToast({ message: '正在加载 Pandoc WASM…', level: 'info', duration: 2000 });
+    // showToast({ message: '正在加载 Pandoc WASM…', level: 'info', duration: 2000 });
 
     // Fetch WASM directly from the extension's web-accessible resources.
     // This avoids passing a 58 MB ArrayBuffer through runtime.sendMessage
@@ -58,7 +58,7 @@ async function loadPandocWasm(): Promise<void> {
     // Worker script is IIFE (not module), so don't pass { type: 'module' }
     const pandocWorker = new Worker(blobUrl);
     await initPandoc(wasmBytes, pandocWorker);
-    showToast({ message: `Pandoc 就绪 (${await getPandocVersion()})`, level: 'success' });
+    // showToast({ message: `Pandoc 就绪 (${await getPandocVersion()})`, level: 'success' });
   } catch (err) {
     console.error('[GiveMeDoc] Pandoc WASM load failed:', err);
     showToast({ message: `Pandoc 加载失败: ${(err as Error).message}`, level: 'error', duration: 0 });
