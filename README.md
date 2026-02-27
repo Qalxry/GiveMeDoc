@@ -60,7 +60,7 @@ GiveMeDoc 同时提供**浏览器扩展**（Chrome / Edge / Firefox）和**Tampe
 ### 方式二：Tampermonkey 油猴脚本
 
 1. 在浏览器中安装 [Tampermonkey](https://www.tampermonkey.net/)。
-2. [点击这里安装](https://github.com/Qalxry/GiveMeDoc/releases/latest/download/give-me-doc.user.js) 最新版本的油猴脚本。
+2. [点击这里安装](https://github.com/Qalxry/GiveMeDoc/releases/latest/download/give-me-doc.user.js) 最新版本的油猴脚本。或者 [在 GreasyFork 上安装](https://greasyfork.org/en/scripts/567712-give-me-doc)。
 3. 访问 [chat.deepseek.com](https://chat.deepseek.com)，页面上将出现一个浮动操作按钮。
 
 
