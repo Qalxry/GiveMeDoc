@@ -46,6 +46,7 @@ let fabSwitch: HTMLElement;
 let thinkingSwitch: HTMLElement;
 let singleExportSwitch: HTMLElement;
 let autoRefreshSwitch: HTMLElement;
+let lineBreaksSelect: HTMLSelectElement;
 let prefixTextarea: HTMLElement;
 let userTplTextarea: HTMLElement;
 let assistantTplTextarea: HTMLElement;
@@ -124,6 +125,25 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   });
   exportSettingsSection.appendChild(singleExportSwitch);
 
+  // Line breaks mode selector
+  const lineBreaksLabel = el('label', 'gmd-settings__select-label');
+  lineBreaksLabel.textContent = '换行模式';
+  exportSettingsSection.appendChild(lineBreaksLabel);
+
+  lineBreaksSelect = createSelect({
+    options: [
+      { value: 'hard', label: '强制换行（推荐）（每行保留，类似 Shift+Enter）' },
+      { value: 'default', label: 'Pandoc 默认（标准 Markdown，换行合并）' },
+      { value: 'east_asian', label: '东亚优化（中日韩文字间换行忽略）' },
+    ],
+    value: 'hard',
+    onChange: (value) => {
+      config.lineBreaks = value as UserConfig['lineBreaks'];
+      cb.onConfigChange({ lineBreaks: config.lineBreaks });
+    },
+  });
+  exportSettingsSection.appendChild(lineBreaksSelect);
+
   root.appendChild(exportSettingsSection);
 
   // ── Section: Template editors ────────────────────────────────────────
@@ -200,6 +220,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
         setSwitchState(autoRefreshSwitch, config.autoRefreshOnOpen);
         setSwitchState(thinkingSwitch, config.includeThinking);
         setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
+        lineBreaksSelect.value = config.lineBreaks;
         setTextareaValue(prefixTextarea, config.documentPrefix);
         setTextareaValue(userTplTextarea, config.userMessageTemplate);
         setTextareaValue(assistantTplTextarea, config.assistantMessageTemplate);
@@ -344,6 +365,9 @@ async function loadData(cb: PanelCallbacks): Promise<void> {
     setSwitchState(autoRefreshSwitch, config.autoRefreshOnOpen);
     setSwitchState(thinkingSwitch, config.includeThinking);
     setSwitchState(singleExportSwitch, config.singleExportWithTemplate);
+
+    // Sync select
+    lineBreaksSelect.value = config.lineBreaks;
 
     // Sync textareas
     setTextareaValue(prefixTextarea, config.documentPrefix);

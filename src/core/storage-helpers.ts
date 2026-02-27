@@ -128,8 +128,9 @@ export function createCallbacks(
 
     async onExportRaw(markdown, templateId, filename) {
       if (!isPandocReady()) throw new Error('Pandoc 尚未就绪');
+      const config = await loadConfig(storage);
       const refDocx = await getTemplateBlob(storage, templateId);
-      const { blob, filename: outName } = await exportRawToDocx(markdown, filename, refDocx);
+      const { blob, filename: outName } = await exportRawToDocx(markdown, filename, refDocx, config.lineBreaks);
       downloadBlob(blob, outName);
     },
 

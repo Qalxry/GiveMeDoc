@@ -216,7 +216,7 @@ export async function exportToDocx(
   const formatted = formatMarkdown(raw);
   console.debug('[GiveMeDoc] Formatted Markdown for export:', '\n' + formatted);
   
-  const buffer = await pandoc.convert(formatted, referenceDocx);
+  const buffer = await pandoc.convert(formatted, referenceDocx, config.lineBreaks);
 
   const safeName = sessionTitle.replace(/[<>:"/\\|?*]/g, '_').slice(0, 100) || 'export';
   return {
@@ -233,6 +233,7 @@ export async function exportRawToDocx(
   markdown: string,
   filename: string,
   referenceDocx?: ArrayBuffer,
+  lineBreaks?: string,
 ): Promise<{ blob: Blob; filename: string }> {
   if (!pandoc) throw new Error('Pandoc Worker not initialized');
 
@@ -240,7 +241,7 @@ export async function exportRawToDocx(
   const formatted = formatMarkdown(markdown);
   console.debug('[GiveMeDoc] Formatted raw Markdown for export:', '\n' + formatted);
 
-  const buffer = await pandoc.convert(formatted, referenceDocx);
+  const buffer = await pandoc.convert(formatted, referenceDocx, lineBreaks);
 
   const safeName = filename.replace(/[<>:"/\\|?*]/g, '_').slice(0, 100) || 'export';
   return {

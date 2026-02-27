@@ -88,7 +88,7 @@ const popupOverrides: Partial<PanelCallbacks> = {
     await ensurePandoc();
     const config = await loadConfig(extStorage);
     const refDocx = await getTemplateBlob(extStorage, templateId);
-    const { blob, filename: outName } = await exportRawToDocx(markdown, filename, refDocx);
+    const { blob, filename: outName } = await exportRawToDocx(markdown, filename, refDocx, config.lineBreaks);
     downloadBlob(blob, outName);
   },
 

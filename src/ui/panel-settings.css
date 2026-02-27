@@ -115,3 +115,10 @@
   padding: var(--gmd-space-xs) 0;
   font-style: italic;
 }
+
+/* ── Select label ───────────────────────────────────────────────────── */
+.gmd-settings__select-label {
+  font-size: var(--gmd-font-size-sm);
+  color: var(--gmd-on-surface-variant);
+  margin-bottom: calc(-1 * var(--gmd-space-xs));
+}

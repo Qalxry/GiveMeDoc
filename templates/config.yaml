@@ -204,7 +204,7 @@ defaults:
 templates:
 
   - id: builtin-minimal
-    name: 无格式
+    name: 简单样式
     description: 宋体+Times，无额外格式
     styles_file: builtin-minimal.yaml
 
@@ -219,7 +219,7 @@ templates:
     styles_file: builtin-manual.yaml
 
   - id: builtin-gw
-    name: 机关公文风格
+    name: 党政公文风格
     description: 参考GB/T 9704公文风格
     styles_file: builtin-gw.yaml
     page:
@@ -230,5 +230,5 @@ templates:
 
   - id: builtin-modern
     name: 现代简约风格
-    description: 使用华文细黑字体
+    description: 华文细黑，适合现代报告
     styles_file: builtin-modern.yaml

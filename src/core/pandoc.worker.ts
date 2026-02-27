@@ -85,12 +85,18 @@ const api: PandocWorkerAPI = {
     exp().hs_init_with_rtsopts(argc_ptr, argv_ptr);
   },
 
-  async convert(markdown: string, referenceDocx?: ArrayBuffer): Promise<ArrayBuffer> {
+  async convert(markdown: string, referenceDocx?: ArrayBuffer, lineBreaks?: string): Promise<ArrayBuffer> {
     if (!instance) throw new Error('Pandoc not initialized');
 
     // Build pandoc options JSON
+    let fromFormat = 'markdown+lists_without_preceding_blankline';
+    if (lineBreaks === 'hard') {
+      fromFormat += '+hard_line_breaks';
+    } else if (lineBreaks === 'east_asian') {
+      fromFormat += '+east_asian_line_breaks';
+    }
     const options: Record<string, unknown> = {
-      from: 'markdown+lists_without_preceding_blankline',
+      from: fromFormat,
       to: 'docx',
       'output-file': 'output.docx',
       standalone: true,

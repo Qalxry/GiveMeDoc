@@ -64,6 +64,13 @@ export interface UserConfig {
   /** Whether to auto-refresh the export tab when the panel is opened. */
   autoRefreshOnOpen: boolean;
   selectedTemplateId: string;
+  /**
+   * How Pandoc interprets newlines within a paragraph:
+   * - 'default'     — standard Markdown (newlines become spaces)
+   * - 'hard'        — every newline becomes a hard line break (Shift+Enter)
+   * - 'east_asian'  — newlines between East-Asian wide chars are ignored (no extra space)
+   */
+  lineBreaks: 'default' | 'hard' | 'east_asian';
   documentPrefix: string;
   userMessageTemplate: string;
   assistantMessageTemplate: string;
@@ -78,6 +85,7 @@ export const DEFAULT_CONFIG: UserConfig = {
   showFab: true,
   autoRefreshOnOpen: true,
   selectedTemplateId: 'builtin-minimal',
+  lineBreaks: 'hard',
   documentPrefix: `---
 title: {title}
 date: {output_date}
@@ -123,8 +131,11 @@ export interface TemplateMeta {
 export interface PandocWorkerAPI {
   /** Load & initialise the WASM module from an ArrayBuffer. */
   init(wasmBytes: ArrayBuffer): Promise<void>;
-  /** Convert markdown to docx. Returns the .docx ArrayBuffer. */
-  convert(markdown: string, referenceDocx?: ArrayBuffer): Promise<ArrayBuffer>;
+  /**
+   * Convert markdown to docx. Returns the .docx ArrayBuffer.
+   * @param lineBreaks  Controls newline handling: 'default' | 'hard' | 'east_asian'
+   */
+  convert(markdown: string, referenceDocx?: ArrayBuffer, lineBreaks?: string): Promise<ArrayBuffer>;
   /** Query pandoc version string. */
   getVersion(): Promise<string>;
 }
