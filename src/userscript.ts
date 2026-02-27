@@ -84,18 +84,13 @@ async function setCachedWasm(url: string, bytes: ArrayBuffer): Promise<void> {
 }
 
 async function clearWasmCache(): Promise<void> {
-  try {
-    const db = await openWasmDb();
-    await new Promise<void>((resolve, reject) => {
-      const tx = db.transaction(WASM_STORE, 'readwrite');
-      const req = tx.objectStore(WASM_STORE).clear();
-      req.onsuccess = () => { db.close(); resolve(); };
-      req.onerror = () => { db.close(); reject(req.error); };
-    });
-    showToast({ message: 'WASM 缓存已清除，下次加载将重新下载', level: 'success' });
-  } catch (err) {
-    showToast({ message: `清除缓存失败: ${(err as Error).message}`, level: 'error' });
-  }
+  const db = await openWasmDb();
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(WASM_STORE, 'readwrite');
+    const req = tx.objectStore(WASM_STORE).clear();
+    req.onsuccess = () => { db.close(); resolve(); };
+    req.onerror = () => { db.close(); reject(req.error); };
+  });
 }
 
 // ═══════════════════════════════════════════════════════════════════════════
