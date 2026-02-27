@@ -67,10 +67,11 @@ export interface UserConfig {
   /**
    * How Pandoc interprets newlines within a paragraph:
    * - 'default'     — standard Markdown (newlines become spaces)
-   * - 'hard'        — every newline becomes a hard line break (Shift+Enter)
+   * - 'soft'        — every newline becomes a soft line break (Shift+Enter / ↓ in Word)
+   * - 'paragraph'   — every newline becomes a paragraph break (Enter / ¶ in Word)
    * - 'east_asian'  — newlines between East-Asian wide chars are ignored (no extra space)
    */
-  lineBreaks: 'default' | 'hard' | 'east_asian';
+  lineBreaks: 'default' | 'soft' | 'paragraph' | 'east_asian';
   documentPrefix: string;
   userMessageTemplate: string;
   assistantMessageTemplate: string;
@@ -93,7 +94,7 @@ export const DEFAULT_CONFIG: UserConfig = {
   showFab: true,
   autoRefreshOnOpen: true,
   selectedTemplateId: 'builtin-minimal',
-  lineBreaks: 'hard',
+  lineBreaks: 'soft',
   documentPrefix: `---
 title: {title}
 date: {output_date}
@@ -144,7 +145,7 @@ export interface PandocWorkerAPI {
   init(wasmBytes: ArrayBuffer): Promise<void>;
   /**
    * Convert markdown to docx. Returns the .docx ArrayBuffer.
-   * @param lineBreaks  Controls newline handling: 'default' | 'hard' | 'east_asian'
+   * @param lineBreaks  Controls newline handling: 'default' | 'soft' | 'paragraph' | 'east_asian'
    */
   convert(markdown: string, referenceDocx?: ArrayBuffer, lineBreaks?: string): Promise<ArrayBuffer>;
   /** Query pandoc version string. */

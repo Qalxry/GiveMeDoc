@@ -130,16 +130,17 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
 
   // Line breaks mode selector
   const lineBreaksLabel = el('label', 'gmd-settings__select-label');
-  lineBreaksLabel.textContent = '换行模式';
+  lineBreaksLabel.textContent = '软换行处理';
   exportSettingsSection.appendChild(lineBreaksLabel);
 
   lineBreaksSelect = createSelect({
     options: [
-      { value: 'hard', label: '强制换行（推荐）（每行保留，类似 Shift+Enter）' },
-      { value: 'default', label: 'Pandoc 默认（标准 Markdown，换行合并）' },
-      { value: 'east_asian', label: '东亚优化（中日韩文字间换行忽略）' },
+      { value: 'soft', label: '保留为软换行（Word 中显示为 ↓）' },
+      { value: 'paragraph', label: '转为硬换行（每行成为独立段落，Word 中显示为 ↩）' },
+      { value: 'east_asian', label: '合并为一行（东亚优化：中日韩文字间不添加空格）' },
+      { value: 'default', label: '合并为一行（Pandoc 默认：软换行作为一个空格处理）' },
     ],
-    value: 'hard',
+    value: 'soft',
     onChange: (value) => {
       config.lineBreaks = value as UserConfig['lineBreaks'];
       cb.onConfigChange({ lineBreaks: config.lineBreaks });
