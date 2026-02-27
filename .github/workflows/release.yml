@@ -1,0 +1,97 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Python dependencies
+        run: pip install python-docx pyyaml cairosvg pillow
+
+      - name: Install Node dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Sync version from tag
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "VERSION=$VERSION" >> "$GITHUB_ENV"
+          # Update package.json version
+          node -e "
+            const pkg = JSON.parse(require('fs').readFileSync('package.json','utf8'));
+            pkg.version = '${VERSION}';
+            require('fs').writeFileSync('package.json', JSON.stringify(pkg, null, 2) + '\n');
+          "
+
+      - name: Build all
+        run: |
+          pnpm build:icons
+          pnpm build:templates
+          pnpm build:userscript
+          pnpm build:chrome
+          pnpm build:firefox
+
+      - name: Prepare userscript artifact
+        run: cp dist/userscript/give-me-doc.user.js dist/give-me-doc.user.js
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          # Extract changelog between this tag and previous tag
+          PREV_TAG=$(git tag --sort=-creatordate | head -2 | tail -1)
+          if [ "$PREV_TAG" = "$GITHUB_REF_NAME" ] || [ -z "$PREV_TAG" ]; then
+            echo "body=Initial release 🎉" >> "$GITHUB_OUTPUT"
+          else
+            LOGS=$(git log --pretty=format:"- %s (%h)" "$PREV_TAG".."$GITHUB_REF_NAME" -- . ':!*.md')
+            if [ -z "$LOGS" ]; then
+              LOGS="- Bug fixes and improvements"
+            fi
+            # Write multiline output
+            {
+              echo "body<<EOF"
+              echo "## What's Changed"
+              echo ""
+              echo "$LOGS"
+              echo ""
+              echo "**Full Changelog**: https://github.com/${{ github.repository }}/compare/${PREV_TAG}...${GITHUB_REF_NAME}"
+              echo "EOF"
+            } >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          name: GiveMeDoc ${{ env.VERSION }}
+          body: ${{ steps.changelog.outputs.body }}
+          draft: false
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            dist/give-me-doc_chrome.zip
+            dist/give-me-doc_firefox.zip
+            dist/give-me-doc.user.js
