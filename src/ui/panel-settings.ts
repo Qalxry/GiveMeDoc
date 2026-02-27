@@ -64,13 +64,13 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   const root = el('div', 'gmd-settings');
 
   // ── Section: Template management ─────────────────────────────────────
-  const tplSection = createSection('模板管理');
+  const tplSection = createSection('Word 模板管理');
 
   templateListEl = el('div', 'gmd-settings__tpl-list');
   tplSection.appendChild(templateListEl);
 
   const uploadBtn = createButton({
-    label: '上传模板',
+    label: '上传 Word 模板',
     icon: ICON_UPLOAD,
     variant: 'tonal',
     onClick: () => handleUpload(cb),
@@ -94,7 +94,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   displaySection.appendChild(fabSwitch);
 
   autoRefreshSwitch = createSwitch({
-    label: '打开面板时自动刷新',
+    label: '打开面板时自动刷新消息列表',
     checked: true,
     onChange: (checked) => {
       config.autoRefreshOnOpen = checked;
@@ -119,7 +119,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   exportSettingsSection.appendChild(thinkingSwitch);
 
   singleExportSwitch = createSwitch({
-    label: '单条导出时使用模板',
+    label: '单条导出时使用消息前缀模板',
     checked: false,
     onChange: (checked) => {
       config.singleExportWithTemplate = checked;
@@ -151,14 +151,14 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   root.appendChild(exportSettingsSection);
 
   // ── Section: Template editors ────────────────────────────────────────
-  const editorSection = createSection('模板文本编辑');
+  const editorSection = createSection('消息前缀模板编辑');
 
   // Segmented control to switch between the three editors
   editorSegmented = createSegmentedControl({
     segments: [
       { id: 'prefix', label: '文档前缀' },
-      { id: 'user', label: '用户消息' },
-      { id: 'assistant', label: '助手消息' },
+      { id: 'user', label: '用户消息前缀' },
+      { id: 'assistant', label: '助手消息前缀' },
     ],
     activeId: activeEditorId,
     onChange: (id) => {
@@ -169,7 +169,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   editorSection.appendChild(editorSegmented);
 
   prefixTextarea = createTextarea({
-    label: '文档前缀（document prefix）',
+    label: '文档前缀模板（document prefix）',
     rows: 6,
     onChange: debounce((v) => {
       config.documentPrefix = v;
@@ -179,7 +179,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   editorSection.appendChild(prefixTextarea);
 
   userTplTextarea = createTextarea({
-    label: '用户消息模板（user message）',
+    label: '用户消息前缀模板（user message）',
     rows: 6,
     onChange: debounce((v) => {
       config.userMessageTemplate = v;
@@ -190,7 +190,7 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   editorSection.appendChild(userTplTextarea);
 
   assistantTplTextarea = createTextarea({
-    label: '助手消息模板（assistant message）',
+    label: '助手消息前缀模板（assistant message）',
     rows: 6,
     onChange: debounce((v) => {
       config.assistantMessageTemplate = v;
