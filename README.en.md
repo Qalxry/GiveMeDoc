@@ -59,7 +59,7 @@ GiveMeDoc is available as both a **browser extension** (Chrome / Edge / Firefox)
 ### Option 2: Tampermonkey Userscript
 
 1. Install [Tampermonkey](https://www.tampermonkey.net/) in your browser.
-2. [Click here to install](https://github.com/Qalxry/GiveMeDoc/releases/latest/give-me-doc.user.js) the latest userscript.
+2. [Click here to install](https://github.com/Qalxry/GiveMeDoc/releases/latest/download/give-me-doc.user.js) the latest userscript.
 3. Visit [chat.deepseek.com](https://chat.deepseek.com) — a floating action button will appear.
 
 ## 🔨 Build from Source
