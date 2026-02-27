@@ -17,7 +17,8 @@
     "build:all": "pnpm build:icons && pnpm build:templates && pnpm build:userscript && pnpm build:extension && node scripts/copy-manifest.mjs firefox && node scripts/copy-manifest.mjs chrome",
     "build": "pnpm build:all",
     "typecheck": "tsc --noEmit",
-    "release": "node -e \"const v=process.argv[1];if(!v){console.error('Usage: pnpm release <version>  (e.g. pnpm release 1.0.1)');process.exit(1)};const t='v'+v;require('child_process').execSync('git tag '+t+' && git push origin '+t,{stdio:'inherit'})\" --"
+    "release": "node -e \"const v=process.argv[1];if(!v){console.error('Usage: pnpm release <version>  (e.g. pnpm release 1.0.1)');process.exit(1)};const t='v'+v;require('child_process').execSync('git tag '+t+' && git push origin '+t,{stdio:'inherit'})\" --",
+    "re-release": "node -e \"const t=require('child_process').execSync('git describe --tags --abbrev=0',{encoding:'utf8'}).trim();if(!t){console.error('No tag found');process.exit(1)};console.log('Re-releasing '+t+'...');require('child_process').execSync('git tag -d '+t,{stdio:'inherit'});require('child_process').execSync('git push origin :refs/tags/'+t,{stdio:'inherit'});require('child_process').execSync('git tag '+t,{stdio:'inherit'});require('child_process').execSync('git push origin '+t,{stdio:'inherit'})\""
   },
   "devDependencies": {
     "@bjorn3/browser_wasi_shim": "^0.3.0",
