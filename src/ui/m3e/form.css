@@ -275,10 +275,10 @@
   content: '';
   position: absolute;
   left: 0;
-  top: 25%;
-  height: 50%;
+  top: 0%;
+  height: 100%;
   width: 1px;
-  background: var(--gmd-outline-variant);
+  background: var(--gmd-outline);
   transition: opacity var(--gmd-duration-short) var(--gmd-easing-standard);
 }
 

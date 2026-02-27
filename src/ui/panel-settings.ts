@@ -11,6 +11,7 @@ import type { PanelCallbacks, UserConfig, TemplateMeta } from '../core/types';
 import {
   el, append,
   createButton, createIconButton, createTextarea, createSelect,
+  createSegmentedControl,
 } from './m3e/dom';
 import { createSwitch, setSwitchState } from './m3e/switch';
 import { showToast } from './m3e/toast';
@@ -50,6 +51,8 @@ let lineBreaksSelect: HTMLSelectElement;
 let prefixTextarea: HTMLElement;
 let userTplTextarea: HTMLElement;
 let assistantTplTextarea: HTMLElement;
+let editorSegmented: HTMLElement;
+let activeEditorId: 'prefix' | 'user' | 'assistant' = 'prefix';
 let cdnSection: HTMLElement | null = null;
 let cdnTextarea: HTMLElement;
 
@@ -149,9 +152,24 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
   // ── Section: Template editors ────────────────────────────────────────
   const editorSection = createSection('模板文本编辑');
 
+  // Segmented control to switch between the three editors
+  editorSegmented = createSegmentedControl({
+    segments: [
+      { id: 'prefix', label: '文档前缀' },
+      { id: 'user', label: '用户消息' },
+      { id: 'assistant', label: '助手消息' },
+    ],
+    activeId: activeEditorId,
+    onChange: (id) => {
+      activeEditorId = id as typeof activeEditorId;
+      applyEditorSwitch();
+    },
+  });
+  editorSection.appendChild(editorSegmented);
+
   prefixTextarea = createTextarea({
     label: '文档前缀（document prefix）',
-    rows: 5,
+    rows: 6,
     onChange: debounce((v) => {
       config.documentPrefix = v;
       cb.onConfigChange({ documentPrefix: v });
@@ -161,22 +179,24 @@ export function renderSettingsTab(cb: PanelCallbacks): HTMLElement {
 
   userTplTextarea = createTextarea({
     label: '用户消息模板（user message）',
-    rows: 4,
+    rows: 6,
     onChange: debounce((v) => {
       config.userMessageTemplate = v;
       cb.onConfigChange({ userMessageTemplate: v });
     }, 400),
   });
+  userTplTextarea.style.display = 'none';
   editorSection.appendChild(userTplTextarea);
 
   assistantTplTextarea = createTextarea({
     label: '助手消息模板（assistant message）',
-    rows: 5,
+    rows: 6,
     onChange: debounce((v) => {
       config.assistantMessageTemplate = v;
       cb.onConfigChange({ assistantMessageTemplate: v });
     }, 400),
   });
+  assistantTplTextarea.style.display = 'none';
   editorSection.appendChild(assistantTplTextarea);
 
   const placeholderHint = el('p', 'gmd-settings__hint');
@@ -401,4 +421,11 @@ function createSection(title: string): HTMLElement {
 function setTextareaValue(wrapper: HTMLElement, value: string): void {
   const ta = wrapper.querySelector('textarea');
   if (ta) ta.value = value;
+}
+
+/** Show only the active template editor, hide others. */
+function applyEditorSwitch(): void {
+  prefixTextarea.style.display = activeEditorId === 'prefix' ? '' : 'none';
+  userTplTextarea.style.display = activeEditorId === 'user' ? '' : 'none';
+  assistantTplTextarea.style.display = activeEditorId === 'assistant' ? '' : 'none';
 }

@@ -24,6 +24,18 @@ import {
 } from '../adapters/deepseek';
 
 // ═══════════════════════════════════════════════════════════════════════════
+// Utility
+// ═══════════════════════════════════════════════════════════════════════════
+
+function debounce<T extends unknown[]>(fn: (...args: T) => void, ms: number) {
+  let timer: ReturnType<typeof setTimeout> | null = null;
+  return (...args: T) => {
+    if (timer !== null) clearTimeout(timer);
+    timer = setTimeout(() => { fn(...args); timer = null; }, ms);
+  };
+}
+
+// ═══════════════════════════════════════════════════════════════════════════
 // State
 // ═══════════════════════════════════════════════════════════════════════════
 
@@ -54,12 +66,29 @@ let root: HTMLElement;
 let sessionContainer!: HTMLElement;
 // DOM refs — freetext mode container
 let freetextContainer!: HTMLElement;
+let freetextFilenameInput!: HTMLElement;
+let freetextTextarea!: HTMLElement;
+
+// Saved callbacks ref so we can persist from onChange handlers
+let savedCb: PanelCallbacks;
+// DOM ref for segmented control (to sync mode from storage)
+let segmentedEl: HTMLElement;
+
+// Debounced persisters for freetext fields
+const persistFreetextMd = debounce((cb: PanelCallbacks, v: string) => {
+  cb.onConfigChange({ freetextMd: v });
+}, 400);
+
+const persistFreetextFilename = debounce((cb: PanelCallbacks, v: string) => {
+  cb.onConfigChange({ freetextFilename: v });
+}, 400);
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Public render
 // ═══════════════════════════════════════════════════════════════════════════
 
 export function renderExportTab(cb: PanelCallbacks): HTMLElement {
+  savedCb = cb;
   root = el('div', 'gmd-export');
 
   // ── Mode Switch (Segmented Control) ───────────────────────────────
@@ -72,9 +101,11 @@ export function renderExportTab(cb: PanelCallbacks): HTMLElement {
     activeId: mode,
     onChange: (id) => {
       mode = id as 'session' | 'freetext';
+      cb.onConfigChange({ exportMode: mode });
       applyModeSwitch();
     },
   });
+  segmentedEl = segmented;
   modeSwitch.appendChild(segmented);
   root.appendChild(modeSwitch);
 
@@ -122,29 +153,31 @@ export function renderExportTab(cb: PanelCallbacks): HTMLElement {
   freetextContainer = el('div', 'gmd-export__freetext');
   freetextContainer.style.display = 'none';
 
-  const filenameInput = createInput({
+  freetextFilenameInput = createInput({
     label: '导出文件名',
     value: freetextFilename,
     placeholder: 'export',
     onChange: (v) => {
       freetextFilename = v;
+      persistFreetextFilename(cb, v);
       syncExportBtnState();
     },
   });
-  freetextContainer.appendChild(filenameInput);
+  freetextContainer.appendChild(freetextFilenameInput);
 
-  const mdTextarea = createTextarea({
+  freetextTextarea = createTextarea({
     label: 'Markdown 内容',
     value: freetextMd,
     placeholder: '在此粘贴或输入 Markdown 文本…',
     rows: 12,
     onChange: (v) => {
       freetextMd = v;
+      persistFreetextMd(cb, v);
       syncExportBtnState();
     },
   });
-  mdTextarea.classList.add('gmd-export__freetext-editor');
-  freetextContainer.appendChild(mdTextarea);
+  freetextTextarea.classList.add('gmd-export__freetext-editor');
+  freetextContainer.appendChild(freetextTextarea);
 
   root.appendChild(freetextContainer);
 
@@ -170,6 +203,7 @@ export function renderExportTab(cb: PanelCallbacks): HTMLElement {
   // ── Initial load ─────────────────────────────────────────────────────
   loadSession(cb);
   loadTemplates(cb);
+  loadFreetextState(cb);
 
   return root;
 }
@@ -211,6 +245,47 @@ async function loadTemplates(cb: PanelCallbacks): Promise<void> {
     rebuildTemplateSelect();
   } catch (err) {
     showToast({ message: `加载模板失败: ${(err as Error).message}`, level: 'error' });
+  }
+}
+
+/** Restore persisted freetext state (mode, markdown, filename) from config. */
+async function loadFreetextState(cb: PanelCallbacks): Promise<void> {
+  try {
+    const config = await cb.getConfig();
+
+    // Restore mode
+    if (config.exportMode && config.exportMode !== mode) {
+      mode = config.exportMode;
+      // Sync segmented control UI
+      const btns = segmentedEl.querySelectorAll('.gmd-segmented__btn');
+      btns.forEach((btn) => {
+        const el = btn as HTMLElement;
+        if (el.dataset.segmentId === mode) {
+          el.classList.add('gmd-segmented__btn--active');
+        } else {
+          el.classList.remove('gmd-segmented__btn--active');
+        }
+      });
+      applyModeSwitch();
+    }
+
+    // Restore freetext Markdown
+    if (config.freetextMd) {
+      freetextMd = config.freetextMd;
+      const ta = freetextTextarea.querySelector('textarea');
+      if (ta) ta.value = freetextMd;
+    }
+
+    // Restore freetext filename
+    if (config.freetextFilename) {
+      freetextFilename = config.freetextFilename;
+      const inp = freetextFilenameInput.querySelector('input');
+      if (inp) inp.value = freetextFilename;
+    }
+
+    syncExportBtnState();
+  } catch (_) {
+    // Non-critical — just use defaults
   }
 }
 

@@ -116,6 +116,15 @@
   font-style: italic;
 }
 
+/* ── Template editor segmented control ──────────────────────────────── */
+.gmd-settings__section .gmd-segmented {
+  width: 100%;
+}
+
+.gmd-settings__section .gmd-segmented__btn {
+  flex: 1;
+}
+
 /* ── Select label ───────────────────────────────────────────────────── */
 .gmd-settings__select-label {
   font-size: var(--gmd-font-size-sm);

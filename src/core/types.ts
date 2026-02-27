@@ -76,6 +76,14 @@ export interface UserConfig {
   assistantMessageTemplate: string;
   /** CDN URLs for pandoc.wasm — only used in userscript mode. */
   cdnUrls: string[];
+
+  // ── Export tab freetext persistence ───────────────────────────────────
+  /** Last-used export mode: 'session' or 'freetext'. */
+  exportMode: 'session' | 'freetext';
+  /** Persisted Markdown content from the freetext editor. */
+  freetextMd: string;
+  /** Persisted filename from the freetext editor. */
+  freetextFilename: string;
 }
 
 export const DEFAULT_CONFIG: UserConfig = {
@@ -111,6 +119,9 @@ date: {output_date}
   cdnUrls: [
     'https://pandoc.org/app/pandoc.wasm?sha1=2ab8055eb0803168da93d4b784fe40aa06551dfa',
   ],
+  exportMode: 'session',
+  freetextMd: '',
+  freetextFilename: 'export',
 };
 
 // ═══════════════════════════════════════════════════════════════════════════
