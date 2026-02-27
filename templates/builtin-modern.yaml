@@ -1,18 +1,17 @@
 # ══════════════════════════════════════════════════════════════
-# 现代商务风格 (builtin-modern)
-# 精致现代，深蓝色系 + 无衬线字体，适合商务报告与演示文档
-# 配色: 深海蓝 #0F3460, 商务蓝 #1A5276, 正文 #2C3E50, 辅助 #5D6D7E
+# 现代简约风格 (builtin-modern)
+# 使用华文细黑字体
 # ══════════════════════════════════════════════════════════════
 
 # ── 正文 ────────────────────────────────────────────────────
 Normal:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 0
   space_after_pt: 6
@@ -26,13 +25,13 @@ Normal:
   page_break_before: false
 
 "Body Text":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 0
   space_after_pt: 6
@@ -46,13 +45,13 @@ Normal:
   page_break_before: false
 
 "First Paragraph":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 0
   space_after_pt: 6
@@ -67,13 +66,13 @@ Normal:
 
 # ── 文档信息 ────────────────────────────────────────────────
 Title:
-  font_ascii: Calibri Light
-  font_eastAsia: 微软雅黑 Light
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 28
   bold: false
   italic: false
   underline: false
-  color: "0F3460"
+  color: "000000"
   line_spacing: 1.2
   space_before_pt: 0
   space_after_pt: 4
@@ -87,13 +86,13 @@ Title:
   page_break_before: false
 
 Subtitle:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 15
   bold: false
   italic: false
   underline: false
-  color: "1A5276"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 0
   space_after_pt: 24
@@ -107,13 +106,13 @@ Subtitle:
   page_break_before: false
 
 Author:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "5D6D7E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 0
   space_after_pt: 2
@@ -127,13 +126,13 @@ Author:
   page_break_before: false
 
 Date:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 0
   space_after_pt: 20
@@ -147,13 +146,13 @@ Date:
   page_break_before: false
 
 Abstract:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "5D6D7E"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 8
   space_after_pt: 12
@@ -167,13 +166,13 @@ Abstract:
   page_break_before: false
 
 AbstractTitle:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 13
   bold: true
   italic: false
   underline: false
-  color: "0F3460"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 12
   space_after_pt: 6
@@ -188,13 +187,13 @@ AbstractTitle:
 
 # ── 标题 ────────────────────────────────────────────────────
 "Heading 1":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 20
   bold: true
   italic: false
   underline: false
-  color: "0F3460"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 30
   space_after_pt: 10
@@ -208,13 +207,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 2":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 16
   bold: true
   italic: false
   underline: false
-  color: "1A5276"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 24
   space_after_pt: 8
@@ -228,13 +227,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 3":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 13
   bold: true
   italic: false
   underline: false
-  color: "1A5276"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 18
   space_after_pt: 6
@@ -248,13 +247,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 4":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 12
   bold: true
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 14
   space_after_pt: 4
@@ -268,13 +267,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 5":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: true
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 10
   space_after_pt: 4
@@ -288,13 +287,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 6":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: true
   italic: false
   underline: false
-  color: "5D6D7E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 8
   space_after_pt: 4
@@ -308,13 +307,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 7":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "5D6D7E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 6
   space_after_pt: 4
@@ -328,13 +327,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 8":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: true
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 6
   space_after_pt: 4
@@ -348,13 +347,13 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 9":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: true
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 6
   space_after_pt: 4
@@ -369,13 +368,13 @@ AbstractTitle:
 
 # ── 引用 ────────────────────────────────────────────────────
 "Block Text":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "5D6D7E"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 8
   space_after_pt: 8
@@ -389,13 +388,13 @@ AbstractTitle:
   page_break_before: false
 
 "Footnote Block Text":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 8
   bold: false
   italic: false
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.15
   space_before_pt: 2
   space_after_pt: 2
@@ -410,13 +409,13 @@ AbstractTitle:
 
 # ── 代码 ────────────────────────────────────────────────────
 "Source Code":
-  font_ascii: Cascadia Code
-  font_eastAsia: 等线
-  font_size_pt: 9.5
+  font_ascii: Consolas
+  font_eastAsia: 宋体
+  font_size_pt: 9
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.25
   space_before_pt: 6
   space_after_pt: 6
@@ -430,23 +429,23 @@ AbstractTitle:
   page_break_before: false
 
 "Verbatim Char":
-  font_ascii: Cascadia Code
-  font_eastAsia: 等线
-  font_size_pt: 9.5
+  font_ascii: Consolas
+  font_eastAsia: 宋体
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
 
 # ── 题注 ────────────────────────────────────────────────────
 Caption:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 9.5
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 9
   bold: false
   italic: false
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 4
   space_after_pt: 4
@@ -460,13 +459,13 @@ Caption:
   page_break_before: false
 
 "Table Caption":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 9.5
-  bold: true
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 9
+  bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 8
   space_after_pt: 4
@@ -480,13 +479,13 @@ Caption:
   page_break_before: false
 
 "Image Caption":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 9.5
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 9
   bold: false
   italic: false
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 4
   space_after_pt: 8
@@ -501,13 +500,13 @@ Caption:
 
 # ── 图片 ────────────────────────────────────────────────────
 Figure:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 8
   space_after_pt: 8
@@ -521,13 +520,13 @@ Figure:
   page_break_before: false
 
 "Captioned Figure":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 8
   space_after_pt: 8
@@ -542,13 +541,13 @@ Figure:
 
 # ── 列表 ────────────────────────────────────────────────────
 Compact:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 0
   space_after_pt: 0
@@ -563,13 +562,13 @@ Compact:
 
 # ── 定义列表 ───────────────────────────────────────────────
 "Definition Term":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: true
   italic: false
   underline: false
-  color: "1A5276"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 8
   space_after_pt: 0
@@ -583,13 +582,13 @@ Compact:
   page_break_before: false
 
 Definition:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "2C3E50"
+  color: "000000"
   line_spacing: 1.5
   space_before_pt: 0
   space_after_pt: 6
@@ -604,13 +603,13 @@ Definition:
 
 # ── 脚注 ────────────────────────────────────────────────────
 "Footnote Text":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 8.5
   bold: false
   italic: false
   underline: false
-  color: "85929E"
+  color: "000000"
   line_spacing: 1.15
   space_before_pt: 0
   space_after_pt: 0
@@ -624,23 +623,23 @@ Definition:
   page_break_before: false
 
 "Footnote Reference":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 8.5
   bold: false
   italic: false
   underline: false
-  color: "1A5276"
+  color: "000000"
 
 # ── 目录 ────────────────────────────────────────────────────
 "TOC Heading":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
   font_size_pt: 16
   bold: true
   italic: false
   underline: false
-  color: "0F3460"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 16
   space_after_pt: 10
@@ -655,13 +654,13 @@ Definition:
 
 # ── 参考文献 ───────────────────────────────────────────────
 Bibliography:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 9.5
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "5D6D7E"
+  color: "000000"
   line_spacing: 1.3
   space_before_pt: 0
   space_after_pt: 3
@@ -676,53 +675,53 @@ Bibliography:
 
 # ── 超链接 ──────────────────────────────────────────────────
 Hyperlink:
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: true
-  color: "2980B9"
+  color: "0563C1"
 
 # ── 表格 ────────────────────────────────────────────────────
 # 现代商务：深蓝表头 + 精致细线 + 交替行底纹
 "Table":
   table_alignment: center
   borders:
-    top:      { val: single, sz: 6, color: "1A5276" }
-    bottom:   { val: single, sz: 6, color: "1A5276" }
-    left:     { val: none }
-    right:    { val: none }
-    insideH:  { val: single, sz: 4, color: "D5DBDB" }
-    insideV:  { val: none }
+    top:      { val: single, sz: 6, color: "000000" }
+    bottom:   { val: single, sz: 6, color: "000000" }
+    left:     { val: single, sz: 6, color: "000000" }
+    right:    { val: single, sz: 6, color: "000000" }
+    insideH:  { val: single, sz: 6, color: "000000" }
+    insideV:  { val: single, sz: 6, color: "000000" }
   cell_margin:
     top: 50
     bottom: 50
     left: 120
     right: 120
   paragraph:
-    line_spacing: 1.15
-    space_before_pt: 2
-    space_after_pt: 2
+    line_spacing: 1.0
+    space_before_pt: 0
+    space_after_pt: 0
     alignment: center
   conditional:
     firstRow:
       bold: true
-      color: "FFFFFF"
+      color: "000000"
       alignment: center
-      shading: "1A5276"
-      borders:
-        bottom: { val: single, sz: 6, color: "1A5276" }
+      # shading: "1A5276"
+      # borders:
+        # bottom: { val: single, sz: 6, color: "000000" }
       vertical_alignment: center
-    band1Horz:
-      shading: "EBF5FB"
+    # band1Horz:
+      # shading: "EBF5FB"
 
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":
-  font_ascii: Calibri
-  font_eastAsia: 微软雅黑
-  font_size_pt: 11
+  font_ascii: 华文细黑
+  font_eastAsia: 华文细黑
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
-  color: "1A5276"
+  color: "000000"

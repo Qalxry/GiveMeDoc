@@ -1,24 +1,24 @@
 # ══════════════════════════════════════════════════════════════
-# 无格式 (builtin-minimal)
-# 宋体+Times，无额外格式
+# 公文文档风格 (builtin-gw)
+# 参照GB/T 9704公文格式
 # ══════════════════════════════════════════════════════════════
 
 # ── 正文 ────────────────────────────────────────────────────
 Normal:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -26,19 +26,19 @@ Normal:
 
 "Body Text":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 24
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -46,19 +46,19 @@ Normal:
 
 "First Paragraph":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 24
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -67,59 +67,59 @@ Normal:
 # ── 文档信息 ────────────────────────────────────────────────
 Title:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 方正小标宋简体
+  font_size_pt: 22
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 32
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
-  keep_together: false
+  alignment: center
+  keep_with_next: true
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 Subtitle:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 15
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
+  alignment: center
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 Author:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 14
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -127,19 +127,19 @@ Author:
 
 Date:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 14
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -147,19 +147,19 @@ Date:
 
 Abstract:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
+  font_eastAsia: 楷体_GB2312
   font_size_pt: 12
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 24
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -167,201 +167,201 @@ Abstract:
 
 AbstractTitle:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
-  bold: false
+  font_eastAsia: 黑体
+  font_size_pt: 16
+  bold: true
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
-  keep_together: false
+  alignment: center
+  keep_with_next: true
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 # ── 标题 ────────────────────────────────────────────────────
 "Heading 1":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 方正小标宋简体
+  font_size_pt: 22
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
-  keep_together: false
+  alignment: center
+  keep_with_next: true
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 "Heading 2":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 黑体
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
-  keep_together: false
+  keep_with_next: true
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 "Heading 3":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 楷体_GB2312
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
-  keep_together: false
+  keep_with_next: true
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 "Heading 4":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
-  bold: false
+  font_eastAsia: 仿宋
+  font_size_pt: 16
+  bold: true
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 "Heading 5":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 "Heading 6":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 "Heading 7":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 "Heading 8":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 "Heading 9":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
   alignment: left
-  keep_with_next: false
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
@@ -369,19 +369,19 @@ AbstractTitle:
 # ── 引用 ────────────────────────────────────────────────────
 "Block Text":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
+  font_eastAsia: 楷体_GB2312
   font_size_pt: 12
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 24
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
-  indent_left_pt: 0
-  indent_right_pt: 0
-  alignment: left
+  indent_left_pt: 24
+  indent_right_pt: 24
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -389,8 +389,8 @@ AbstractTitle:
 
 "Footnote Block Text":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 楷体_GB2312
+  font_size_pt: 9
   bold: false
   italic: false
   underline: false
@@ -399,9 +399,9 @@ AbstractTitle:
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
-  indent_left_pt: 0
-  indent_right_pt: 0
-  alignment: left
+  indent_left_pt: 18
+  indent_right_pt: 18
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -409,14 +409,14 @@ AbstractTitle:
 
 # ── 代码 ────────────────────────────────────────────────────
 "Source Code":
-  font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_ascii: Consolas
+  font_eastAsia: 仿宋
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing: 1.15
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
@@ -429,9 +429,9 @@ AbstractTitle:
   page_break_before: false
 
 "Verbatim Char":
-  font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_ascii: Consolas
+  font_eastAsia: 仿宋
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
@@ -440,19 +440,19 @@ AbstractTitle:
 # ── 题注 ────────────────────────────────────────────────────
 Caption:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 黑体
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: true
   keep_together: false
   widow_control: true
@@ -460,19 +460,19 @@ Caption:
 
 "Table Caption":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 黑体
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: true
   keep_together: false
   widow_control: true
@@ -480,19 +480,19 @@ Caption:
 
 "Image Caption":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 黑体
+  font_size_pt: 10.5
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -501,60 +501,60 @@ Caption:
 # ── 图片 ────────────────────────────────────────────────────
 Figure:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
+  font_eastAsia: 仿宋
   font_size_pt: 12
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
+  alignment: center
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 "Captioned Figure":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
+  font_eastAsia: 仿宋
   font_size_pt: 12
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: center
   keep_with_next: false
-  keep_together: false
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 # ── 列表 ────────────────────────────────────────────────────
 Compact:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -563,39 +563,39 @@ Compact:
 # ── 定义列表 ───────────────────────────────────────────────
 "Definition Term":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
-  bold: false
+  font_eastAsia: 仿宋
+  font_size_pt: 16
+  bold: true
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
+  alignment: justify
+  keep_with_next: true
   keep_together: false
   widow_control: true
   page_break_before: false
 
 Definition:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
+  first_line_indent_pt: 32
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -604,8 +604,8 @@ Definition:
 # ── 脚注 ────────────────────────────────────────────────────
 "Footnote Text":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 9
   bold: false
   italic: false
   underline: false
@@ -616,7 +616,7 @@ Definition:
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -624,8 +624,8 @@ Definition:
 
 "Footnote Reference":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 9
   bold: false
   italic: false
   underline: false
@@ -634,40 +634,40 @@ Definition:
 # ── 目录 ────────────────────────────────────────────────────
 "TOC Heading":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
-  bold: false
+  font_eastAsia: 黑体
+  font_size_pt: 15
+  bold: true
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
   first_line_indent_pt: 0
   indent_left_pt: 0
   indent_right_pt: 0
-  alignment: left
-  keep_with_next: false
-  keep_together: false
+  alignment: center
+  keep_with_next: true
+  keep_together: true
   widow_control: true
   page_break_before: false
 
 # ── 参考文献 ───────────────────────────────────────────────
 Bibliography:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
+  font_eastAsia: 仿宋
   font_size_pt: 12
   bold: false
   italic: false
   underline: false
   color: "000000"
-  line_spacing: 1.0
+  line_spacing_pt: 28
   space_before_pt: 0
   space_after_pt: 0
-  first_line_indent_pt: 0
-  indent_left_pt: 0
+  first_line_indent_pt: -24
+  indent_left_pt: 24
   indent_right_pt: 0
-  alignment: left
+  alignment: justify
   keep_with_next: false
   keep_together: false
   widow_control: true
@@ -676,15 +676,14 @@ Bibliography:
 # ── 超链接 ──────────────────────────────────────────────────
 Hyperlink:
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 仿宋
+  font_size_pt: 16
   bold: false
   italic: false
   underline: true
   color: "0563C1"
 
 # ── 表格 ────────────────────────────────────────────────────
-# 极简：仅保留基本网格线，无任何装饰
 "Table":
   table_alignment: center
   borders:
@@ -695,21 +694,28 @@ Hyperlink:
     insideH:  { val: single, sz: 4, color: "000000" }
     insideV:  { val: single, sz: 4, color: "000000" }
   cell_margin:
-    top: 0
-    bottom: 0
+    top: 40
+    bottom: 40
     left: 108
     right: 108
   paragraph:
     line_spacing: 1.0
     space_before_pt: 0
     space_after_pt: 0
-    alignment: left
+    first_line_indent_pt: 0
+    alignment: center
+  conditional:
+    firstRow:
+      bold: true
+      alignment: center
+      # shading: "D9D9D9"
+      vertical_alignment: center
 
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":
   font_ascii: Times New Roman
-  font_eastAsia: 宋体
-  font_size_pt: 12
+  font_eastAsia: 黑体
+  font_size_pt: 16
   bold: false
   italic: false
   underline: false

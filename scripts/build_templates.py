@@ -40,7 +40,7 @@ if not shutil.which("pandoc"):
 try:
     from docx import Document
     from docx.shared import Pt, Cm, RGBColor
-    from docx.enum.text import WD_ALIGN_PARAGRAPH
+    from docx.enum.text import WD_ALIGN_PARAGRAPH, WD_LINE_SPACING
     from docx.enum.style import WD_STYLE_TYPE
     from docx.oxml.ns import qn
 except ImportError:
@@ -204,11 +204,20 @@ def _make_shd(parent, fill: str) -> None:
     parent.append(shd)
 
 
-def _make_spacing(parent, *, line_spacing=None, space_before_pt=None, space_after_pt=None) -> None:
-    """Create a <w:spacing> element under a <w:pPr> for paragraph spacing."""
+def _make_spacing(parent, *, line_spacing=None, line_spacing_pt=None, space_before_pt=None, space_after_pt=None) -> None:
+    """Create a <w:spacing> element under a <w:pPr> for paragraph spacing.
+
+    line_spacing: multiplier (e.g. 1.5 = 1.5x); maps to lineRule="auto"
+    line_spacing_pt: fixed/exact line spacing in points; maps to lineRule="exact"
+    If both are given, line_spacing_pt takes precedence.
+    """
     attrs = {}
-    if line_spacing is not None:
-        # line_spacing is a multiplier; OOXML uses 240ths of a line
+    if line_spacing_pt is not None:
+        # Exact (fixed) line spacing: OOXML uses twips (1 pt = 20 twips)
+        attrs[qn("w:line")] = str(int(line_spacing_pt * 20))
+        attrs[qn("w:lineRule")] = "exact"
+    elif line_spacing is not None:
+        # Multiple line spacing: OOXML uses 240ths of a line
         attrs[qn("w:line")] = str(int(line_spacing * 240))
         attrs[qn("w:lineRule")] = "auto"
     if space_before_pt is not None:
@@ -256,7 +265,7 @@ def _build_cond_rpr(parent, cond_cfg: dict[str, Any]) -> None:
 def _build_cond_ppr(parent, cond_cfg: dict[str, Any]) -> None:
     """Build <w:pPr> inside a <w:tblStylePr> from conditional config."""
     has_align = "alignment" in cond_cfg
-    has_spacing = any(k in cond_cfg for k in ("line_spacing", "space_before_pt", "space_after_pt"))
+    has_spacing = any(k in cond_cfg for k in ("line_spacing", "line_spacing_pt", "space_before_pt", "space_after_pt"))
 
     if not (has_align or has_spacing):
         return
@@ -270,6 +279,7 @@ def _build_cond_ppr(parent, cond_cfg: dict[str, Any]) -> None:
     if has_spacing:
         _make_spacing(ppr,
                       line_spacing=cond_cfg.get("line_spacing"),
+                      line_spacing_pt=cond_cfg.get("line_spacing_pt"),
                       space_before_pt=cond_cfg.get("space_before_pt"),
                       space_after_pt=cond_cfg.get("space_after_pt"))
     parent.append(ppr)
@@ -377,10 +387,11 @@ def apply_table_style(doc: Document, style_name: str, props: dict[str, Any]) -> 
             if jc_val:
                 jc = ppr.makeelement(qn("w:jc"), {qn("w:val"): jc_val})
                 ppr.append(jc)
-        has_spacing = any(k in para_cfg for k in ("line_spacing", "space_before_pt", "space_after_pt"))
+        has_spacing = any(k in para_cfg for k in ("line_spacing", "line_spacing_pt", "space_before_pt", "space_after_pt"))
         if has_spacing:
             _make_spacing(ppr,
                           line_spacing=para_cfg.get("line_spacing"),
+                          line_spacing_pt=para_cfg.get("line_spacing_pt"),
                           space_before_pt=para_cfg.get("space_before_pt"),
                           space_after_pt=para_cfg.get("space_after_pt"))
         # Insert pPr before tblPr for correct schema order
@@ -520,7 +531,11 @@ def apply_style(doc: Document, style_name: str, props: dict[str, Any]) -> None:
     # Paragraph settings
     if hasattr(style, "paragraph_format"):
         pf = style.paragraph_format
-        if "line_spacing" in props:
+        if "line_spacing_pt" in props:
+            # Fixed/exact line spacing in points
+            pf.line_spacing = Pt(props["line_spacing_pt"])
+            pf.line_spacing_rule = WD_LINE_SPACING.EXACTLY
+        elif "line_spacing" in props:
             pf.line_spacing = props["line_spacing"]
         if "space_before_pt" in props:
             pf.space_before = Pt(props["space_before_pt"])

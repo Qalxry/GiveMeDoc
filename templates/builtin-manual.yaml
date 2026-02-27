@@ -1,12 +1,12 @@
 # ══════════════════════════════════════════════════════════════
-# 国标文档风格 (builtin-gb)
-# 参照 GB/T 9704 公文格式；黑体标题 + 仿宋正文
+# 企业手册风格 (builtin-manual)
+# 适合企业文档、操作手册
 # ══════════════════════════════════════════════════════════════
 
 # ── 正文 ────────────────────────────────────────────────────
 Normal:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -26,7 +26,7 @@ Normal:
 
 "Body Text":
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -46,7 +46,7 @@ Normal:
 
 "First Paragraph":
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -66,8 +66,8 @@ Normal:
 
 # ── 文档信息 ────────────────────────────────────────────────
 Title:
-  font_ascii: Arial
-  font_eastAsia: 方正小标宋简体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 22
   bold: true
   italic: false
@@ -86,8 +86,8 @@ Title:
   page_break_before: false
 
 Subtitle:
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 15
   bold: false
   italic: false
@@ -107,7 +107,7 @@ Subtitle:
 
 Author:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 14
   bold: false
   italic: false
@@ -127,7 +127,7 @@ Author:
 
 Date:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 14
   bold: false
   italic: false
@@ -147,7 +147,7 @@ Date:
 
 Abstract:
   font_ascii: Times New Roman
-  font_eastAsia: 楷体
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -166,8 +166,8 @@ Abstract:
   page_break_before: false
 
 AbstractTitle:
-  font_ascii: Arial
-  font_eastAsia: 黑体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 16
   bold: true
   italic: false
@@ -187,8 +187,8 @@ AbstractTitle:
 
 # ── 标题 ────────────────────────────────────────────────────
 "Heading 1":
-  font_ascii: Arial
-  font_eastAsia: 黑体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 16
   bold: true
   italic: false
@@ -207,8 +207,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 2":
-  font_ascii: Arial
-  font_eastAsia: 楷体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 15
   bold: true
   italic: false
@@ -227,8 +227,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 3":
-  font_ascii: Arial
-  font_eastAsia: 黑体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 14
   bold: true
   italic: false
@@ -247,8 +247,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 4":
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 14
   bold: true
   italic: false
@@ -267,8 +267,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 5":
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: true
   italic: false
@@ -287,8 +287,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 6":
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -307,8 +307,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 7":
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -327,8 +327,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 8":
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: true
@@ -347,8 +347,8 @@ AbstractTitle:
   page_break_before: false
 
 "Heading 9":
-  font_ascii: Arial
-  font_eastAsia: 仿宋
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: true
@@ -369,7 +369,7 @@ AbstractTitle:
 # ── 引用 ────────────────────────────────────────────────────
 "Block Text":
   font_ascii: Times New Roman
-  font_eastAsia: 楷体
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -389,7 +389,7 @@ AbstractTitle:
 
 "Footnote Block Text":
   font_ascii: Times New Roman
-  font_eastAsia: 楷体
+  font_eastAsia: 宋体
   font_size_pt: 9
   bold: false
   italic: false
@@ -410,7 +410,7 @@ AbstractTitle:
 # ── 代码 ────────────────────────────────────────────────────
 "Source Code":
   font_ascii: Consolas
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 10.5
   bold: false
   italic: false
@@ -430,7 +430,7 @@ AbstractTitle:
 
 "Verbatim Char":
   font_ascii: Consolas
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 10.5
   bold: false
   italic: false
@@ -440,7 +440,7 @@ AbstractTitle:
 # ── 题注 ────────────────────────────────────────────────────
 Caption:
   font_ascii: Times New Roman
-  font_eastAsia: 黑体
+  font_eastAsia: 宋体
   font_size_pt: 10.5
   bold: false
   italic: false
@@ -460,7 +460,7 @@ Caption:
 
 "Table Caption":
   font_ascii: Times New Roman
-  font_eastAsia: 黑体
+  font_eastAsia: 宋体
   font_size_pt: 10.5
   bold: false
   italic: false
@@ -480,7 +480,7 @@ Caption:
 
 "Image Caption":
   font_ascii: Times New Roman
-  font_eastAsia: 黑体
+  font_eastAsia: 宋体
   font_size_pt: 10.5
   bold: false
   italic: false
@@ -501,7 +501,7 @@ Caption:
 # ── 图片 ────────────────────────────────────────────────────
 Figure:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -521,7 +521,7 @@ Figure:
 
 "Captioned Figure":
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -542,7 +542,7 @@ Figure:
 # ── 列表 ────────────────────────────────────────────────────
 Compact:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -563,7 +563,7 @@ Compact:
 # ── 定义列表 ───────────────────────────────────────────────
 "Definition Term":
   font_ascii: Times New Roman
-  font_eastAsia: 黑体
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: true
   italic: false
@@ -583,7 +583,7 @@ Compact:
 
 Definition:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -604,7 +604,7 @@ Definition:
 # ── 脚注 ────────────────────────────────────────────────────
 "Footnote Text":
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 9
   bold: false
   italic: false
@@ -624,7 +624,7 @@ Definition:
 
 "Footnote Reference":
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 9
   bold: false
   italic: false
@@ -633,8 +633,8 @@ Definition:
 
 # ── 目录 ────────────────────────────────────────────────────
 "TOC Heading":
-  font_ascii: Arial
-  font_eastAsia: 黑体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 15
   bold: true
   italic: false
@@ -655,7 +655,7 @@ Definition:
 # ── 参考文献 ───────────────────────────────────────────────
 Bibliography:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -676,7 +676,7 @@ Bibliography:
 # ── 超链接 ──────────────────────────────────────────────────
 Hyperlink:
   font_ascii: Times New Roman
-  font_eastAsia: 仿宋
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false
@@ -700,21 +700,21 @@ Hyperlink:
     left: 108
     right: 108
   paragraph:
-    line_spacing: 1.15
-    space_before_pt: 2
-    space_after_pt: 2
+    line_spacing: 1.0
+    space_before_pt: 0
+    space_after_pt: 0
     alignment: center
   conditional:
     firstRow:
       bold: true
       alignment: center
-      shading: "D9D9D9"
+      # shading: "D9D9D9"
       vertical_alignment: center
 
 # ── 章节编号 ───────────────────────────────────────────────
 "Section Number":
-  font_ascii: Arial
-  font_eastAsia: 黑体
+  font_ascii: Times New Roman
+  font_eastAsia: 宋体
   font_size_pt: 12
   bold: false
   italic: false

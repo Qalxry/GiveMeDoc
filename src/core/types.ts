@@ -77,7 +77,7 @@ export const DEFAULT_CONFIG: UserConfig = {
   singleExportWithTemplate: false,
   showFab: true,
   autoRefreshOnOpen: true,
-  selectedTemplateId: 'builtin-gb',
+  selectedTemplateId: 'builtin-minimal',
   documentPrefix: `---
 title: {title}
 date: {output_date}
