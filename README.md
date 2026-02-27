@@ -8,8 +8,8 @@
 <div align='center'><b>🚫 别再为导出对话为 Word 付费了</b></div>
 <br/>
 
-| ![导出页 - 会话模式](./assets/tab1-1.png) | ![导出页 - 自由输入](./assets/tab1-2.png) | ![设置页](./assets/tab2.png) | ![关于页](./assets/tab3.png) |
-| ----- | ---- | ---- | ---- |
+| ![导出页 - 会话模式](./assets/tab1-1.png) | ![导出页 - 自由输入](./assets/tab1-2.png) | ![设置页](./assets/tab2.png) |
+| ----- | ---- | ---- |
 
 ## 🤔 为什么选择 GiveMeDoc？
 

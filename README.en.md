@@ -8,8 +8,8 @@
 <div align='center'><b>🚫 Stop paying to export your conversations to Word</b></div>
 <br/>
 
-| ![Export Tab - Session](./assets/tab1-1.png) | ![Export Tab - Freetext](./assets/tab1-2.png) | ![Settings Tab](./assets/tab2.png) | ![About Tab](./assets/tab3.png) |
-| ----- | ---- | ---- | ---- |
+| ![Export Tab - Session](./assets/tab1-1.png) | ![Export Tab - Freetext](./assets/tab1-2.png) | ![Settings Tab](./assets/tab2.png) |
+| ----- | ---- | ---- |
 
 ## 🤔 Why GiveMeDoc?
 
