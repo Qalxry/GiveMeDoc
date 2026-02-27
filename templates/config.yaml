@@ -208,10 +208,15 @@ templates:
     description: 宋体+Times，无额外格式
     styles_file: builtin-minimal.yaml
 
-  - id: builtin-academic
-    name: 学术文档风格
-    description: 适合学术论文、技术报告
-    styles_file: builtin-academic.yaml
+  - id: builtin-academic-cn
+    name: 中文学术风格
+    description: 适合中文学术论文、技术报告
+    styles_file: builtin-academic-cn.yaml
+
+  - id: builtin-academic-en
+    name: 英文学术风格
+    description: 适合英文学术论文、技术报告
+    styles_file: builtin-academic-en.yaml
 
   - id: builtin-manual
     name: 企业手册风格
