@@ -12,7 +12,7 @@ const USERSCRIPT_META = `// ==UserScript==
 // @author       GiveMeDoc Contributors
 // @homepageURL  https://github.com/Qalxry/GiveMeDoc
 // @supportURL   https://github.com/Qalxry/GiveMeDoc/issues
-// @icon         https://raw.githubusercontent.com/Qalxry/GiveMeDoc/main/public/logo.svg
+// @icon         https://raw.githubusercontent.com/Qalxry/GiveMeDoc/main/public/icons/logo.svg
 // @match        https://chat.deepseek.com/*
 // @grant        GM_getValue
 // @grant        GM_setValue

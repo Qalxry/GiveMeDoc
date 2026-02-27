@@ -1,7 +1,7 @@
 import cairosvg
 import os
 
-with open(os.path.join(os.path.dirname(__file__), '../public/logo.svg'), 'r') as f:
+with open(os.path.join(os.path.dirname(__file__), '../public/icons/logo.svg'), 'r') as f:
   svg = f.read()
 
 for size in [16, 48, 128]:

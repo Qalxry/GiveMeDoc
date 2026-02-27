@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <!-- M3 圆角容器背景 -->
+  <rect x="1" y="1" width="22" height="22" rx="6.5" ry="6.5" fill="#6750a4"/>
+
+  <!-- 文档主体 - 带折角 -->
+  <path d="M7.5 4.5 H14.5 L17.5 7.5 V18.5 Q17.5 19.5 16.5 19.5 H7.5 Q6.5 19.5 6.5 18.5 V5.5 Q6.5 4.5 7.5 4.5 Z"
+        fill="white" fill-opacity="0.9"/>
+
+  <!-- 折角三角 -->
+  <path d="M14.5 4.5 V6.5 Q14.5 7.5 15.5 7.5 H17.5 L14.5 4.5 Z"
+        fill="#a193c6" fill-opacity="1.0"/>
+
+  <!-- 文档内文本线条 -->
+  <line x1="9.3" y1="8.4" x2="12.7" y2="8.4" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.375" stroke-linecap="round"/>
+  <line x1="9.3" y1="10.8" x2="14.8" y2="10.8" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.375" stroke-linecap="round"/>
+
+  <!-- 下载箭头 - 核心语义 -->
+  <g stroke="#6750a4" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 箭头竖线 -->
+    <line x1="12" y1="13" x2="12" y2="17.25" opacity="0.6"/>
+    <!-- 箭头左翼 -->
+    <line x1="12" y1="17.25" x2="10.25" y2="15.5" opacity="0.6"/>
+    <!-- 箭头右翼 -->
+    <line x1="12" y1="17.25" x2="13.75" y2="15.5" opacity="0.6"/>
+  </g>
+</svg>

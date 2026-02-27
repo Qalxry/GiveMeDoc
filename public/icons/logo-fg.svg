@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+  <!-- 文档主体 - 带折角 (尺寸放大，占满更多空间) -->
+  <path d="M7 2 H14 L19 7 V20 Q19 22 17 22 H7 Q5 22 5 20 V4 Q5 2 7 2 Z"
+        fill="white" fill-opacity="0.9"/>
+
+  <!-- 折角三角 (适配放大后的主体，圆角等比调整) -->
+  <path d="M14 2 V5 Q14 7 16 7 H19 L14 2 Z"
+        fill="#a193c6" fill-opacity="1.0"/>
+
+  <!-- 文档内文本线条 (自适应放大，线宽加粗至1.8) -->
+  <line x1="8.5" y1="8" x2="13.5" y2="8" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.8" stroke-linecap="round"/>
+  <line x1="8.5" y1="11" x2="15.5" y2="11" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.8" stroke-linecap="round"/>
+
+  <!-- 下载箭头 - 核心语义 (尺寸放大，线宽加宽至1.8，位置居中偏下) -->
+  <g stroke="#6750a4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+    <!-- 箭头竖线 -->
+    <line x1="12" y1="14" x2="12" y2="19" opacity="0.6"/>
+    <!-- 箭头左翼 -->
+    <line x1="12" y1="19" x2="9.5" y2="16.5" opacity="0.6"/>
+    <!-- 箭头右翼 -->
+    <line x1="12" y1="19" x2="14.5" y2="16.5" opacity="0.6"/>
+  </g>
+</svg>

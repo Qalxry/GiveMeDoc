@@ -1,5 +1,5 @@
 <div align='center'>
-  <img src="./public/logo.svg" alt="GiveMeDoc Logo" width="64"/>
+  <img src="./public/icons/logo.svg" alt="GiveMeDoc Logo" width="64"/>
   <h1>GiveMeDoc</h1>
   <a href="README.zh-CN.md">中文</a>
 </div>

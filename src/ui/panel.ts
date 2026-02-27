@@ -12,7 +12,7 @@ import { el, append, createIconButton, html } from './m3e/dom';
 import { createTabs, type Tab } from './m3e/tabs';
 import {
   ICON_LIST, ICON_SETTINGS, ICON_INFO, ICON_FILE_TEXT, ICON_X,
-  ICON_FILE_TYPE,
+  ICON_FILE_TYPE, ICON_LOGO
 } from './m3e/icons';
 import { renderExportTab, refreshExportTab, refreshExportTemplates } from './panel-export';
 import { renderSettingsTab } from './panel-settings';
@@ -61,7 +61,7 @@ export function createPanel(cb: PanelCallbacks, opts?: CreatePanelOptions): void
   const header = el('div', 'gmd-panel__header');
 
   const titleWrap = el('div', 'gmd-panel__title-wrap');
-  const logoIcon = html('span', 'gmd-panel__logo', ICON_FILE_TEXT);
+  const logoIcon = html('span', 'gmd-panel__logo', ICON_LOGO);
   const titleText = el('span', 'gmd-panel__title');
   titleText.textContent = 'Give Me Doc';
   append(titleWrap, logoIcon, titleText);

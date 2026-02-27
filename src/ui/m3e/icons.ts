@@ -10,8 +10,17 @@
 
 const S = 'xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
 
+/** logo — Give Me Doc logo */
+export const ICON_LOGO = `<svg ${S}><rect x="1" y="1" width="22" height="22" rx="6.5" ry="6.5" fill="#6750a4"/> <path d="M7.5 4.5 H14.5 L17.5 7.5 V18.5 Q17.5 19.5 16.5 19.5 H7.5 Q6.5 19.5 6.5 18.5 V5.5 Q6.5 4.5 7.5 4.5 Z" fill="white" fill-opacity="0.9"/> <path d="M14.5 4.5 V6.5 Q14.5 7.5 15.5 7.5 H17.5 L14.5 4.5 Z" fill="#a193c6" fill-opacity="1.0"/> <line x1="9.3" y1="8.4" x2="12.7" y2="8.4" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.375" stroke-linecap="round"/> <line x1="9.3" y1="10.8" x2="14.8" y2="10.8" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.375" stroke-linecap="round"/> <g stroke="#6750a4" stroke-width="1.375" stroke-linecap="round" stroke-linejoin="round"> <line x1="12" y1="13" x2="12" y2="17.25" opacity="0.6"/> <line x1="12" y1="17.25" x2="10.25" y2="15.5" opacity="0.6"/> <line x1="12" y1="17.25" x2="13.75" y2="15.5" opacity="0.6"/> </g></svg>`;
+
+/** logo-fg — Give Me Doc logo foreground only (for color-adaptive contexts) */
+export const ICON_LOGO_FG = `<svg ${S}><path d="M7 2 H14 L19 7 V20 Q19 22 17 22 H7 Q5 22 5 20 V4 Q5 2 7 2 Z" fill="white" fill-opacity="0.9"/> <path d="M14 2 V5 Q14 7 16 7 H19 L14 2 Z" fill="#a193c6" fill-opacity="1.0"/> <line x1="8.5" y1="8" x2="13.5" y2="8" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.8" stroke-linecap="round"/> <line x1="8.5" y1="11" x2="15.5" y2="11" stroke="#6750a4" stroke-opacity="0.6" stroke-width="1.8" stroke-linecap="round"/> <g stroke="#6750a4" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"> <line x1="12" y1="14" x2="12" y2="19" opacity="0.6"/> <line x1="12" y1="19" x2="9.5" y2="16.5" opacity="0.6"/> <line x1="12" y1="19" x2="14.5" y2="16.5" opacity="0.6"/> </g></svg>`;
+
 /** file-text — document export */
 export const ICON_FILE_TEXT = `<svg ${S}><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/> <path d="M14 2v5a1 1 0 0 0 1 1h5"/> <path d="M10 9H8"/> <path d="M16 13H8"/> <path d="M16 17H8"/></svg>`;
+
+/** file-down — download file */
+export const ICON_FILE_DOWN = `<svg ${S}><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/> <path d="M14 2v5a1 1 0 0 0 1 1h5"/> <path d="M12 18v-6"/> <path d="m9 15 3 3 3-3"/></svg>`;
 
 /** file-type — file type badge (single message export) */
 export const ICON_FILE_TYPE = `<svg ${S}><path d="M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z"/> <path d="M14 2v5a1 1 0 0 0 1 1h5"/> <path d="M11 18h2"/> <path d="M12 12v6"/> <path d="M9 13v-.5a.5.5 0 0 1 .5-.5h5a.5.5 0 0 1 .5.5v.5"/></svg>`;

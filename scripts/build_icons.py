@@ -31,7 +31,10 @@ CACHE_DIR = PROJECT_ROOT / "public" / "icons"
 # Map of EXPORT_NAME -> (lucide_icon_id, description)
 # This is the single source of truth — add/remove icons here.
 ICONS: dict[str, tuple[str, str]] = {
+    "ICON_LOGO":            ("logo",             "Give Me Doc logo"),
+    "ICON_LOGO_FG":         ("logo-fg",          "Give Me Doc logo foreground only (for color-adaptive contexts)"),
     "ICON_FILE_TEXT":       ("file-text",        "document export"),
+    "ICON_FILE_DOWN":       ("file-down",        "download file"),
     "ICON_FILE_TYPE":       ("file-type",        "file type badge (single message export)"),
     "ICON_DOWNLOAD":        ("download",         "download / export"),
     "ICON_UPLOAD":          ("upload",           "upload template"),

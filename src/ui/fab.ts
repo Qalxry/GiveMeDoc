@@ -9,7 +9,7 @@
  */
 import type { PanelCallbacks } from '../core/types';
 import { el, html } from './m3e/dom';
-import { ICON_FILE_TEXT } from './m3e/icons';
+import { ICON_FILE_TEXT, ICON_LOGO_FG } from './m3e/icons';
 import { showPanel, isPanelVisible } from './panel';
 
 // ═══════════════════════════════════════════════════════════════════════════
@@ -44,7 +44,7 @@ export function createFab(cb: PanelCallbacks): void {
   fabEl.type = 'button';
   fabEl.title = 'Give Me Doc';
   fabEl.setAttribute('aria-label', 'Toggle Give Me Doc panel');
-  fabEl.innerHTML = ICON_FILE_TEXT;
+  fabEl.innerHTML = ICON_LOGO_FG;
 
   // Restore saved vertical position
   const savedPct = loadPosition();
