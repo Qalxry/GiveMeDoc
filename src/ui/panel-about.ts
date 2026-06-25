@@ -11,6 +11,7 @@ import { el, append, html } from './m3e/dom';
 import {
   ICON_INFO, ICON_GITHUB, ICON_BUG, ICON_EXTERNAL_LINK, ICON_CHECK, ICON_REFRESH,
 } from './m3e/icons';
+import { DEFAULT_ADAPTER_CONFIG, checkRemoteVersion } from '../adapters/deepseek-config';
 
 declare const __PLATFORM__: 'userscript' | 'extension';
 
@@ -80,6 +81,76 @@ export function renderAboutTab(cb: PanelCallbacks): HTMLElement {
   );
 
   root.appendChild(linksCard);
+
+  // ── Adapter rule card ────────────────────────────────────────────────
+  const adapterCard = el('div', 'gmd-about__card');
+
+  const adapterTitle = el('h3', 'gmd-about__card-title');
+  adapterTitle.textContent = '适配规则';
+  adapterCard.appendChild(adapterTitle);
+
+  // Local version row
+  const localVersionRow = createInfoRow('本地版本', 'v' + DEFAULT_ADAPTER_CONFIG.version);
+  adapterCard.appendChild(localVersionRow);
+
+  // Remote version row (will be updated after fetching)
+  const remoteVersionRow = createInfoRow('远程版本', '检测中…');
+  adapterCard.appendChild(remoteVersionRow);
+
+  // Refresh button row
+  const refreshRow = document.createElement('div');
+  refreshRow.className = 'gmd-about__refresh';
+
+  const refreshBtn = document.createElement('button');
+  refreshBtn.className = 'gmd-about__refresh-btn';
+  refreshBtn.innerHTML = ICON_REFRESH + ' 检查更新';
+  refreshBtn.addEventListener('click', async (e) => {
+    e.stopPropagation();
+    refreshBtn.disabled = true;
+    refreshBtn.textContent = '检查中…';
+    const remoteVersion = await checkRemoteVersion();
+    refreshBtn.disabled = false;
+    refreshBtn.innerHTML = ICON_REFRESH + ' 检查更新';
+
+    const localVal = localVersionRow.querySelector('.gmd-about__value');
+    const remoteVal = remoteVersionRow.querySelector('.gmd-about__value');
+
+    const localVer = DEFAULT_ADAPTER_CONFIG.version;
+
+    if (remoteVal) {
+      if (remoteVersion == null) {
+        remoteVal.textContent = '连接失败';
+        remoteVal.className = 'gmd-about__value gmd-about__value--warn';
+      } else {
+        remoteVal.textContent = 'v' + remoteVersion;
+        remoteVal.className = 'gmd-about__value';
+        if (remoteVersion > localVer) {
+          remoteVal.classList.add('gmd-about__value--ok');
+        }
+      }
+    }
+  });
+  refreshRow.appendChild(refreshBtn);
+
+  adapterCard.appendChild(refreshRow);
+
+  root.appendChild(adapterCard);
+
+  // Fetch remote version asynchronously for initial display
+  checkRemoteVersion().then((remoteVersion) => {
+    const remoteVal = remoteVersionRow.querySelector('.gmd-about__value');
+    if (remoteVal) {
+      if (remoteVersion == null) {
+        remoteVal.textContent = '连接失败';
+        remoteVal.className = 'gmd-about__value gmd-about__value--warn';
+      } else {
+        remoteVal.textContent = 'v' + remoteVersion;
+        if (remoteVersion > DEFAULT_ADAPTER_CONFIG.version) {
+          remoteVal.classList.add('gmd-about__value--ok');
+        }
+      }
+    }
+  });
 
   return root;
 }

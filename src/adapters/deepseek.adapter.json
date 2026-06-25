@@ -1,0 +1,87 @@
+{
+  "version": 3,
+  "platform": "deepseek",
+
+  "toolbar": {
+    "containerSelector": "div.ds-scroll-area div.ds-flex div.ds-flex",
+
+    "copyButton": [
+      {
+        "priority": 10,
+        "method": "svg-fingerprint",
+        "pathPrefix": "M6.14929 4.02032",
+        "scope": "toolbar",
+        "label": "copy-btn(svg)"
+      },
+      {
+        "priority": 20,
+        "method": "first-child",
+        "scope": "toolbar",
+        "label": "copy-btn(first-child)"
+      },
+      {
+        "priority": 30,
+        "method": "selector",
+        "selector": ".ds-button",
+        "index": 0,
+        "scope": "toolbar",
+        "label": "copy-btn(selector+index)"
+      }
+    ],
+
+    "exportButton": {
+      "className": "ds-button ds-button--iconLabelTertiary ds-button--icon ds-button--capsule ds-button--xs ds-button--icon-relative-l",
+      "innerHTML": "<div class=\"ds-button__background\"></div><div class=\"ds-button__icon ds-button__icon--last-child\"><div class=\"ds-icon\" style=\"font-size: inherit;\">{{ICON}}</div></div>",
+      "insertPosition": "append",
+      "insertRelativeTo": "last"
+    }
+  },
+
+  "sharePanel": {
+    "triggerButton": [
+      {
+        "priority": 10,
+        "method": "text",
+        "text": "创建分享链接",
+        "scope": "document",
+        "label": "share-trigger(text)"
+      },
+      {
+        "priority": 20,
+        "method": "svg-fingerprint",
+        "pathPrefix": "M9.94133 6.50173",
+        "scope": "document",
+        "label": "share-trigger(svg)"
+      }
+    ],
+
+    "exportButton": {
+      "className": "ds-button ds-button--outlinedNeutral ds-button--outlined ds-button--capsule ds-button--m ds-button--icon-relative-m ds-button--min-width",
+      "innerHTML": "<div class=\"ds-button__background\"></div><div class=\"ds-button__border\"></div><div class=\"ds-button__icon\"><div class=\"ds-icon\" style=\"font-size: 14px; width: 14px; height: 14px;\">{{ICON}}</div></div><span class=\"ds-button__content\">导出为 Word</span>",
+      "insertPosition": "before",
+      "insertRelativeTo": "trigger"
+    },
+
+    "checkbox": {
+      "selector": ".ds-checkbox",
+      "selectAllFilter": "wrapper",
+      "selectAllWrapper": ".ds-checkbox-wrapper",
+      "activeClass": "ds-checkbox--active"
+    }
+  },
+
+  "api": {
+    "base": "https://chat.deepseek.com/api/v0",
+    "headers": {
+      "Accept": "*/*",
+      "x-client-platform": "web",
+      "x-client-version": "1.7.0",
+      "x-client-locale": "zh_CN",
+      "x-app-version": "20241129.1"
+    }
+  },
+
+  "endpoints": {
+    "historyMessages": "/chat/history_messages?chat_session_id={{sessionId}}"
+  }
+}

@@ -12,6 +12,9 @@
  * Icon imports are from the centralized m3e/icons module.
  * - DOM injection (single-export button, share-panel export button)
  *
+ * DOM selectors & structures are driven by AdapterConfig (deepseek-config.ts)
+ * which is upgradeable via CDN at runtime.
+ *
  * References: docs/deepseek.md
  */
 import type {
@@ -24,6 +27,8 @@ import type {
   DSFragment,
 } from '../core/types';
 import { ICON_FILE_TYPE, iconSize } from '../ui/m3e/icons';
+import { loadAdapterConfig } from './deepseek-config';
+import { AdapterEngine } from './adapter-engine';
 
 // ═══════════════════════════════════════════════════════════════════════════
 // Auth
@@ -45,20 +50,12 @@ export function getToken(): string | null {
 // API
 // ═══════════════════════════════════════════════════════════════════════════
 
-const API_BASE = 'https://chat.deepseek.com/api/v0';
-
-const COMMON_HEADERS: Record<string, string> = {
-  'Accept': '*/*',
-  'x-client-platform': 'web',
-  'x-client-version': '1.7.0',
-  'x-client-locale': 'zh_CN',
-  'x-app-version': '20241129.1',
-};
-
 export async function fetchSessionFromAPI(sessionId: string, token: string): Promise<IChatSession> {
-  const url = `${API_BASE}/chat/history_messages?chat_session_id=${encodeURIComponent(sessionId)}`;
+  const engine = await getEngine();
+  const api = engine.getApiConfig();
+  const url = engine.buildApiUrl('historyMessages', { sessionId });
   const res = await fetch(url, {
-    headers: { ...COMMON_HEADERS, authorization: `Bearer ${token}` },
+    headers: { ...api.headers, authorization: `Bearer ${token}` },
     credentials: 'include',
   });
   if (!res.ok) throw new Error(`DeepSeek API error: ${res.status} ${res.statusText}`);
@@ -272,36 +269,45 @@ export function getCurrentSessionId(): string | null {
 
 const FILE_TYPE_SVG = iconSize(ICON_FILE_TYPE, 16);
 
+/** Module-level engine singleton, lazily initialized. */
+let _engine: AdapterEngine | null = null;
+let _engineInit: Promise<void> | null = null;
+
+async function getEngine(): Promise<AdapterEngine> {
+  if (_engine) return _engine;
+  if (!_engineInit) {
+    _engineInit = (async () => {
+      const config = await loadAdapterConfig();
+      _engine = new AdapterEngine(config);
+    })();
+  }
+  await _engineInit;
+  return _engine!;
+}
+
 /**
  * Inject a "export to docx" icon button into the message toolbar.
  * Uses MutationObserver to handle dynamically added / hover-shown messages.
  *
- * DeepSeek UI v2 (2026): toolbar is `div.ds-scroll-area div.ds-flex div.ds-flex`
- * with 5 native `div.ds-button` children (复制/重试/点赞/踩/分享).
+ * DOM selectors and button markup come from AdapterConfig (CDN-upgradeable).
+ *
+ * Calling code does NOT need to await — errors are silently caught.
  */
-export function injectSingleExportButtons(onClick: (md: string, title: string) => void): void {
+export async function injectSingleExportButtons(onClick: (md: string, title: string) => void): Promise<void> {
   const MARKER_ATTR = 'data-gmd-injected';
+  const engine = await getEngine();
 
   function processToolbar(toolbar: Element): void {
     if (toolbar.hasAttribute(MARKER_ATTR)) return;
     toolbar.setAttribute(MARKER_ATTR, '1');
 
-    // The first ds-button child is the copy button
-    const copyBtn = toolbar.querySelector('.ds-button');
+    // Multi-strategy: try SVG fingerprint → first-child → selector+index
+    const copyBtn = engine.findCopyButton(toolbar);
     if (!copyBtn) return;
 
-    const exportBtn = document.createElement('div');
-    exportBtn.className = 'ds-button ds-button--iconLabelTertiary ds-button--icon ds-button--capsule ds-button--xs ds-button--icon-relative-l';
-    exportBtn.setAttribute('tabindex', '0');
-    exportBtn.setAttribute('role', 'button');
+    const exportBtn = engine.createToolbarExportButton(FILE_TYPE_SVG);
     exportBtn.setAttribute('aria-disabled', 'false');
     exportBtn.title = '导出为 Word';
-    exportBtn.innerHTML = `
-      <div class="ds-button__background"></div>
-      <div class="ds-button__icon ds-button__icon--last-child">
-        <div class="ds-icon" style="font-size: inherit;">${FILE_TYPE_SVG}</div>
-      </div>
-    `;
 
     exportBtn.addEventListener('click', async (e) => {
       e.stopPropagation();
@@ -324,17 +330,12 @@ export function injectSingleExportButtons(onClick: (md: string, title: string) =
       }
     });
 
-    // Append after the last toolbar button (after "分享")
+    // Append after the last toolbar button
     toolbar.appendChild(exportBtn);
   }
 
   function scanAll(): void {
-    // Inner button container: div.ds-flex inside div.ds-flex inside ds-scroll-area
-    // CSS-module hash classes (_0a3d93b, _965abe9, etc.) vary per build,
-    // so we rely on the stable ds-* descendant path.
-    const toolbars = document.querySelectorAll(
-      'div.ds-scroll-area div.ds-flex div.ds-flex',
-    );
+    const toolbars = engine.findToolbars();
     toolbars.forEach(processToolbar);
   }
 
@@ -354,61 +355,34 @@ export function injectSingleExportButtons(onClick: (md: string, title: string) =
  * Inject an "导出为 Word" button in DeepSeek's share dialog bottom bar.
  * Watches for the dialog to appear (detected by the "创建分享链接" button).
  *
- * DeepSeek UI v2 (2026):
- * - Bottom bar: div.fab07e97 inside div._43d222b
- * - 创建分享链接: div.ds-button.ds-button--primary.ds-button--filled
- * - 全选 checkbox: first, inside div.ds-checkbox-wrapper
- * - 消息 checkbox: each inside div.d30139ff > div.ad950ab7
+ * DOM selectors / button markup come from AdapterConfig (CDN-upgradeable).
+ * Multi-strategy lookup: text → selector → svg fingerprint.
  */
-export function injectSharePanelButton(onClick: (selectedIndices: number[]) => void): void {
+export async function injectSharePanelButton(onClick: (selectedIndices: number[]) => void): Promise<void> {
   const MARKER_ATTR = 'data-gmd-share-injected';
+  const engine = await getEngine();
 
   function tryInject(): void {
-    // Find the "创建分享链接" button
-    const allPrimary = document.querySelectorAll(
-      '.ds-button.ds-button--primary.ds-button--filled',
-    );
-    let shareBtn: Element | null = null;
-    for (const btn of allPrimary) {
-      if ((btn as HTMLElement).innerText.includes('创建分享链接')) {
-        shareBtn = btn;
-        break;
-      }
-    }
+    const shareBtn = engine.findShareTrigger();
     if (!shareBtn) return;
 
     const bottomBar = shareBtn.parentElement;
     if (!bottomBar || bottomBar.hasAttribute(MARKER_ATTR)) return;
     bottomBar.setAttribute(MARKER_ATTR, '1');
 
-    const exportBtn = document.createElement('div');
-    exportBtn.setAttribute('role', 'button');
-    exportBtn.setAttribute('tabindex', '0');
-    exportBtn.className = 'ds-button ds-button--outlinedNeutral ds-button--outlined ds-button--capsule ds-button--m ds-button--icon-relative-m ds-button--min-width';
-    exportBtn.innerHTML = `
-      <div class="ds-button__background"></div>
-      <div class="ds-button__border"></div>
-      <div class="ds-button__icon">
-        <div class="ds-icon" style="font-size: 14px; width: 14px; height: 14px;">${FILE_TYPE_SVG}</div>
-      </div>
-      <span class="ds-button__content">导出为 Word</span>
-    `;
+    const exportBtn = engine.createShareExportButton(FILE_TYPE_SVG);
 
     exportBtn.addEventListener('click', (e) => {
       e.stopPropagation();
 
       // Read selected checkboxes — skip "全选" (inside ds-checkbox-wrapper)
-      const allCheckboxes = document.querySelectorAll('.ds-checkbox');
+      const checkboxes = engine.getMessageCheckboxes();
       const indices: number[] = [];
-      let msgIndex = 0;
 
-      for (let i = 0; i < allCheckboxes.length; i++) {
-        // Skip "全选" checkbox (inside ds-checkbox-wrapper)
-        if (allCheckboxes[i].closest('.ds-checkbox-wrapper')) continue;
-        if (allCheckboxes[i].classList.contains('ds-checkbox--active')) {
-          indices.push(msgIndex);
+      for (let i = 0; i < checkboxes.length; i++) {
+        if (engine.isCheckboxActive(checkboxes[i])) {
+          indices.push(i);
         }
-        msgIndex++;
       }
       onClick(indices);
     });

@@ -105,3 +105,38 @@
   width: 16px;
   height: 16px;
 }
+
+/* ── Refresh Button ────────────────────────────────────────────────── */
+.gmd-about__refresh {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: var(--gmd-space-sm);
+}
+
+.gmd-about__refresh-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gmd-space-xs);
+  padding: var(--gmd-space-xs) var(--gmd-space-md);
+  border: 1px solid var(--gmd-outline-variant);
+  border-radius: var(--gmd-radius-sm);
+  background: transparent;
+  color: var(--gmd-primary);
+  font-size: var(--gmd-font-size-sm);
+  cursor: pointer;
+  transition: background var(--gmd-duration-short) var(--gmd-easing-standard);
+}
+
+.gmd-about__refresh-btn:hover {
+  background: var(--gmd-surface-container);
+}
+
+.gmd-about__refresh-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.gmd-about__refresh-btn svg {
+  width: 16px;
+  height: 16px;
+}
