@@ -233,3 +233,15 @@ templates:
     name: 现代简约风格
     description: 华文细黑，适合现代报告
     styles_file: builtin-modern.yaml
+
+  - id: builtin-paper-cn
+    name: 中文学位论文
+    description: 适合中文学位论文
+    styles_file: builtin-paper-cn.yaml
+    page:
+      width_cm: 21.0       # A4
+      height_cm: 29.7
+      margin_top_cm: 3.0
+      margin_bottom_cm: 2.5
+      margin_left_cm: 3.0
+      margin_right_cm: 2.0

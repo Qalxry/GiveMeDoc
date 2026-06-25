@@ -273,8 +273,11 @@ export function getCurrentSessionId(): string | null {
 const FILE_TYPE_SVG = iconSize(ICON_FILE_TYPE, 16);
 
 /**
- * Inject a "export to docx" icon button after each copy button in the message toolbar.
- * Uses MutationObserver to handle dynamically added messages.
+ * Inject a "export to docx" icon button into the message toolbar.
+ * Uses MutationObserver to handle dynamically added / hover-shown messages.
+ *
+ * DeepSeek UI v2 (2026): toolbar is `div.ds-scroll-area div.ds-flex div.ds-flex`
+ * with 5 native `div.ds-button` children (复制/重试/点赞/踩/分享).
  */
 export function injectSingleExportButtons(onClick: (md: string, title: string) => void): void {
   const MARKER_ATTR = 'data-gmd-injected';
@@ -283,20 +286,21 @@ export function injectSingleExportButtons(onClick: (md: string, title: string) =
     if (toolbar.hasAttribute(MARKER_ATTR)) return;
     toolbar.setAttribute(MARKER_ATTR, '1');
 
-    // The first .ds-icon-button child is the copy button
-    const copyBtn = toolbar.querySelector('div.ds-icon-button');
+    // The first ds-button child is the copy button
+    const copyBtn = toolbar.querySelector('.ds-button');
     if (!copyBtn) return;
 
     const exportBtn = document.createElement('div');
-    exportBtn.className = 'ds-icon-button ds-icon-button--m ds-icon-button--sizing-container';
+    exportBtn.className = 'ds-button ds-button--iconLabelTertiary ds-button--icon ds-button--capsule ds-button--xs ds-button--icon-relative-l';
     exportBtn.setAttribute('tabindex', '0');
     exportBtn.setAttribute('role', 'button');
     exportBtn.setAttribute('aria-disabled', 'false');
     exportBtn.title = '导出为 Word';
     exportBtn.innerHTML = `
-      <div class="ds-icon-button__hover-bg"></div>
-      <div class="ds-icon">${FILE_TYPE_SVG}</div>
-      <div class="ds-focus-ring"></div>
+      <div class="ds-button__background"></div>
+      <div class="ds-button__icon ds-button__icon--last-child">
+        <div class="ds-icon" style="font-size: inherit;">${FILE_TYPE_SVG}</div>
+      </div>
     `;
 
     exportBtn.addEventListener('click', async (e) => {
@@ -320,12 +324,14 @@ export function injectSingleExportButtons(onClick: (md: string, title: string) =
       }
     });
 
-    // Insert after the last button in the toolbar
+    // Append after the last toolbar button (after "分享")
     toolbar.appendChild(exportBtn);
   }
 
   function scanAll(): void {
-    // All message toolbar containers
+    // Inner button container: div.ds-flex inside div.ds-flex inside ds-scroll-area
+    // CSS-module hash classes (_0a3d93b, _965abe9, etc.) vary per build,
+    // so we rely on the stable ds-* descendant path.
     const toolbars = document.querySelectorAll(
       'div.ds-scroll-area div.ds-flex div.ds-flex',
     );
@@ -347,6 +353,12 @@ export function injectSingleExportButtons(onClick: (md: string, title: string) =
 /**
  * Inject an "导出为 Word" button in DeepSeek's share dialog bottom bar.
  * Watches for the dialog to appear (detected by the "创建分享链接" button).
+ *
+ * DeepSeek UI v2 (2026):
+ * - Bottom bar: div.fab07e97 inside div._43d222b
+ * - 创建分享链接: div.ds-button.ds-button--primary.ds-button--filled
+ * - 全选 checkbox: first, inside div.ds-checkbox-wrapper
+ * - 消息 checkbox: each inside div.d30139ff > div.ad950ab7
  */
 export function injectSharePanelButton(onClick: (selectedIndices: number[]) => void): void {
   const MARKER_ATTR = 'data-gmd-share-injected';
@@ -354,7 +366,7 @@ export function injectSharePanelButton(onClick: (selectedIndices: number[]) => v
   function tryInject(): void {
     // Find the "创建分享链接" button
     const allPrimary = document.querySelectorAll(
-      '.ds-atom-button.ds-basic-button.ds-basic-button--primary',
+      '.ds-button.ds-button--primary.ds-button--filled',
     );
     let shareBtn: Element | null = null;
     for (const btn of allPrimary) {
@@ -369,26 +381,34 @@ export function injectSharePanelButton(onClick: (selectedIndices: number[]) => v
     if (!bottomBar || bottomBar.hasAttribute(MARKER_ATTR)) return;
     bottomBar.setAttribute(MARKER_ATTR, '1');
 
-    const exportBtn = document.createElement('button');
-    exportBtn.className = 'ds-atom-button ds-basic-button ds-basic-button--outlined';
-    exportBtn.style = 'padding: 6px 14px; font-size: 14px; line-height: 22px; min-width: 72px;';
+    const exportBtn = document.createElement('div');
+    exportBtn.setAttribute('role', 'button');
+    exportBtn.setAttribute('tabindex', '0');
+    exportBtn.className = 'ds-button ds-button--outlinedNeutral ds-button--outlined ds-button--capsule ds-button--m ds-button--icon-relative-m ds-button--min-width';
     exportBtn.innerHTML = `
-      <div class="ds-icon ds-atom-button__icon" style="font-size: 14px; width: 14px; height: 14px; margin-right: 6px;"><div class="ds-icon" style="font-size: 14px; width: 14px; height: 14px;">${FILE_TYPE_SVG}</div></div>
-      <span>导出为 Word</span>
-    `
+      <div class="ds-button__background"></div>
+      <div class="ds-button__border"></div>
+      <div class="ds-button__icon">
+        <div class="ds-icon" style="font-size: 14px; width: 14px; height: 14px;">${FILE_TYPE_SVG}</div>
+      </div>
+      <span class="ds-button__content">导出为 Word</span>
+    `;
 
     exportBtn.addEventListener('click', (e) => {
       e.stopPropagation();
 
-      // Read selected checkboxes
-      const checkboxes = document.querySelectorAll('.ds-checkbox');
+      // Read selected checkboxes — skip "全选" (inside ds-checkbox-wrapper)
+      const allCheckboxes = document.querySelectorAll('.ds-checkbox');
       const indices: number[] = [];
+      let msgIndex = 0;
 
-      // Last checkbox is "全选" — skip it
-      for (let i = 0; i < checkboxes.length - 1; i++) {
-        if (checkboxes[i].classList.contains('ds-checkbox--active')) {
-          indices.push(i);
+      for (let i = 0; i < allCheckboxes.length; i++) {
+        // Skip "全选" checkbox (inside ds-checkbox-wrapper)
+        if (allCheckboxes[i].closest('.ds-checkbox-wrapper')) continue;
+        if (allCheckboxes[i].classList.contains('ds-checkbox--active')) {
+          indices.push(msgIndex);
         }
+        msgIndex++;
       }
       onClick(indices);
     });
