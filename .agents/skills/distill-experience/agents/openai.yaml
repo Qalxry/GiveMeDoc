@@ -1,0 +1,4 @@
+interface:
+  display_name: "Distill Experience"
+  short_description: "Distill reusable experience from the current conversation into project memory"
+  default_prompt: "Use $distill-experience to distill non-obvious experience (pitfalls, optimal trajectories, dead-ends, emergent preferences) from the current conversation into `.agents/memory/`. Draft candidates, adversarially self-audit each against the worth-recording gate, drop the unqualified ones, present survivors for user confirmation, and write only the confirmed ones plus update the index."

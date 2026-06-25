@@ -1,0 +1,4 @@
+interface:
+  display_name: "Index Ref Repos"
+  short_description: "Index reference repository collections"
+  default_prompt: "Use $index-ref-repos to ask me which indexing and subagent ownership mode to use, then create or refresh ref_repos INDEX.md, INDEX.REPO.*, and INDEX.TOPIC.* files."

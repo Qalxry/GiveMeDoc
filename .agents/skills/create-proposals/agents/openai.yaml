@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create Proposals"
+  short_description: "Create tracked defect, feature, and docs proposals"
+  default_prompt: "Use $create-proposals to investigate, deduplicate, classify, align on non-trivial feature proposals, and write proposal or docs-update entries."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Review & Align Proposals"
+  short_description: "Discuss and align proposal documents"
+  default_prompt: "Use $review-align-proposals to discuss, clarify, and align proposal entries with my intent before editing them."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Implement Proposals"
+  short_description: "Plan and implement tracked proposals"
+  default_prompt: "Use $implement-proposals to select, plan, implement, validate, update docs.updates.md, and mark proposal items as fixed."

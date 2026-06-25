@@ -1,0 +1,4 @@
+interface:
+  display_name: "Systematic Code Review"
+  short_description: "Review repositories and write proposals"
+  default_prompt: "Use $systematic-code-review to review this repository against its docs/specs, coordinate subagents, and write defect, feature, and docs-update proposals."
