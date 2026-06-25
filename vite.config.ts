@@ -14,6 +14,7 @@ const USERSCRIPT_META = `// ==UserScript==
 // @supportURL   https://github.com/Qalxry/GiveMeDoc/issues
 // @icon         https://raw.githubusercontent.com/Qalxry/GiveMeDoc/main/public/icons/logo.svg
 // @match        https://chat.deepseek.com/*
+// @match        https://www.doubao.com/chat/*
 // @grant        GM_getValue
 // @grant        GM_setValue
 // @grant        GM_deleteValue
@@ -22,6 +23,7 @@ const USERSCRIPT_META = `// ==UserScript==
 // @grant        GM_xmlhttpRequest
 // @connect      pandoc.org
 // @connect      cdn.jsdelivr.net
+// @connect      cdn.jsdmirror.com
 // @noframes
 // @run-at       document-idle
 // @license      AGPL-3.0

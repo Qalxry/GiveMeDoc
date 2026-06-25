@@ -10,8 +10,10 @@
   ],
   "host_permissions": [
     "https://chat.deepseek.com/*",
+    "https://www.doubao.com/chat/*",
     "https://pandoc.org/*",
-    "https://cdn.jsdelivr.net/*"
+    "https://cdn.jsdelivr.net/*",
+    "https://cdn.jsdmirror.com/*"
   ],
   "action": {
     "default_popup": "src/extension-popup.html",
@@ -32,7 +34,7 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://chat.deepseek.com/*"],
+      "matches": ["https://chat.deepseek.com/*", "https://www.doubao.com/chat/*"],
       "js": ["content.js"],
       "css": ["assets/style.css"],
       "run_at": "document_idle"
@@ -44,7 +46,7 @@
   "web_accessible_resources": [
     {
       "resources": ["pandoc.worker.js", "pandoc.wasm"],
-      "matches": ["https://chat.deepseek.com/*"]
+      "matches": ["https://chat.deepseek.com/*", "https://www.doubao.com/*"]
     }
   ]
 }

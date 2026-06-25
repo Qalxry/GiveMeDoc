@@ -16,6 +16,7 @@ import {
   getCurrentSessionId, getSession,
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
+import { injectSingleExportButtons as injectDoubaoSingleExportButtons } from './adapters/doubao';
 import { togglePanel } from './ui/panel';
 import { createFab, destroyFab, isFabMounted } from './ui/fab';
 import { setupUrlWatcher } from './ui/panel-export';
@@ -148,10 +149,15 @@ loadConfig(extStorage).then((cfg) => {
 });
 
 // Inject per-message export buttons
-injectSingleExportButtons(createSingleExportHandler(extStorage));
+const hostname = window.location.hostname;
+if (hostname.includes('doubao.com')) {
+  injectDoubaoSingleExportButtons(createSingleExportHandler(extStorage));
+} else {
+  injectSingleExportButtons(createSingleExportHandler(extStorage));
 
-// Inject share-panel export button
-injectSharePanelButton(createShareExportHandler(extStorage));
+  // Inject share-panel export button (DeepSeek only)
+  injectSharePanelButton(createShareExportHandler(extStorage));
+}
 
 // Watch for SPA URL changes and auto-refresh export tab
 setupUrlWatcher(callbacks);

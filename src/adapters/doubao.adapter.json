@@ -1,0 +1,55 @@
+{
+  "version": 1,
+  "platform": "doubao",
+
+  "toolbar": {
+    "containerSelector": ".message-action-button-main",
+
+    "copyButton": [
+      {
+        "priority": 10,
+        "method": "svg-fingerprint",
+        "pathPrefix": "M15.8032 1.79688",
+        "scope": "toolbar",
+        "label": "copy-btn(svg)"
+      },
+      {
+        "priority": 20,
+        "method": "selector",
+        "selector": "button",
+        "index": 0,
+        "scope": "toolbar",
+        "label": "copy-btn(pos)"
+      }
+    ],
+
+    "exportButton": {
+      "className": "flex shrink-0 items-center justify-center font-[400] whitespace-nowrap select-none [&_svg]:shrink-0 text-[14px] leading-[22px] gap-[4px] rounded-dbx-sm p-[4px] transition-colors duration-150 ease-out bg-transparent hover:bg-dbx-fill-trans-10-hover outline-transparent outline-none [&_svg:not([class*=&quot;size-&quot;])]:size-[16px] [&_svg[data-dbx-name=button-caret]:not([class*=&quot;size-&quot;])]:size-[10px] relative h-fit cursor-pointer text-dbx-text-secondary",
+      "innerHTML": "<div class=\"min-w-0 truncate\">{{ICON}}</div>",
+      "insertPosition": "append",
+      "insertRelativeTo": "last"
+    }
+  },
+
+  "sharePanel": {
+    "triggerButton": [],
+    "exportButton": {
+      "className": "",
+      "innerHTML": "",
+      "insertPosition": "append",
+      "insertRelativeTo": "last"
+    },
+    "checkbox": {
+      "selector": "",
+      "selectAllFilter": "position",
+      "activeClass": ""
+    }
+  },
+
+  "api": {
+    "base": "",
+    "headers": {}
+  },
+
+  "endpoints": {}
+}

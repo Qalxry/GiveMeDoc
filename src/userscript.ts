@@ -13,6 +13,7 @@ import { initPandoc, isPandocReady, getPandocVersion } from './core/converter';
 import {
   injectSingleExportButtons, injectSharePanelButton,
 } from './adapters/deepseek';
+import { injectSingleExportButtons as injectDoubaoSingleExportButtons } from './adapters/doubao';
 import { togglePanel } from './ui/panel';
 import { createFab, destroyFab, isFabMounted } from './ui/fab';
 import { setupUrlWatcher } from './ui/panel-export';
@@ -164,11 +165,17 @@ function fetchWasm(url: string): Promise<ArrayBuffer> {
     if (cfg.showFab) createFab(callbacks);
   });
 
-  // 4. Inject per-message export buttons
-  injectSingleExportButtons(createSingleExportHandler(gmStorage));
+  // 4. Inject per-message export buttons (platform-specific)
+  const hostname = window.location.hostname;
+  if (hostname.includes('doubao.com')) {
+    injectDoubaoSingleExportButtons(createSingleExportHandler(gmStorage));
+  } else {
+    // DeepSeek (default)
+    injectSingleExportButtons(createSingleExportHandler(gmStorage));
 
-  // 5. Inject share-panel export button
-  injectSharePanelButton(createShareExportHandler(gmStorage));
+    // 5. Inject share-panel export button (DeepSeek only)
+    injectSharePanelButton(createShareExportHandler(gmStorage));
+  }
 
   // 5. Watch for SPA URL changes and auto-refresh export tab
   setupUrlWatcher(callbacks);
