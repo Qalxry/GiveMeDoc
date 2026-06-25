@@ -89,16 +89,46 @@ export const DEFAULT_ADAPTER_CONFIG = defaultCfg as unknown as AdapterConfig;
 // Runtime config loader — CDN first, cache second, local JSON fallback
 // ═══════════════════════════════════════════════════════════════════════════
 
-const CDN_URL =
-  'https://cdn.jsdelivr.net/gh/Qalxry/GiveMeDoc@main/src/adapters/deepseek.adapter.json';
+/** CDN URLs in priority order. Tried sequentially until one succeeds. */
+const CDN_URLS = [
+  'https://cdn.jsdmirror.com/gh/Qalxry/GiveMeDoc@main/src/adapters/deepseek.adapter.json',
+  'https://cdn.jsdelivr.net/gh/Qalxry/GiveMeDoc@main/src/adapters/deepseek.adapter.json',
+];
 
 const STORAGE_KEY = 'gmd-adapter-config';
-const CACHE_TTL_MS = 24 * 60 * 60 * 1000;
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 interface CacheEntry {
   version: number;
   fetchedAt: number;
   data: AdapterConfig;
+}
+
+/**
+ * Try each CDN URL in order until one succeeds or all fail.
+ * Each fetch has a 3s timeout.
+ */
+async function fetchFromCDN(): Promise<{ config: AdapterConfig; version: number } | null> {
+  for (const url of CDN_URLS) {
+    try {
+      const res = await fetch(url, {
+        signal: AbortSignal.timeout(3000),
+        cache: 'no-cache',
+      });
+      if (!res.ok) continue;
+
+      const remote: AdapterConfig = await res.json();
+      if (!remote.version || !remote.platform || !remote.toolbar || !remote.sharePanel) {
+        console.warn('[GiveMeDoc] Remote config invalid from', url);
+        continue;
+      }
+
+      return { config: remote, version: remote.version };
+    } catch {
+      continue; // try next CDN
+    }
+  }
+  return null;
 }
 
 export async function loadAdapterConfig(): Promise<AdapterConfig> {
@@ -116,46 +146,37 @@ export async function loadAdapterConfig(): Promise<AdapterConfig> {
 
 /**
  * Fetch the remote adapter config version from CDN **only**.
- * Returns the version number if available, or null if unreachable/failure.
- * Unlike loadAdapterConfig(), this does NOT fall back to cache or local config.
+ * Returns the remote version number (regardless of whether it's newer),
+ * or null if the CDN is unreachable.
+ * The caller (about page) handles version comparison for display.
  */
 export async function checkRemoteVersion(): Promise<number | null> {
-  try {
-    const res = await fetch(CDN_URL, {
-      signal: AbortSignal.timeout(3000),
-      cache: 'no-cache',
-    });
-    if (!res.ok) return null;
-    const remote: AdapterConfig = await res.json();
-    if (!remote.version) return null;
-    return remote.version;
-  } catch {
-    return null;
+  for (const url of CDN_URLS) {
+    try {
+      const res = await fetch(url, {
+        signal: AbortSignal.timeout(3000),
+        cache: 'no-cache',
+      });
+      if (!res.ok) continue;
+      const remote: AdapterConfig = await res.json();
+      if (!remote.version) continue;
+      return remote.version;
+    } catch {
+      continue;
+    }
   }
+  return null;
 }
 
 async function tryFetchCDN(): Promise<AdapterConfig | null> {
-  try {
-    const res = await fetch(CDN_URL, {
-      signal: AbortSignal.timeout(3000),
-      cache: 'no-cache',
-    });
-    if (!res.ok) return null;
+  const result = await fetchFromCDN();
+  if (!result) return null;
 
-    const remote: AdapterConfig = await res.json();
-    if (!remote.version || !remote.platform || !remote.toolbar || !remote.sharePanel) {
-      console.warn('[GiveMeDoc] Remote adapter config invalid, ignoring');
-      return null;
-    }
+  const cached = readCache();
+  const localVersion = cached?.version ?? DEFAULT_ADAPTER_CONFIG.version;
+  if (result.version <= localVersion) return null;
 
-    const cached = readCache();
-    const localVersion = cached?.version ?? DEFAULT_ADAPTER_CONFIG.version;
-    if (remote.version <= localVersion) return null;
-
-    return remote;
-  } catch {
-    return null;
-  }
+  return result.config;
 }
 
 function readCache(): AdapterConfig | null {
